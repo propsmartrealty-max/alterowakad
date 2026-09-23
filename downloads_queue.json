@@ -1,0 +1,82 @@
+[
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/banner/1980265094_Lodha_Wakad_Website_Images_Spotlight_SC_1903x800px.jpg",
+    "dest": "assets/hero_banner.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/mobile-banner/1980265094_Lodha_Wakad_Website_Images_Spotlight_SC_430x715px.jpg",
+    "dest": "assets/hero_mobile.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/logo/Logo_Lodha%20Altero.svg",
+    "dest": "assets/logos/altero_logo.svg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/themes/lodhanew/images/home/Lodha-90-White-Logo-02.svg",
+    "dest": "assets/logos/lodha_white.svg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/qrcode/Pune_Wakad_Rera-135x135.jpg",
+    "dest": "assets/rera_qr.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/styles/webp/public/2025-03/1980265094_Lodha_Wakad_Website_Images_Plans_SC_Unit4_3bed_with_study_T1%26T2_2000x1111px_0.jpg.webp?itok=FCbE9jlG",
+    "dest": "assets/plans/plan_3bed_unit4_t1_t2.webp"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/styles/webp/public/2025-04/1994841998_Website_for_Lodha_Altero_3%20Bed%20Residence%20with%20Study-2000x1111_....jpg.webp?itok=7-hyswKq",
+    "dest": "assets/plans/plan_3bed_study_master.webp"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/styles/webp/public/2025-03/Unit_5_3bed_with_study_T1%26T2_2000x1111px_0.jpg.webp?itok=18WoEJKV",
+    "dest": "assets/plans/plan_3bed_unit5_t1_t2.webp"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/styles/webp/public/2025-03/Unit_1_4%20bed_T3_2000x1111px-16_0.jpg.webp?itok=Pl2hahon",
+    "dest": "assets/plans/plan_4bed_unit1_t3.webp"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/gallery/grid/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_1000x480-px-07.jpg",
+    "dest": "assets/gallery/rooftop_pool.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/gallery/grid/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_1000x480-px-01.jpg",
+    "dest": "assets/gallery/sky_cafe.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/gallery/grid/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_1000x480-px-03.jpg",
+    "dest": "assets/gallery/fitness_gym.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/gallery/grid/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_1000x480-px-09.jpg",
+    "dest": "assets/gallery/yoga_terrace.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/gallery/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_374x374-px-02.jpg",
+    "dest": "assets/gallery/amenity_02.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/gallery/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_374x374px-04.jpg",
+    "dest": "assets/gallery/amenity_04.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/gallery/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_374x374_px-08.jpg",
+    "dest": "assets/gallery/amenity_08.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/projects/gallery/1980265094_Lodha_Wakad_Website_Images_Amenities_SC_374x374_px-10.jpg",
+    "dest": "assets/gallery/amenity_10.jpg"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/wfd/wfd-1.webp",
+    "dest": "assets/gallery/living_luxury.webp"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/wfd/wfd-2.webp",
+    "dest": "assets/gallery/curated_service.webp"
+  },
+  {
+    "url": "https://www.lodhagroup.com/sites/default/files/wfd/wfd-3.webp",
+    "dest": "assets/gallery/nature_sustainable.webp"
+  }
+]
