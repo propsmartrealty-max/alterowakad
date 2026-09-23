@@ -1519,7 +1519,7 @@ function initFormHandlers() {
 
         const waLink = document.getElementById('successWhatsAppLink');
         if (waLink) {
-          waLink.href = `https://wa.me/91774409295?text=Hi%20Lodha%20Concierge%2C%20my%20preview%20booking%20ID%20is%20${refId}.%20Please%20confirm%20my%20site%20visit.`;
+          waLink.href = `https://wa.me/917744009295?text=Hi%20Lodha%20Concierge%2C%20my%20preview%20booking%20ID%20is%20${refId}.%20Please%20confirm%20my%20site%20visit.`;
         }
 
         const successModal = document.getElementById('bookingSuccessModal');
