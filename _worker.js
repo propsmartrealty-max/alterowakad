@@ -258,9 +258,8 @@ export default {
     if (ARTICLE_SLUGS[pathname]) {
       isArticleRoute = true;
       articleMeta = ARTICLE_SLUGS[pathname];
-      // Fetch the physical article HTML file from static storage
-      const physicalPath = `${pathname}.html`;
-      assetRequest = new Request(new URL(physicalPath, request.url), request);
+      // Keep request as clean slug; Cloudflare Pages ASSETS resolves clean slugs to .html without 308 redirect loop
+      assetRequest = request;
     }
 
     // =========================================================================
