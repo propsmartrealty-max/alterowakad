@@ -3448,5 +3448,34 @@
 
   <!-- JavaScript -->
   <script src="script.js"></script>
+
+  <!-- Speculation Rules API (Zero-Latency Instant Page & Extended Hub Pre-rendering) -->
+  <script type="speculationrules">
+  {
+    "prerender": [
+      {
+        "source": "list",
+        "urls": [
+          "https://lodhaaltero.newlaunches.in/articles/lodha-pune-residential-ecosystem",
+          "https://lodhaaltero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026",
+          "https://lodhaaltero.newlaunches.in/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
+          "https://lodhaaltero.newlaunches.in/articles/maharera-p52100079692-statutory-compliance"
+        ],
+        "eagerness": "moderate"
+      }
+    ],
+    "prefetch": [
+      {
+        "source": "list",
+        "urls": [
+          "https://lodhaaltero.newlaunches.in/assets/plans/plan_3bed_unit4_t1_t2.webp",
+          "https://lodhaaltero.newlaunches.in/assets/plans/plan_4bed_unit1_t3.webp",
+          "https://lodhaaltero.newlaunches.in/assets/gallery/rooftop_pool.jpg"
+        ],
+        "eagerness": "immediate"
+      }
+    ]
+  }
+  </script>
 </body>
 </html>

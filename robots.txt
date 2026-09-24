@@ -33,21 +33,25 @@ Allow: /articles/
 User-agent: GPTBot
 Allow: /
 Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /articles/
 
 User-agent: PerplexityBot
 Allow: /
 Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /articles/
 
 User-agent: ClaudeBot
 Allow: /
 Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /articles/
 
 User-agent: Google-Extended
 Allow: /
 Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /articles/
 
 User-agent: *
@@ -58,6 +62,7 @@ Allow: /assets/gallery/
 Allow: /assets/plans/
 Allow: /assets/logos/
 Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /feed.xml
 
 # XML Sitemap & Feed Linkage

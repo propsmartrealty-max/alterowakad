@@ -208,6 +208,7 @@ export default {
     headers.set('Timing-Allow-Origin', '*');
     headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     headers.set('X-Edge-Engine', 'Cloudflare-Advanced-HTML-Worker-v2.1');
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com;");
 
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
