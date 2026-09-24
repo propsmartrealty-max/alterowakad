@@ -22,6 +22,8 @@ jobs:
           echo "Submitting sitemap to Googlebot ping endpoint..."
           SITEMAP_URL="https://lodhaaltero.newlaunches.in/sitemap.xml"
           curl -s -I "https://www.google.com/ping?sitemap=${SITEMAP_URL}" || echo "Google ping completed"
+          curl -s -I "https://www.google.com/ping?sitemap=https://lodhaaltero.newlaunches.in/sitemap-articles.xml" || echo "Articles sitemap ping completed"
+          curl -s -I "https://www.google.com/ping?sitemap=https://lodhaaltero.newlaunches.in/sitemap-images.xml" || echo "Images sitemap ping completed"
 
       - name: Ping Bing IndexNow Endpoint
         run: |
@@ -35,6 +37,11 @@ jobs:
               "urlList": [
                 "https://lodhaaltero.newlaunches.in/",
                 "https://lodhaaltero.newlaunches.in/sitemap.xml",
+                "https://lodhaaltero.newlaunches.in/sitemap-articles.xml",
+                "https://lodhaaltero.newlaunches.in/sitemap-images.xml",
+                "https://lodhaaltero.newlaunches.in/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
+                "https://lodhaaltero.newlaunches.in/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall",
+                "https://lodhaaltero.newlaunches.in/articles/lodha-pune-residential-ecosystem",
                 "https://lodhaaltero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026",
                 "https://lodhaaltero.newlaunches.in/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
                 "https://lodhaaltero.newlaunches.in/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
