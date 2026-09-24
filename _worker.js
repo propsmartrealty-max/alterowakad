@@ -47,7 +47,12 @@ const ARTICLE_SLUGS = {
   '/articles/pune-real-estate-macro-trends-east-vs-west': {
     title: 'Pune Real Estate Macro Trends: East Pune (Hadapsar & Kharadi) vs West Pune (Wakad)',
     desc: 'Macroeconomic real estate analysis comparing Kharadi and Hadapsar IT corridors with Wakad and Hinjewadi growth.',
-    anchor: '#pune-ecosystem'
+    anchor: '#pune-real-estate-hub'
+  },
+  '/articles/lodha-pune-residential-ecosystem': {
+    title: 'Lodha Group Pune Residential Portfolio: Altero Wakad, Panache, Giardino, Bella Vita & Belmondo',
+    desc: 'Comparative guide to Lodha developments in Pune: flagship Lodha Altero Wakad, Lodha Panache Hinjewadi, Lodha Giardino Kharadi, Lodha Bella Vita NIBM, and Lodha Belmondo Gahunje.',
+    anchor: '#pune-real-estate-hub'
   }
 };
 
