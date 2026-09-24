@@ -78,6 +78,21 @@ export default {
     const isSearchCrawler = SEARCH_CRAWLER_REGEX.test(userAgent);
     const isAiCrawler = AI_CRAWLER_REGEX.test(userAgent);
     const isSocialCrawler = SOCIAL_CRAWLER_REGEX.test(userAgent);
+    const isGetRequest = request.method === 'GET';
+    const isNoCacheQuery = url.searchParams.has('nocache') || url.searchParams.has('purge');
+
+    // Cloudflare Edge Cache API (caches.default) for 0ms edge memory hits
+    const cache = (typeof caches !== 'undefined' && caches.default) ? caches.default : null;
+    const cacheKey = new Request(url.toString(), request);
+
+    if (cache && isGetRequest && !isNoCacheQuery && !pathname.startsWith('/_edge/')) {
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        const cachedRes = new Response(cached.body, cached);
+        cachedRes.headers.set('X-Edge-Cache', 'HIT');
+        return cachedRes;
+      }
+    }
 
     // =========================================================================
     // 1. Edge Canonical Normalization & 301 Redirect Rules
@@ -284,6 +299,8 @@ export default {
     headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('X-Frame-Options', 'SAMEORIGIN');
+    headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    headers.set('Cross-Origin-Resource-Policy', 'same-origin');
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
     headers.set('Timing-Allow-Origin', '*');
@@ -294,6 +311,9 @@ export default {
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
       headers.set('X-Edge-Region', request.cf.region || 'Maharashtra');
+      if (request.cf.verifiedBot) {
+        headers.set('X-Verified-Bot', 'Cloudflare-Verified-Search-Crawler');
+      }
     }
 
     // =========================================================================
@@ -391,10 +411,17 @@ export default {
           });
       }
 
+      headers.set('X-Edge-Cache', 'MISS');
+
       const transformedResponse = rewriter.transform(new Response(response.body, {
         status: 200,
         headers
       }));
+
+      // Cache HTML at the Cloudflare Edge PoP for instantaneous subsequent hits
+      if (cache && isGetRequest && !isNoCacheQuery && ctx && ctx.waitUntil) {
+        ctx.waitUntil(cache.put(cacheKey, transformedResponse.clone()));
+      }
 
       return transformedResponse;
     }
