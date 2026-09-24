@@ -1,0 +1,27 @@
+# Global Security and Performance Headers for Cloudflare Pages
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+  Timing-Allow-Origin: *
+  X-Robots-Tag: index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1
+
+# Media and Static Assets Cache Optimization (1 Year Immutable)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Core Stylesheets and Scripts
+/*.css
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/*.js
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# SEO Crawl Discovery Files
+/robots.txt
+  Cache-Control: public, max-age=43200, s-maxage=43200
+
+/sitemap.xml
+  Cache-Control: public, max-age=43200, s-maxage=43200

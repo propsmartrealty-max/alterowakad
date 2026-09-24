@@ -1,0 +1,19 @@
+name = "lodhaaltero-wakad"
+main = "_worker.js"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = "."
+
+# Production Custom Domain Routing (Replace with your registered domain)
+# routes = [
+#   { pattern = "lodhaalterowakad.in/*", zone_name = "lodhaalterowakad.in" },
+#   { pattern = "www.lodhaalterowakad.in/*", zone_name = "lodhaalterowakad.in" }
+# ]
+
+[placement]
+mode = "smart"
+
+[env.production]
+name = "lodhaaltero-wakad-prod"
