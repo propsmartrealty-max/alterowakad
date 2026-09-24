@@ -236,11 +236,15 @@ export default {
       headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
       headers.set('CDN-Cache-Control', 'max-age=3600');
 
-      // 103 Early Hints / Link preloads for 100/100 Core Web Vitals
-      headers.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; fetchpriority=high');
-      headers.append('Link', '</styles.css>; rel=preload; as=style');
-      headers.append('Link', '<https://fonts.googleapis.com>; rel=preconnect');
-      headers.append('Link', '<https://fonts.gstatic.com>; rel=preconnect; crossorigin');
+      const isVerificationAgent = /google-site-verification|googlebot/i.test(userAgent);
+
+      // Only emit Link preloads for non-verification requests (prevents 103 Early Hints from breaking legacy GSC verification parsers)
+      if (!isVerificationAgent) {
+        headers.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; fetchpriority=high');
+        headers.append('Link', '</styles.css>; rel=preload; as=style');
+        headers.append('Link', '<https://fonts.googleapis.com>; rel=preconnect');
+        headers.append('Link', '<https://fonts.gstatic.com>; rel=preconnect; crossorigin');
+      }
 
       let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', {
@@ -257,6 +261,7 @@ export default {
         })
         .on('head', {
           element(el) {
+            el.prepend('<meta name="google-site-verification" content="7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA">\n<meta name="google-site-verification" content="QFK7VqRHrq-mZJgA2maflTA7RLYKX1hvCK8B2djWkqI">\n', { html: true });
             el.append('<meta name="edge-rendered" content="cloudflare-worker-pune-optimized">', { html: true });
             if (isSearchCrawler) {
               el.append('<meta name="crawler-intent" content="verified-google-crawler">', { html: true });
