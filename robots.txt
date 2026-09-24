@@ -61,5 +61,5 @@ Allow: /llms.txt
 Allow: /feed.xml
 
 # XML Sitemap & Feed Linkage
-Sitemap: https://propsmartrealty-max.github.io/lodhaalterowakad/sitemap.xml
-Sitemap: https://propsmartrealty-max.github.io/lodhaalterowakad/feed.xml
+Sitemap: https://lodhaaltero.newlaunches.in/sitemap.xml
+Sitemap: https://lodhaaltero.newlaunches.in/feed.xml

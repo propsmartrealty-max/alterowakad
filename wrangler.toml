@@ -6,11 +6,9 @@ compatibility_flags = ["nodejs_compat"]
 [site]
 bucket = "."
 
-# Production Custom Domain Routing (Replace with your registered domain)
-# routes = [
-#   { pattern = "lodhaalterowakad.in/*", zone_name = "lodhaalterowakad.in" },
-#   { pattern = "www.lodhaalterowakad.in/*", zone_name = "lodhaalterowakad.in" }
-# ]
+routes = [
+  { pattern = "lodhaaltero.newlaunches.in/*", zone_name = "newlaunches.in" }
+]
 
 [placement]
 mode = "smart"

@@ -20,7 +20,7 @@ jobs:
       - name: Ping Googlebot Sitemap Notification Endpoint
         run: |
           echo "Submitting sitemap to Googlebot ping endpoint..."
-          SITEMAP_URL="https://propsmartrealty-max.github.io/lodhaalterowakad/sitemap.xml"
+          SITEMAP_URL="https://lodhaaltero.newlaunches.in/sitemap.xml"
           curl -s -I "https://www.google.com/ping?sitemap=${SITEMAP_URL}" || echo "Google ping completed"
 
       - name: Ping Bing IndexNow Endpoint
@@ -29,17 +29,17 @@ jobs:
           curl -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d '{
-              "host": "propsmartrealty-max.github.io",
+              "host": "lodhaaltero.newlaunches.in",
               "key": "lodhaaltero2026indexnow",
-              "keyLocation": "https://propsmartrealty-max.github.io/lodhaalterowakad/indexnow-key.txt",
+              "keyLocation": "https://lodhaaltero.newlaunches.in/indexnow-key.txt",
               "urlList": [
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/sitemap.xml",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/articles/wakad-real-estate-investment-thesis-2026",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/articles/maharera-p52100079692-statutory-compliance",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/articles/25000-sqft-rooftop-sky-club-infinity-pool",
-                "https://propsmartrealty-max.github.io/lodhaalterowakad/articles/pune-real-estate-macro-trends-east-vs-west"
+                "https://lodhaaltero.newlaunches.in/",
+                "https://lodhaaltero.newlaunches.in/sitemap.xml",
+                "https://lodhaaltero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026",
+                "https://lodhaaltero.newlaunches.in/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
+                "https://lodhaaltero.newlaunches.in/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
+                "https://lodhaaltero.newlaunches.in/articles/maharera-p52100079692-statutory-compliance",
+                "https://lodhaaltero.newlaunches.in/articles/25000-sqft-rooftop-sky-club-infinity-pool",
+                "https://lodhaaltero.newlaunches.in/articles/pune-real-estate-macro-trends-east-vs-west"
               ]
             }' || echo "IndexNow submission completed"

@@ -8,14 +8,13 @@ This document outlines the ultra-hardened configuration for **Lodha Altero Wakad
 
 To get maximum edge caching, DDoS protection, sub-15ms Time to First Byte (TTFB), and full Cloudflare Worker execution:
 
-### DNS Records Table
+### DNS Records Table (In Cloudflare Zone: `newlaunches.in`)
 | Type | Name | Content / Target | Proxy Status | TTL |
 | :--- | :--- | :--- | :--- | :--- |
-| **CNAME** | `@` (apex) | `<your-pages-project>.pages.dev` or Worker Route | **Proxied (Orange Cloud)** | Auto |
-| **CNAME** | `www` | `<your-pages-project>.pages.dev` or Worker Route | **Proxied (Orange Cloud)** | Auto |
-| **TXT** | `@` | `google-site-verification=7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA` | DNS Only (Grey Cloud) | Auto |
+| **CNAME** | `lodhaaltero` | `<your-pages-project>.pages.dev` or Worker Route | **Proxied (Orange Cloud)** | Auto |
+| **TXT** | `lodhaaltero` | `google-site-verification=7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA` | DNS Only (Grey Cloud) | Auto |
 
-> **Note on CNAME Flattening**: Cloudflare automatically flattens apex CNAME records so your root domain (`example.com`) resolves with instant A/AAAA anycast IPs.
+> **Subdomain Edge Architecture**: Requests to `https://lodhaaltero.newlaunches.in/` are intercepted by Cloudflare Edge POPs in Mumbai (`BOM`), terminating TLS 1.3 in <5ms, executing `_worker.js`, and serving cached responses to Googlebot.
 
 ---
 
