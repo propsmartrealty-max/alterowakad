@@ -29,6 +29,27 @@ User-agent: Bingbot
 Allow: /
 Allow: /articles/
 
+# AI Search Crawlers & Generative Engine Optimization (GEO)
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /articles/
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /articles/
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Allow: /articles/
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /articles/
+
 User-agent: *
 Allow: /
 Allow: /articles/
@@ -36,6 +57,9 @@ Allow: /assets/
 Allow: /assets/gallery/
 Allow: /assets/plans/
 Allow: /assets/logos/
+Allow: /llms.txt
+Allow: /feed.xml
 
-# XML Sitemap Linkage
+# XML Sitemap & Feed Linkage
 Sitemap: https://propsmartrealty-max.github.io/lodhaalterowakad/sitemap.xml
+Sitemap: https://propsmartrealty-max.github.io/lodhaalterowakad/feed.xml

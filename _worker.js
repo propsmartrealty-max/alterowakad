@@ -11,7 +11,7 @@
  * 7. Canonical 301 Normalization (http -> https, /index.html -> /)
  */
 
-const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt)$/i;
+const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
 
 // Verified Google & Search Engine Crawler User-Agents
 const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|duckduckbot|slurp|baiduspider|yandexbot|applebot/i;
