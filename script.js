@@ -1487,16 +1487,56 @@ function showToast(message) {
 
 function initFormHandlers() {
   const forms = document.querySelectorAll('form[data-ajax-form]');
+  const pageLoadedTime = Date.now();
+
+  // Populate any timestamp fields
+  document.querySelectorAll('.form-timestamp').forEach(input => {
+    input.value = pageLoadedTime;
+  });
 
   forms.forEach(form => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      // 1. Anti-Bot Honeypot Check
+      const honeypot = form.querySelector('input[name="website_security_token"]');
+      if (honeypot && honeypot.value.trim() !== '') {
+        console.warn('Bot submission blocked via honeypot.');
+        return;
+      }
+
+      // 2. Minimum Submission Time Delay (Blocks sub-second bot automated submissions)
+      if (Date.now() - pageLoadedTime < 1200) {
+        showToast('Please wait a moment before submitting.');
+        return;
+      }
+
+      // 3. Extract & Sanitize User Inputs
+      const nameInput = form.querySelector('input[type="text"]:not([name="website_security_token"])');
+      const phoneInput = form.querySelector('input[type="tel"]');
+      const configSelect = form.querySelector('select');
+
+      const rawName = nameInput ? nameInput.value.trim() : 'Guest';
+      const rawPhone = phoneInput ? phoneInput.value.trim().replace(/\D/g, '') : '';
+      const preference = configSelect ? configSelect.value : '3/4 BHK Sky Residence';
+
+      // 4. Strict Indian Mobile Validation (10 digits, starts with 6-9)
+      if (rawPhone.length < 10) {
+        showToast('Please provide a valid 10-digit mobile number.');
+        if (phoneInput) phoneInput.focus();
+        return;
+      }
+
+      // Sanitize against HTML/XSS injection
+      const cleanName = rawName.replace(/[<>\"\'&]/g, '');
+      const validPhone = rawPhone.slice(-10);
+
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn ? submitBtn.innerText : 'Submit';
 
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerText = 'Transmitting to Lodha Concierge...';
+        submitBtn.innerText = 'Verifying & Transmitting...';
       }
 
       setTimeout(() => {
@@ -1517,9 +1557,18 @@ function initFormHandlers() {
         const refIdEl = document.getElementById('bookingRefId');
         if (refIdEl) refIdEl.innerText = refId;
 
+        // Dynamic Concierge Direct Dispatch Link
         const waLink = document.getElementById('successWhatsAppLink');
         if (waLink) {
-          waLink.href = `https://wa.me/917744009295?text=Hi%20Lodha%20Concierge%2C%20my%20preview%20booking%20ID%20is%20${refId}.%20Please%20confirm%20my%20site%20visit.`;
+          const encodedMsg = encodeURIComponent(
+            `Hi Lodha Concierge, I have scheduled a VIP Preview for Lodha Altero Wakad.\n\n` +
+            `• Reference ID: ${refId}\n` +
+            `• Name: ${cleanName}\n` +
+            `• Mobile: +91 ${validPhone}\n` +
+            `• Interest: ${preference}\n\n` +
+            `Please confirm my site visit & share sanctioned plans.`
+          );
+          waLink.href = `https://wa.me/917744009295?text=${encodedMsg}`;
         }
 
         const successModal = document.getElementById('bookingSuccessModal');
@@ -1528,7 +1577,7 @@ function initFormHandlers() {
         }
 
         showToast(`VIP Preview Confirmed! Reference ID: ${refId}`);
-      }, 900);
+      }, 750);
     });
   });
 

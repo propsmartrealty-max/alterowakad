@@ -1,6 +1,7 @@
 # Robots.txt for Lodha Altero Wakad (Pune Real Estate SEO Hardened)
 User-agent: Googlebot
 Allow: /
+Allow: /articles/
 Allow: /assets/
 Allow: /assets/gallery/
 Allow: /assets/plans/
@@ -12,11 +13,25 @@ Allow: /assets/gallery/
 Allow: /assets/plans/
 Allow: /assets/logos/
 
+User-agent: Google-InspectionTool
+Allow: /
+Allow: /articles/
+Allow: /assets/
+
+User-agent: Storebot-Google
+Allow: /
+Allow: /articles/
+
+User-agent: Mediapartners-Google
+Allow: /
+
 User-agent: Bingbot
 Allow: /
+Allow: /articles/
 
 User-agent: *
 Allow: /
+Allow: /articles/
 Allow: /assets/
 Allow: /assets/gallery/
 Allow: /assets/plans/

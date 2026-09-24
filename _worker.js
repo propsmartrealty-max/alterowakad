@@ -3,11 +3,12 @@
  * 
  * Capabilities:
  * 1. Edge SEO Acceleration & Crawler Routing (Googlebot, Bingbot, Social)
- * 2. Real-Time HTMLRewriter: Canonical Domain Alignment, Geo-Tagging & Preload Injection
+ * 2. Clean URL Routing & Dynamic HTMLRewriter for Articles & Floor Plans
  * 3. 100/100 Core Web Vitals Optimization (103 Early Hints, Brotli/Zstd, Cache Headers)
  * 4. Military-Grade Security Headers (HSTS Preload, CSP, Frame/MIME Protection)
  * 5. Google Search Console Automated Verification Endpoint Handler
- * 6. Canonical 301 Normalization (http -> https, /index.html -> /)
+ * 6. Automated Search Engine Indexing Ping Handler (Google & Bing IndexNow)
+ * 7. Canonical 301 Normalization (http -> https, /index.html -> /)
  */
 
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt)$/i;
@@ -15,6 +16,40 @@ const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|tt
 // Verified Google & Search Engine Crawler User-Agents
 const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|duckduckbot|slurp|baiduspider|yandexbot|applebot/i;
 const SOCIAL_CRAWLER_REGEX = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|slackbot/i;
+
+// Article URL Mapping for Clean SEO Slugs
+const ARTICLE_SLUGS = {
+  '/articles/wakad-real-estate-investment-thesis-2026': {
+    title: 'Wakad Real Estate Market 2026: Why Lodha Altero Leads Pune’s Luxury Appreciation',
+    desc: 'In-depth investment thesis on 2, 3 & 4 BHK flats in Wakad, rental yields in Hinjewadi IT corridor, and capital growth at Lodha Altero.',
+    anchor: '#pune-real-estate-hub'
+  },
+  '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi': {
+    title: 'Wakad vs Baner vs Mahalunge vs Hinjewadi: West Pune Real Estate Comparison',
+    desc: 'Comparative analysis of infrastructure, price per sq.ft., and lifestyle between Wakad, Baner, Balewadi High Street, and Mahalunge.',
+    anchor: '#pune-real-estate-hub'
+  },
+  '/articles/lodha-altero-floor-plans-sky-duplex-penthouses': {
+    title: 'Lodha Altero Architectural Guide: 3 BHK, 4 BHK, 5 BHK Sky Duplex & Penthouses',
+    desc: 'Architectural specifications, 10.5 ft ceiling clearances, carpet areas, and Mivan formwork at Lodha Altero Wakad Pune.',
+    anchor: '#residences'
+  },
+  '/articles/maharera-p52100079692-statutory-compliance': {
+    title: 'MahaRERA Registration P52100079692 & Legal Due Diligence: Lodha Altero Wakad',
+    desc: 'Complete MahaRERA statutory compliance guide, 70% escrow account safeguards, and possession timelines.',
+    anchor: '#pune-real-estate-hub'
+  },
+  '/articles/25000-sqft-rooftop-sky-club-infinity-pool': {
+    title: 'The 25,000 Sq.Ft. Rooftop Sky Club: Pune’s Highest Elevated Leisure Deck',
+    desc: 'Explore the 37th-floor heated infinity pool, stargazing observatory, and padel court at Lodha Altero Wakad.',
+    anchor: '#rooftop'
+  },
+  '/articles/pune-real-estate-macro-trends-east-vs-west': {
+    title: 'Pune Real Estate Macro Trends: East Pune (Hadapsar & Kharadi) vs West Pune (Wakad)',
+    desc: 'Macroeconomic real estate analysis comparing Kharadi and Hadapsar IT corridors with Wakad and Hinjewadi growth.',
+    anchor: '#pune-ecosystem'
+  }
+};
 
 export default {
   async fetch(request, env, ctx) {
@@ -41,15 +76,9 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
-    // Eliminate duplicate trailing slashes for clean indexing
-    if (pathname.length > 1 && pathname.endsWith('/') && !pathname.includes('.')) {
-      // canonical standard: preserve root '/', strip trailing slashes on sub-slugs if any
-    }
-
     // =========================================================================
     // 2. Google Search Console Automated Edge Verification Handler
     // =========================================================================
-    // Handles /google[hash].html automatically at edge without needing physical files
     if (/^\/google[a-zA-Z0-9_\-]+\.html$/i.test(pathname)) {
       const filename = pathname.replace(/^\//, '');
       return new Response(`google-site-verification: ${filename}`, {
@@ -63,7 +92,37 @@ export default {
     }
 
     // =========================================================================
-    // 3. Edge Diagnostics & Health Endpoint
+    // 3. Search Engine Indexing Ping Handler (Googlebot & Bing IndexNow)
+    // =========================================================================
+    if (pathname === '/_edge/ping-index') {
+      const sitemapUrl = `https://${hostname}/sitemap.xml`;
+      const pingResults = {
+        timestamp: new Date().toISOString(),
+        sitemapUrl,
+        pings: []
+      };
+
+      try {
+        const googlePing = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
+        pingResults.pings.push({ target: 'Google', status: googlePing.status });
+      } catch (e) {
+        pingResults.pings.push({ target: 'Google', status: 'error', message: e.message });
+      }
+
+      try {
+        const bingPing = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
+        pingResults.pings.push({ target: 'Bing', status: bingPing.status });
+      } catch (e) {
+        pingResults.pings.push({ target: 'Bing', status: 'error', message: e.message });
+      }
+
+      return new Response(JSON.stringify(pingResults, null, 2), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+      });
+    }
+
+    // =========================================================================
+    // 4. Edge Diagnostics & Health Endpoint
     // =========================================================================
     if (pathname === '/_edge/health' || pathname === '/_edge/status') {
       const cf = request.cf || {};
@@ -73,7 +132,7 @@ export default {
         timestamp: new Date().toISOString(),
         edge: {
           colo: cf.colo || 'LOCAL',
-          city: cf.city || 'Unknown',
+          city: cf.city || 'Pune/Mumbai Hub',
           country: cf.country || 'IN',
           asn: cf.asn,
           httpProtocol: cf.httpProtocol,
@@ -85,33 +144,44 @@ export default {
           canonicalHost: hostname,
           googlebotOptimized: true,
           schemaGraphActive: true,
-          keywordsHardened: 46
+          articlesRouted: Object.keys(ARTICLE_SLUGS).length,
+          keywordsHardened: '46 Core + Regional Pune Real Estate Ecosystem'
         }
       };
       return new Response(JSON.stringify(statusData, null, 2), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-store'
-        }
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
       });
     }
 
     // =========================================================================
-    // 4. Asset Fetching (Pages / Worker Static Storage)
+    // 5. Clean Article URL Resolution to Root Template
+    // =========================================================================
+    let isArticleRoute = false;
+    let articleMeta = null;
+    let assetRequest = request;
+
+    if (ARTICLE_SLUGS[pathname]) {
+      isArticleRoute = true;
+      articleMeta = ARTICLE_SLUGS[pathname];
+      // Fetch the root index.html to dynamically rewrite at edge
+      assetRequest = new Request(new URL('/', request.url), request);
+    }
+
+    // =========================================================================
+    // 6. Asset Fetching (Pages / Worker Static Storage)
     // =========================================================================
     let response;
     try {
       if (env.ASSETS) {
-        response = await env.ASSETS.fetch(request);
+        response = await env.ASSETS.fetch(assetRequest);
       } else {
-        response = await fetch(request);
+        response = await fetch(assetRequest);
       }
     } catch (err) {
-      // Fallback in case of upstream asset fetch error
       return new Response('Edge Gateway Temporary Error', { status: 502 });
     }
 
-    // If 404 on clean URL, serve root index.html with 200 for SPA / sub-anchors
+    // If 404 on clean URL, serve root index.html with 200
     if (response.status === 404 && !STATIC_EXTENSIONS.test(pathname)) {
       const fallbackReq = new Request(new URL('/', request.url), request);
       if (env.ASSETS) {
@@ -119,12 +189,11 @@ export default {
       }
     }
 
-    // Clone headers to allow modification
     const headers = new Headers(response.headers);
     const contentType = headers.get('Content-Type') || '';
 
     // =========================================================================
-    // 5. Military-Grade Security & Performance Headers (Google SEO Factor)
+    // 7. Security & Performance Headers (Google SEO Factor)
     // =========================================================================
     headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
     headers.set('X-Content-Type-Options', 'nosniff');
@@ -133,28 +202,24 @@ export default {
     headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
     headers.set('Timing-Allow-Origin', '*');
     headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    headers.set('X-Edge-Engine', 'Cloudflare-Advanced-HTML-Worker-v2');
+    headers.set('X-Edge-Engine', 'Cloudflare-Advanced-HTML-Worker-v2.1');
 
-    // Pune / Maharashtra Regional Edge Indicator for Local SEO Rank
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
       headers.set('X-Edge-Region', request.cf.region || 'Maharashtra');
     }
 
     // =========================================================================
-    // 6. Cache-Control Optimization
+    // 8. Cache-Control Optimization
     // =========================================================================
     if (STATIC_EXTENSIONS.test(pathname)) {
       if (/\.(jpg|jpeg|webp|png|svg|woff2|woff)$/i.test(pathname)) {
-        // Static Media & Fonts: Immutable 1-Year Cache
         headers.set('Cache-Control', 'public, max-age=31536000, immutable');
         headers.set('CDN-Cache-Control', 'max-age=31536000');
       } else if (/\.(css|js)$/i.test(pathname)) {
-        // CSS / JS: Fast Revalidation with 7-Day stale fallback
         headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
         headers.set('CDN-Cache-Control', 'max-age=604800');
       } else if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
-        // Crawl Manifests: 12-Hour Edge Cache
         headers.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
       }
       return new Response(response.body, {
@@ -165,59 +230,76 @@ export default {
     }
 
     // =========================================================================
-    // 7. HTML Stream Transformation via Cloudflare HTMLRewriter
+    // 9. HTML Stream Transformation via Cloudflare HTMLRewriter
     // =========================================================================
     if (contentType.includes('text/html')) {
-      // HTML Freshness: Edge caches for 1 hour, allows instant revalidation, stale fallback
       headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
       headers.set('CDN-Cache-Control', 'max-age=3600');
 
-      // 103 Early Hints / Link preload headers for Googlebot LCP optimization
+      // 103 Early Hints / Link preloads for 100/100 Core Web Vitals
       headers.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; fetchpriority=high');
       headers.append('Link', '</styles.css>; rel=preload; as=style');
       headers.append('Link', '<https://fonts.googleapis.com>; rel=preconnect');
       headers.append('Link', '<https://fonts.gstatic.com>; rel=preconnect; crossorigin');
 
-      // Execute edge HTMLRewriter transformations
-      const rewriter = new HTMLRewriter()
-        // Ensure Canonical Link dynamically uses the live deployed domain
+      let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', {
           element(el) {
-            const currentHref = el.getAttribute('href') || '';
-            // If running on custom domain (not github.io), automatically update canonical link
-            if (!hostname.includes('github.io') && !hostname.includes('localhost')) {
-              el.setAttribute('href', `https://${hostname}/`);
-            }
+            const liveCanonical = isArticleRoute ? `https://${hostname}${pathname}` : `https://${hostname}/`;
+            el.setAttribute('href', liveCanonical);
           }
         })
-        // Ensure Open Graph URL uses the live deployed domain
         .on('meta[property="og:url"]', {
           element(el) {
-            if (!hostname.includes('github.io') && !hostname.includes('localhost')) {
-              el.setAttribute('content', `https://${hostname}/`);
-            }
+            const liveUrl = isArticleRoute ? `https://${hostname}${pathname}` : `https://${hostname}/`;
+            el.setAttribute('content', liveUrl);
           }
         })
-        // Inject Googlebot Priority signal tag
         .on('head', {
           element(el) {
             el.append('<meta name="edge-rendered" content="cloudflare-worker-pune-optimized">', { html: true });
             if (isSearchCrawler) {
               el.append('<meta name="crawler-intent" content="verified-google-crawler">', { html: true });
             }
+            if (isArticleRoute && articleMeta) {
+              el.append(`<meta name="article-title" content="${articleMeta.title}">`, { html: true });
+            }
           }
         });
 
+      // If viewing an article URL, update the page title and meta description dynamically
+      if (isArticleRoute && articleMeta) {
+        rewriter = rewriter
+          .on('title', {
+            element(el) {
+              el.setInnerContent(`${articleMeta.title} | Lodha Altero Wakad`);
+            }
+          })
+          .on('meta[name="description"]', {
+            element(el) {
+              el.setAttribute('content', articleMeta.desc);
+            }
+          })
+          .on('meta[property="og:title"]', {
+            element(el) {
+              el.setAttribute('content', `${articleMeta.title} | Lodha Altero Wakad`);
+            }
+          })
+          .on('meta[property="og:description"]', {
+            element(el) {
+              el.setAttribute('content', articleMeta.desc);
+            }
+          });
+      }
+
       const transformedResponse = rewriter.transform(new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
+        status: 200,
         headers
       }));
 
       return transformedResponse;
     }
 
-    // Default response for other types
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
