@@ -13,55 +13,59 @@
 
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
 
-// Verified Google & Search Engine Crawler User-Agents
+// Verified Google, Bing & Search Engine Crawler User-Agents
 const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|duckduckbot|slurp|baiduspider|yandexbot|applebot/i;
+const AI_CRAWLER_REGEX = /gptbot|perplexitybot|claudebot|chatgpt-user|google-extended|anthropic-ai|cohere-ai|diffbot/i;
 const SOCIAL_CRAWLER_REGEX = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|slackbot/i;
+
+// IndexNow Verification Key for Instant Search Engine Crawl Notifications
+const INDEXNOW_KEY = 'e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c';
 
 // Article URL Mapping for Clean SEO Slugs
 const ARTICLE_SLUGS = {
   '/articles/wakad-real-estate-investment-thesis-2026': {
     title: 'Wakad Real Estate Market 2026: Why Lodha Altero Leads Pune’s Luxury Appreciation',
-    desc: 'In-depth investment thesis on 2, 3 & 4 BHK flats in Wakad, rental yields in Hinjewadi IT corridor, and capital growth at Lodha Altero.',
+    desc: 'In-depth 2026 investment thesis analyzing 2, 3 and 4 BHK flats in Wakad, Hinjewadi IT corridor rental yields (4.8% to 5.5%), and capital growth at Lodha Altero Wakad.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi': {
-    title: 'Wakad vs Baner vs Mahalunge vs Hinjewadi: West Pune Real Estate Comparison',
-    desc: 'Comparative analysis of infrastructure, price per sq.ft., and lifestyle between Wakad, Baner, Balewadi High Street, and Mahalunge.',
+    title: 'Wakad vs Baner vs Mahalunge vs Hinjewadi: West Pune Micro-Market Deep Dive',
+    desc: 'Detailed comparative analysis of Wakad, Baner, Balewadi High Street, Mahalunge township projects, and Hinjewadi IT corridor real estate prices and lifestyle.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/lodha-altero-floor-plans-sky-duplex-penthouses': {
-    title: 'Lodha Altero Architectural Guide: 3 BHK, 4 BHK, 5 BHK Sky Duplex & Penthouses',
-    desc: 'Architectural specifications, 10.5 ft ceiling clearances, carpet areas, and Mivan formwork at Lodha Altero Wakad Pune.',
+    title: 'Lodha Altero Floor Plans Guide: 3 BHK, 4 BHK, 5 BHK Sky Duplex & Penthouses',
+    desc: 'Detailed architectural review of 3 BHK, 4 BHK, 5 BHK Sky Duplex, Simplex and Penthouse floor plans, carpet areas, ceiling heights, and Vastu at Lodha Altero Wakad Pune.',
     anchor: '#residences'
   },
   '/articles/maharera-p52100079692-statutory-compliance': {
-    title: 'MahaRERA Registration P52100079692 & Legal Due Diligence: Lodha Altero Wakad',
-    desc: 'Complete MahaRERA statutory compliance guide, 70% escrow account safeguards, and possession timelines.',
+    title: 'MahaRERA Registration P52100079692: Buyer Protection & Milestones | Lodha Altero Wakad',
+    desc: 'Complete legal due diligence review for MahaRERA P52100079692: statutory 70% escrow accounts, title verification, possession dates, and defect liability at Lodha Altero Wakad Pune.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/25000-sqft-rooftop-sky-club-infinity-pool': {
     title: 'The 25,000 Sq.Ft. Rooftop Sky Club: Pune’s Highest Elevated Leisure Deck',
-    desc: 'Explore the 37th-floor heated infinity pool, stargazing observatory, and padel court at Lodha Altero Wakad.',
+    desc: 'Explore Pune’s highest 25,000 sq.ft. Rooftop Sky Club on the 37th floor at Lodha Altero Wakad: 50m heated infinity pool, padel court, and stargazing observatory.',
     anchor: '#rooftop'
   },
   '/articles/pune-real-estate-macro-trends-east-vs-west': {
     title: 'Pune Real Estate Macro Trends: East Pune (Hadapsar & Kharadi) vs West Pune (Wakad)',
-    desc: 'Macroeconomic real estate analysis comparing Kharadi and Hadapsar IT corridors with Wakad and Hinjewadi growth.',
+    desc: 'Macroeconomic real estate analysis comparing Kharadi and Hadapsar IT corridors with Wakad and Hinjewadi high-growth residential corridors in Pune.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/lodha-pune-residential-ecosystem': {
     title: 'Lodha Group Pune Residential Portfolio: Altero Wakad, Panache, Giardino, Bella Vita & Belmondo',
-    desc: 'Comparative guide to Lodha developments in Pune: flagship Lodha Altero Wakad, Lodha Panache Hinjewadi, Lodha Giardino Kharadi, Lodha Bella Vita NIBM, and Lodha Belmondo Gahunje.',
+    desc: "Official comparative guide to Lodha Group's residential developments in Pune: Lodha Altero Wakad, Lodha Panache Hinjewadi, Lodha Giardino Kharadi, Lodha Bella Vita NIBM, and Lodha Belmondo Gahunje.",
     anchor: '#pune-real-estate-hub'
   },
   '/articles/lodha-altero-wakad-price-list-cost-sheet-2026': {
-    title: 'Lodha Altero Wakad Price List 2026: Cost Sheet & Payment Plans',
-    desc: 'Official 2026 price breakdown, cost sheet, installment schedules, and MahaRERA P52100079692 payment milestones for Lodha Altero Wakad.',
+    title: 'Lodha Altero Wakad Price List 2026: 3 BHK, 4 BHK, 5 BHK Penthouse Cost Sheet & Payment Plans',
+    desc: 'Official 2026 price breakdown, cost sheet, installment schedules, floor-rise calculations, and MahaRERA P52100079692 payment milestones for Lodha Altero, Wakad, Pune.',
     anchor: '#residences'
   },
   '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall': {
     title: 'Connectivity Guide: Lodha Altero Wakad to Hinjewadi IT Park & Phoenix Mall',
-    desc: 'Transit analysis, commuting routes, and travel times from Lodha Altero Wakad to Hinjewadi Phase 1, 2, 3, Phoenix Mall, and Metro Line 3.',
+    desc: 'Transit analysis, commuting routes, and travel times from Lodha Altero Wakad to Rajiv Gandhi Infotech Park Hinjewadi Phase 1, 2, 3, Phoenix Mall, and Metro Line 3.',
     anchor: '#location'
   }
 };
@@ -72,6 +76,7 @@ export default {
     const { pathname, search, protocol, hostname } = url;
     const userAgent = request.headers.get('User-Agent') || '';
     const isSearchCrawler = SEARCH_CRAWLER_REGEX.test(userAgent);
+    const isAiCrawler = AI_CRAWLER_REGEX.test(userAgent);
     const isSocialCrawler = SOCIAL_CRAWLER_REGEX.test(userAgent);
 
     // =========================================================================
@@ -91,8 +96,17 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    // Redirect .html article requests to clean canonical slugs (SEO Juice Consolidation)
+    if (pathname.startsWith('/articles/') && pathname.endsWith('.html')) {
+      const cleanSlug = pathname.replace(/\.html$/, '');
+      if (ARTICLE_SLUGS[cleanSlug]) {
+        url.pathname = cleanSlug;
+        return Response.redirect(url.toString(), 301);
+      }
+    }
+
     // =========================================================================
-    // 2. Google Search Console Automated Edge Verification Handler
+    // 2. Google Search Console & IndexNow Verification Key Handlers
     // =========================================================================
     if (/^\/google[a-zA-Z0-9_\-]+\.html$/i.test(pathname)) {
       const filename = pathname.replace(/^\//, '');
@@ -106,29 +120,95 @@ export default {
       });
     }
 
+    // IndexNow Key Verification Endpoint
+    if (pathname === `/${INDEXNOW_KEY}.txt` || /^\/[a-f0-9]{32}\.txt$/i.test(pathname)) {
+      return new Response(INDEXNOW_KEY, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'public, max-age=86400',
+          'X-Robots-Tag': 'noindex'
+        }
+      });
+    }
+
     // =========================================================================
-    // 3. Search Engine Indexing Ping Handler (Googlebot & Bing IndexNow)
+    // 3. Search Engine Indexing & IndexNow Real-Time Notification Handler
     // =========================================================================
     if (pathname === '/_edge/ping-index') {
       const sitemapUrl = `https://${hostname}/sitemap.xml`;
+      const urlList = [
+        `https://${hostname}/`,
+        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${hostname}${slug}`)
+      ];
+
       const pingResults = {
         timestamp: new Date().toISOString(),
+        host: hostname,
         sitemapUrl,
-        pings: []
+        indexNowKey: INDEXNOW_KEY,
+        urlsSubmittedCount: urlList.length,
+        submittedUrls: urlList,
+        engineResponses: []
       };
 
+      // 1. Submit batch to IndexNow API (Bing, Yandex, Seznam, Naver)
       try {
-        const googlePing = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
-        pingResults.pings.push({ target: 'Google', status: googlePing.status });
+        const indexNowPayload = {
+          host: hostname,
+          key: INDEXNOW_KEY,
+          keyLocation: `https://${hostname}/${INDEXNOW_KEY}.txt`,
+          urlList
+        };
+        const indexNowRes = await fetch('https://api.indexnow.org/IndexNow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          body: JSON.stringify(indexNowPayload)
+        });
+        pingResults.engineResponses.push({
+          target: 'IndexNow Global Hub (api.indexnow.org)',
+          status: indexNowRes.status,
+          statusText: indexNowRes.statusText
+        });
       } catch (e) {
-        pingResults.pings.push({ target: 'Google', status: 'error', message: e.message });
+        pingResults.engineResponses.push({ target: 'IndexNow Global Hub', status: 'error', message: e.message });
       }
 
+      // 2. Submit directly to Bing IndexNow
+      try {
+        const bingIndexNowRes = await fetch('https://www.bing.com/indexnow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          body: JSON.stringify({
+            host: hostname,
+            key: INDEXNOW_KEY,
+            keyLocation: `https://${hostname}/${INDEXNOW_KEY}.txt`,
+            urlList
+          })
+        });
+        pingResults.engineResponses.push({
+          target: 'Bing IndexNow Direct',
+          status: bingIndexNowRes.status,
+          statusText: bingIndexNowRes.statusText
+        });
+      } catch (e) {
+        pingResults.engineResponses.push({ target: 'Bing IndexNow Direct', status: 'error', message: e.message });
+      }
+
+      // 3. Ping Google Sitemap Crawler
+      try {
+        const googlePing = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: googlePing.status });
+      } catch (e) {
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: 'error', message: e.message });
+      }
+
+      // 4. Ping Bing Sitemap Crawler
       try {
         const bingPing = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
-        pingResults.pings.push({ target: 'Bing', status: bingPing.status });
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: bingPing.status });
       } catch (e) {
-        pingResults.pings.push({ target: 'Bing', status: 'error', message: e.message });
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: 'error', message: e.message });
       }
 
       return new Response(JSON.stringify(pingResults, null, 2), {
@@ -169,7 +249,7 @@ export default {
     }
 
     // =========================================================================
-    // 5. Clean Article URL Resolution to Root Template
+    // 5. Clean Article URL Resolution to Physical Article HTML Files
     // =========================================================================
     let isArticleRoute = false;
     let articleMeta = null;
@@ -178,8 +258,9 @@ export default {
     if (ARTICLE_SLUGS[pathname]) {
       isArticleRoute = true;
       articleMeta = ARTICLE_SLUGS[pathname];
-      // Fetch the root index.html to dynamically rewrite at edge
-      assetRequest = new Request(new URL('/', request.url), request);
+      // Fetch the physical article HTML file from static storage
+      const physicalPath = `${pathname}.html`;
+      assetRequest = new Request(new URL(physicalPath, request.url), request);
     }
 
     // =========================================================================
@@ -235,7 +316,7 @@ export default {
       } else if (/\.(css|js)$/i.test(pathname)) {
         headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
         headers.set('CDN-Cache-Control', 'max-age=604800');
-      } else if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
+      } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml') {
         headers.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
       }
       return new Response(response.body, {
@@ -280,7 +361,10 @@ export default {
             el.prepend('<meta name="google-site-verification" content="7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA">\n<meta name="google-site-verification" content="QFK7VqRHrq-mZJgA2maflTA7RLYKX1hvCK8B2djWkqI">\n', { html: true });
             el.append('<meta name="edge-rendered" content="cloudflare-worker-pune-optimized">', { html: true });
             if (isSearchCrawler) {
-              el.append('<meta name="crawler-intent" content="verified-google-crawler">', { html: true });
+              el.append('<meta name="crawler-intent" content="verified-search-crawler">', { html: true });
+            }
+            if (isAiCrawler) {
+              el.append('<meta name="ai-retrieval-source" content="https://lodhaaltero.newlaunches.in/llms-full.txt">', { html: true });
             }
             if (isArticleRoute && articleMeta) {
               el.append(`<meta name="article-title" content="${articleMeta.title}">`, { html: true });
@@ -288,12 +372,16 @@ export default {
           }
         });
 
-      // If viewing an article URL, update the page title and meta description dynamically
+      // If viewing an article URL, ensure page title and meta description match exactly
       if (isArticleRoute && articleMeta) {
+        const fullTitle = articleMeta.title.includes('Lodha Altero') 
+          ? articleMeta.title 
+          : `${articleMeta.title} | Lodha Altero Wakad`;
+
         rewriter = rewriter
           .on('title', {
             element(el) {
-              el.setInnerContent(`${articleMeta.title} | Lodha Altero Wakad`);
+              el.setInnerContent(fullTitle);
             }
           })
           .on('meta[name="description"]', {
@@ -303,7 +391,7 @@ export default {
           })
           .on('meta[property="og:title"]', {
             element(el) {
-              el.setAttribute('content', `${articleMeta.title} | Lodha Altero Wakad`);
+              el.setAttribute('content', fullTitle);
             }
           })
           .on('meta[property="og:description"]', {
