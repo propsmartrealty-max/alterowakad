@@ -11,6 +11,8 @@
  * 7. Canonical 301 Normalization (http -> https, /index.html -> /)
  */
 
+import { PROGRAMMATIC_PAGES, renderProgrammaticPage } from './programmatic_data.js';
+
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
 
 // Verified Google, Bing & Search Engine Crawler User-Agents
@@ -145,7 +147,8 @@ export default {
       const sitemapUrl = `https://${hostname}/sitemap.xml`;
       const urlList = [
         `https://${hostname}/`,
-        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${hostname}${slug}`)
+        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${hostname}${slug}`),
+        ...Object.keys(PROGRAMMATIC_PAGES).map(slug => `https://${hostname}${slug}`)
       ];
 
       const pingResults = {
@@ -246,7 +249,8 @@ export default {
           googlebotOptimized: true,
           schemaGraphActive: true,
           articlesRouted: Object.keys(ARTICLE_SLUGS).length,
-          keywordsHardened: '46 Core + Regional Pune Real Estate Ecosystem'
+          programmaticPagesActive: Object.keys(PROGRAMMATIC_PAGES).length,
+          keywordsHardened: '46 Core + Regional Pune Real Estate Ecosystem + 32 Programmatic Clusters'
         }
       };
       return new Response(JSON.stringify(statusData, null, 2), {
@@ -255,7 +259,83 @@ export default {
     }
 
     // =========================================================================
-    // 5. Clean Article URL Resolution to Physical Article HTML Files
+    // 5. Dynamic Programmatic XML Sitemap Generation
+    // =========================================================================
+    if (pathname === '/sitemap-programmatic.xml' || pathname === '/sitemaps/sitemap-programmatic.xml') {
+      const today = new Date().toISOString().split('T')[0];
+      const urlsXml = Object.keys(PROGRAMMATIC_PAGES).map(slug => `  <url>
+    <loc>https://${hostname}${slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`).join('\n');
+
+      const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlsXml}
+</urlset>`;
+
+      return new Response(sitemapXml, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
+          'X-Robots-Tag': 'index, follow'
+        }
+      });
+    }
+
+    // =========================================================================
+    // 6. Dynamic Programmatic SEO Page Edge Rendering
+    // =========================================================================
+    if (PROGRAMMATIC_PAGES[pathname]) {
+      const pageHtml = renderProgrammaticPage(url, PROGRAMMATIC_PAGES[pathname]);
+      const progHeaders = new Headers();
+      progHeaders.set('Content-Type', 'text/html; charset=utf-8');
+      progHeaders.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800');
+      progHeaders.set('CDN-Cache-Control', 'max-age=86400');
+      progHeaders.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+      progHeaders.set('X-Content-Type-Options', 'nosniff');
+      progHeaders.set('X-Frame-Options', 'SAMEORIGIN');
+      progHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+      progHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
+      progHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+      progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
+      progHeaders.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Programmatic-SEO-Worker-v2.2');
+      progHeaders.set('X-Edge-Cache', 'MISS');
+
+      if (request.cf) {
+        progHeaders.set('X-Edge-Colo', request.cf.colo || 'BOM');
+        progHeaders.set('X-Edge-Region', request.cf.region || 'Maharashtra');
+        if (request.cf.verifiedBot) {
+          progHeaders.set('X-Verified-Bot', 'Cloudflare-Verified-Search-Crawler');
+        }
+      }
+
+      // Preload critical assets
+      const isVerificationAgent = /google-site-verification|googlebot/i.test(userAgent);
+      if (!isVerificationAgent) {
+        progHeaders.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; fetchpriority=high');
+        progHeaders.append('Link', '</styles.css>; rel=preload; as=style');
+        progHeaders.append('Link', '<https://fonts.googleapis.com>; rel=preconnect');
+        progHeaders.append('Link', '<https://fonts.gstatic.com>; rel=preconnect; crossorigin');
+      }
+
+      const progResponse = new Response(pageHtml, {
+        status: 200,
+        headers: progHeaders
+      });
+
+      if (cache && isGetRequest && !isNoCacheQuery && ctx && ctx.waitUntil) {
+        ctx.waitUntil(cache.put(cacheKey, progResponse.clone()));
+      }
+
+      return progResponse;
+    }
+
+    // =========================================================================
+    // 7. Clean Article URL Resolution to Physical Article HTML Files
     // =========================================================================
     let isArticleRoute = false;
     let articleMeta = null;

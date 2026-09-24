@@ -1,6 +1,7 @@
 {
   "name": "lodha-altero-wakad",
   "version": "1.0.0",
+  "type": "module",
   "description": "Luxury Showcase Website for Lodha Altero Wakad, Pune - Inspired by lodhagroup.com",
   "scripts": {
     "start": "npx serve . -l 3000",

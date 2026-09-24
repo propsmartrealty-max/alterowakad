@@ -22,12 +22,21 @@ User-agent: GoogleOther-Image
 User-agent: GoogleOther-Video
 Allow: /
 Allow: /articles/
+Allow: /transit/
+Allow: /residences/
+Allow: /pricing/
+Allow: /compare/
+Allow: /amenities/
+Allow: /nri/
+Allow: /vastu/
+Allow: /investment/
 Allow: /assets/
 Allow: /assets/plans/
 Allow: /assets/gallery/
 Allow: /assets/logos/
 Allow: /sitemap.xml
 Allow: /sitemap-articles.xml
+Allow: /sitemap-programmatic.xml
 Allow: /sitemap-images.xml
 Allow: /feed.xml
 
@@ -100,6 +109,14 @@ Disallow: /
 User-agent: *
 Allow: /
 Allow: /articles/
+Allow: /transit/
+Allow: /residences/
+Allow: /pricing/
+Allow: /compare/
+Allow: /amenities/
+Allow: /nri/
+Allow: /vastu/
+Allow: /investment/
 Allow: /assets/
 Allow: /llms.txt
 Allow: /llms-full.txt
@@ -111,5 +128,6 @@ Disallow: /_edge/
 # ==============================================================================
 Sitemap: https://lodhaaltero.newlaunches.in/sitemap.xml
 Sitemap: https://lodhaaltero.newlaunches.in/sitemap-articles.xml
+Sitemap: https://lodhaaltero.newlaunches.in/sitemap-programmatic.xml
 Sitemap: https://lodhaaltero.newlaunches.in/sitemap-images.xml
 Sitemap: https://lodhaaltero.newlaunches.in/feed.xml
