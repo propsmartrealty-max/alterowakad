@@ -13,7 +13,7 @@ To get maximum edge caching, DDoS protection, sub-15ms Time to First Byte (TTFB)
 | :--- | :--- | :--- | :--- | :--- |
 | **CNAME** | `@` (apex) | `<your-pages-project>.pages.dev` or Worker Route | **Proxied (Orange Cloud)** | Auto |
 | **CNAME** | `www` | `<your-pages-project>.pages.dev` or Worker Route | **Proxied (Orange Cloud)** | Auto |
-| **TXT** | `@` | `google-site-verification=GSC_VERIFICATION_TOKEN` | DNS Only (Grey Cloud) | Auto |
+| **TXT** | `@` | `google-site-verification=7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA` | DNS Only (Grey Cloud) | Auto |
 
 > **Note on CNAME Flattening**: Cloudflare automatically flattens apex CNAME records so your root domain (`example.com`) resolves with instant A/AAAA anycast IPs.
 
