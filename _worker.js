@@ -53,6 +53,16 @@ const ARTICLE_SLUGS = {
     title: 'Lodha Group Pune Residential Portfolio: Altero Wakad, Panache, Giardino, Bella Vita & Belmondo',
     desc: 'Comparative guide to Lodha developments in Pune: flagship Lodha Altero Wakad, Lodha Panache Hinjewadi, Lodha Giardino Kharadi, Lodha Bella Vita NIBM, and Lodha Belmondo Gahunje.',
     anchor: '#pune-real-estate-hub'
+  },
+  '/articles/lodha-altero-wakad-price-list-cost-sheet-2026': {
+    title: 'Lodha Altero Wakad Price List 2026: Cost Sheet & Payment Plans',
+    desc: 'Official 2026 price breakdown, cost sheet, installment schedules, and MahaRERA P52100079692 payment milestones for Lodha Altero Wakad.',
+    anchor: '#residences'
+  },
+  '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall': {
+    title: 'Connectivity Guide: Lodha Altero Wakad to Hinjewadi IT Park & Phoenix Mall',
+    desc: 'Transit analysis, commuting routes, and travel times from Lodha Altero Wakad to Hinjewadi Phase 1, 2, 3, Phoenix Mall, and Metro Line 3.',
+    anchor: '#location'
   }
 };
 
