@@ -96,15 +96,6 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
-    // Redirect .html article requests to clean canonical slugs (SEO Juice Consolidation)
-    if (pathname.startsWith('/articles/') && pathname.endsWith('.html')) {
-      const cleanSlug = pathname.replace(/\.html$/, '');
-      if (ARTICLE_SLUGS[cleanSlug]) {
-        url.pathname = cleanSlug;
-        return Response.redirect(url.toString(), 301);
-      }
-    }
-
     // =========================================================================
     // 2. Google Search Console & IndexNow Verification Key Handlers
     // =========================================================================
@@ -258,8 +249,8 @@ export default {
     if (ARTICLE_SLUGS[pathname]) {
       isArticleRoute = true;
       articleMeta = ARTICLE_SLUGS[pathname];
-      // Keep request as clean slug; Cloudflare Pages ASSETS resolves clean slugs to .html without 308 redirect loop
-      assetRequest = request;
+      // Fetch the root template to dynamically rewrite at the edge with article metadata and canonical tags
+      assetRequest = new Request(new URL('/', request.url), request);
     }
 
     // =========================================================================
