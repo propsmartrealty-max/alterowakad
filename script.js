@@ -720,7 +720,7 @@ function initFloorPlans() {
           <!-- Glass Canvas Drafting Grid Background -->
           <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: linear-gradient(rgba(212,175,55,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
           
-          <img id="planActiveImg" src="${data.actualPlanImg}" alt="${data.title} Floor Plan" class="max-w-full max-h-full object-contain filter drop-shadow-2xl transition-transform duration-300 cursor-zoom-in" style="transform: scale(${planZoomLevel});" onerror="this.onerror=null; this.src='${data.fallbackImg}';">
+          <img id="planActiveImg" src="${data.actualPlanImg}" alt="Lodha Altero Wakad ${data.title} Sanctioned Floor Plan Layout" loading="lazy" decoding="async" class="max-w-full max-h-full object-contain filter drop-shadow-2xl transition-transform duration-300 cursor-zoom-in" style="transform: scale(${planZoomLevel});" onerror="this.onerror=null; this.src='${data.fallbackImg}';">
           
           <!-- Zoom & Lightbox Floating Glass Controls Dock -->
           <div class="absolute top-4 right-4 flex items-center gap-2 z-20">

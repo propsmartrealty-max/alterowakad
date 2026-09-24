@@ -1,4 +1,20 @@
-# Robots.txt for Lodha Altero Wakad (Pune Real Estate Showcase)
+# Robots.txt for Lodha Altero Wakad (Pune Real Estate SEO Hardened)
+User-agent: Googlebot
+Allow: /
+Allow: /assets/
+Allow: /assets/gallery/
+Allow: /assets/plans/
+Allow: /assets/logos/
+
+User-agent: Googlebot-Image
+Allow: /assets/
+Allow: /assets/gallery/
+Allow: /assets/plans/
+Allow: /assets/logos/
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: *
 Allow: /
 Allow: /assets/
@@ -6,8 +22,5 @@ Allow: /assets/gallery/
 Allow: /assets/plans/
 Allow: /assets/logos/
 
-# Crawl Delay
-Crawl-delay: 1
-
-# XML Sitemap
+# XML Sitemap Linkage
 Sitemap: https://propsmartrealty-max.github.io/lodhaalterowakad/sitemap.xml
