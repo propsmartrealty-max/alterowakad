@@ -1011,6 +1011,17 @@ Please connect me with the sales director and share official MahaRERA P521000796
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404: Page Not Found | Lodha Altero Wakad</title>
   <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-touch-icon-precomposed.png">
+  <link rel="mask-icon" href="/assets/favicon.svg" color="#D4AF37">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0C0A09">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body class="bg-[#0C0A09] text-stone-200 font-sans min-h-screen flex items-center justify-center p-6 text-center">
@@ -1137,15 +1148,21 @@ Please connect me with the sales director and share official MahaRERA P521000796
     // 8. Cache-Control Optimization
     // =========================================================================
     if (STATIC_EXTENSIONS.test(pathname)) {
-      if (/\.(jpg|jpeg|webp|png|svg|woff2|woff)$/i.test(pathname)) {
+      if (/\.(jpg|jpeg|webp|png|svg|ico|woff2|woff)$/i.test(pathname)) {
         headers.set('Cache-Control', 'public, max-age=31536000, immutable');
         headers.set('CDN-Cache-Control', 'max-age=31536000');
+        if (pathname.endsWith('.ico')) {
+          headers.set('Content-Type', 'image/x-icon');
+        }
       } else if (pathname === '/sw.js') {
         headers.set('Cache-Control', 'public, max-age=0, must-revalidate, no-cache');
         headers.set('CDN-Cache-Control', 'max-age=0, no-cache, no-store');
         headers.set('Cloudflare-CDN-Cache-Control', 'max-age=0, no-cache, no-store');
         headers.set('Service-Worker-Allowed', '/');
         headers.set('Content-Type', 'application/javascript; charset=utf-8');
+      } else if (pathname === '/browserconfig.xml') {
+        headers.set('Content-Type', 'application/xml; charset=utf-8');
+        headers.set('Cache-Control', 'public, max-age=86400');
       } else if (pathname === '/manifest.webmanifest' || pathname === '/site.webmanifest') {
         headers.set('Content-Type', 'application/manifest+json; charset=utf-8');
         headers.set('Cache-Control', 'public, max-age=86400');
