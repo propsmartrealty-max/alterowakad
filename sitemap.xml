@@ -57,82 +57,50 @@
       <image:caption>Professional tournament-grade rooftop Padel tennis court in Pune</image:caption>
     </image:image>
     <image:image>
+      <image:loc>https://altero.newlaunches.in/assets/master_layout_plan.jpg</image:loc>
+      <image:title>Lodha Altero Wakad Master Layout Plan &amp; Podium Greens</image:title>
+      <image:caption>Sanctioned Master Layout Plan showing 3 G+37 towers, central vehicular drop-off, and 80% open greens</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://altero.newlaunches.in/assets/hero_mobile.jpg</image:loc>
+      <image:title>Lodha Altero Wakad Mobile Architectural View</image:title>
+      <image:caption>G+37 storey iconic luxury towers in Wakad Pune by Lodha Group</image:caption>
+    </image:image>
+    <image:image>
       <image:loc>https://altero.newlaunches.in/assets/logos/lodha_altero_partner_logo.svg</image:loc>
       <image:title>Lodha Altero Wakad Official Preferred Partner Logo</image:title>
       <image:caption>Authorized Preferred Partner identity for Lodha Altero Wakad, Pune</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://altero.newlaunches.in/#overview</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#rooftop</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#residences</loc>
+    <loc>https://altero.newlaunches.in/residences/3-bhk-luxury-wakad</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://altero.newlaunches.in/#amenities</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#location</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#gallery</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#calculator</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#pune-ecosystem</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#legacy</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#faq</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#contact</loc>
-    <lastmod>2026-09-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://altero.newlaunches.in/#pune-real-estate-hub</loc>
+    <loc>https://altero.newlaunches.in/residences/4-bhk-luxury-wakad</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://altero.newlaunches.in/pricing/lodha-wakad-cost-sheet</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://altero.newlaunches.in/transit/hinjewadi-it-park-commute</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://altero.newlaunches.in/compare/lodha-altero-vs-godrej-wakad</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://altero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026</loc>
