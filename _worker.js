@@ -512,10 +512,59 @@ export default {
             });
           }
 
+          // 1. Edge Rate Limiter (Max 5 submissions per 60s per client IP)
+          const clientIp = request.headers.get('CF-Connecting-IP') || '127.0.0.1';
+          if (env && env.ALTERO_LEADS_KV) {
+            const rlKey = `rl:${clientIp}`;
+            const currentHits = parseInt(await env.ALTERO_LEADS_KV.get(rlKey) || '0', 10);
+            if (currentHits >= 5) {
+              return new Response(JSON.stringify({
+                success: false,
+                error: 'Submission rate limit reached. Please connect directly via WhatsApp: +91 77440 09295'
+              }), {
+                status: 429,
+                headers: { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }
+              });
+            }
+            await env.ALTERO_LEADS_KV.put(rlKey, (currentHits + 1).toString(), { expirationTtl: 60 });
+          }
+
           const leadId = 'ALT-' + Date.now().toString(36).toUpperCase();
           const edgeTimestamp = new Date().toISOString();
 
-          // 1. Asynchronously dispatch lead notification email to propsmartrealty@gmail.com
+          const leadRecord = {
+            id: leadId,
+            name,
+            phone,
+            email: email || 'Not Provided',
+            typology,
+            intent,
+            source,
+            timestamp: edgeTimestamp,
+            ipCountry: viewerCountry,
+            ipCity: viewerCity,
+            clientIp
+          };
+
+          // 2. Persist Lead into Cloudflare Distributed KV Storage
+          if (env && env.ALTERO_LEADS_KV) {
+            const kvPromise = (async () => {
+              try {
+                await env.ALTERO_LEADS_KV.put(`lead:${leadId}`, JSON.stringify(leadRecord), {
+                  metadata: { name, phone, timestamp: edgeTimestamp }
+                });
+                const recentRaw = await env.ALTERO_LEADS_KV.get('index:recent_leads');
+                const recentList = recentRaw ? JSON.parse(recentRaw) : [];
+                recentList.unshift(leadId);
+                await env.ALTERO_LEADS_KV.put('index:recent_leads', JSON.stringify(recentList.slice(0, 100)));
+              } catch (kvErr) {
+                console.error('KV Storage Error:', kvErr);
+              }
+            })();
+            if (ctx && ctx.waitUntil) ctx.waitUntil(kvPromise);
+          }
+
+          // 3. Asynchronously dispatch lead notification email to propsmartrealty@gmail.com
           const emailPayload = {
             _subject: `New VIP Lead [${leadId}]: Lodha Altero Wakad - ${name} (+91 ${phone})`,
             _replyto: (email && email.includes('@')) ? email : 'propsmartrealty@gmail.com',
