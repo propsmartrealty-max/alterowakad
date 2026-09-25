@@ -32,41 +32,55 @@
 /robots.txt
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: text/plain; charset=utf-8
+  Access-Control-Allow-Origin: *
 
 /sitemap.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /sitemap_index.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /sitemap-core.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /sitemap-articles.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /sitemap-images.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /sitemap-programmatic.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /sitemaps/*
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
   X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
+
+/*.xml.gz
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/x-gzip
+  X-Robots-Tag: index, follow
+  Access-Control-Allow-Origin: *
 
 /feed.xml
   Cache-Control: public, max-age=43200, s-maxage=43200

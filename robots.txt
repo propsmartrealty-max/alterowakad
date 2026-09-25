@@ -49,6 +49,8 @@ Allow: /sitemap-core.xml
 Allow: /sitemap-articles.xml
 Allow: /sitemap-programmatic.xml
 Allow: /sitemap-images.xml
+Allow: /*.xml
+Allow: /*.xml.gz
 Allow: /feed.xml
 
 # ==============================================================================

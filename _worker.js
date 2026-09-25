@@ -22,7 +22,7 @@ import {
   renderProgrammaticMarkdown
 } from './programmatic_data.js';
 
-const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
+const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|gz|txt|webmanifest)$/i;
 
 // Verified Google, Bing & Global Search Engine Crawler User-Agents
 const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|googleother|storebot-google|google-read-aloud|google-safety|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|bingpreview|msnbot|adidxbot|duckduckbot|slurp|baiduspider|yandexbot|applebot|applebot-extended|yandex|seznam|naverbot|qwantify|sogou|coccoc|ecosia|daum/i;
@@ -337,47 +337,92 @@ export default {
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
           'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
+          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow',
+          'Access-Control-Allow-Origin': '*'
         }
       });
     }
 
-    // Master Unified Sitemap Index (GSC & Bingbot discovery for all 11,055 URLs)
-    const MASTER_SITEMAP_INDEX_PATHS = new Set([
-      '/sitemap_index.xml',
-      '/sitemap-index.xml',
-      '/sitemaps/sitemap_index.xml',
-      '/sitemaps/sitemap-index.xml',
-      '/sitemap.xml'
-    ]);
-
-    if (MASTER_SITEMAP_INDEX_PATHS.has(pathname)) {
-      const masterIndexXml = getMasterSitemapIndex(CANONICAL_HOST);
-      return new Response(masterIndexXml, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/xml; charset=utf-8',
-          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
-        }
-      });
-    }
-
-    if (pathname === '/sitemap-core.xml' || pathname === '/sitemap-articles.xml' || pathname === '/sitemap-images.xml') {
-      try {
-        const sitemapReq = new Request(new URL(pathname, request.url), request);
-        const sitemapRes = env.ASSETS ? await env.ASSETS.fetch(sitemapReq) : await fetch(sitemapReq);
-        const sitemapText = await sitemapRes.text();
-        return new Response(sitemapText, {
-          status: 200,
+    // Unified Hardened Sitemap & Gzip (.xml & .xml.gz) Resilient Handler
+    const isSitemapPath = pathname.startsWith('/sitemap') || pathname.startsWith('/sitemaps/');
+    if (isSitemapPath) {
+      if (request.method === 'OPTIONS') {
+        return new Response(null, {
+          status: 204,
           headers: {
-            'Content-Type': 'application/xml; charset=utf-8',
-            'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-            'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+            'Access-Control-Max-Age': '86400'
           }
         });
-      } catch (e) {
-        // Fall back to asset fetch
+      }
+
+      const isGz = pathname.endsWith('.gz');
+      const baseXmlPath = isGz ? pathname.slice(0, -3) : pathname;
+      const filename = pathname.split('/').pop();
+
+      // 1. Master Unified Sitemap Index (GSC & Bingbot discovery for all 11,055 URLs)
+      const MASTER_INDEX_PATHS = new Set([
+        '/sitemap_index.xml',
+        '/sitemap-index.xml',
+        '/sitemaps/sitemap_index.xml',
+        '/sitemaps/sitemap-index.xml',
+        '/sitemap.xml'
+      ]);
+
+      // 2. Programmatic Master Sitemap Index
+      const PROGRAMMATIC_INDEX_PATHS = new Set([
+        '/sitemap-programmatic.xml',
+        '/sitemaps/sitemap-programmatic.xml',
+        '/sitemap-programmatic-index.xml'
+      ]);
+
+      // 3. Programmatic Sitemap Chunks (1-6)
+      const chunkMatch = baseXmlPath.match(/^\/sitemaps\/programmatic-([1-6])\.xml$/);
+
+      let targetXml = null;
+
+      if (MASTER_INDEX_PATHS.has(baseXmlPath)) {
+        targetXml = getMasterSitemapIndex(CANONICAL_HOST);
+      } else if (PROGRAMMATIC_INDEX_PATHS.has(baseXmlPath)) {
+        targetXml = getProgrammaticSitemapIndex(CANONICAL_HOST);
+      } else if (chunkMatch) {
+        const chunkIdx = parseInt(chunkMatch[1], 10);
+        targetXml = getProgrammaticSitemapChunk(chunkIdx, CANONICAL_HOST);
+      } else if (baseXmlPath === '/sitemap-core.xml' || baseXmlPath === '/sitemap-articles.xml' || baseXmlPath === '/sitemap-images.xml') {
+        try {
+          const sitemapReq = new Request(new URL(baseXmlPath, request.url), request);
+          const sitemapRes = env.ASSETS ? await env.ASSETS.fetch(sitemapReq) : await fetch(sitemapReq);
+          if (sitemapRes.status === 200) {
+            targetXml = await sitemapRes.text();
+          }
+        } catch (e) {}
+      }
+
+      if (targetXml) {
+        const sitemapHeaders = new Headers();
+        sitemapHeaders.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
+        sitemapHeaders.set('X-Robots-Tag', hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow');
+        sitemapHeaders.set('Access-Control-Allow-Origin', '*');
+        sitemapHeaders.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+        sitemapHeaders.set('X-Content-Type-Options', 'nosniff');
+        sitemapHeaders.set('Vary', 'Accept-Encoding');
+
+        if (isGz) {
+          const stream = new ReadableStream({
+            start(controller) {
+              controller.enqueue(new TextEncoder().encode(targetXml));
+              controller.close();
+            }
+          });
+          const compressedStream = stream.pipeThrough(new CompressionStream('gzip'));
+          sitemapHeaders.set('Content-Type', 'application/x-gzip');
+          sitemapHeaders.set('Content-Disposition', `inline; filename="${filename}"`);
+          return new Response(compressedStream, { status: 200, headers: sitemapHeaders });
+        }
+
+        sitemapHeaders.set('Content-Type', 'application/xml; charset=utf-8');
+        return new Response(targetXml, { status: 200, headers: sitemapHeaders });
       }
     }
 
@@ -861,33 +906,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
     }
 
     // =========================================================================
-    // 5. Dynamic Programmatic XML Sitemap Generation (10,000+ routes)
+    // 5. Dynamic Programmatic SEO Page Edge Rendering (10,000+ routes)
     // =========================================================================
-    if (pathname === '/sitemap-programmatic.xml' || pathname === '/sitemaps/sitemap-programmatic.xml' || pathname === '/sitemap-programmatic-index.xml') {
-      const sitemapIndexXml = getProgrammaticSitemapIndex(CANONICAL_HOST);
-      return new Response(sitemapIndexXml, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/xml; charset=utf-8',
-          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
-        }
-      });
-    }
-
-    const chunkMatch = pathname.match(/^\/sitemaps\/programmatic-([1-6])\.xml$/);
-    if (chunkMatch) {
-      const chunkIdx = parseInt(chunkMatch[1], 10);
-      const chunkXml = getProgrammaticSitemapChunk(chunkIdx, CANONICAL_HOST);
-      return new Response(chunkXml, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/xml; charset=utf-8',
-          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
-        }
-      });
-    }
 
     // =========================================================================
     // 6. Dynamic Programmatic SEO Page Edge Rendering (10,000+ routes)
@@ -1135,12 +1155,14 @@ Please connect me with the sales director and share official MahaRERA P521000796
         headers.set('CDN-Cache-Control', 'max-age=604800');
       } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml' || pathname === '/llms.txt' || pathname === '/llms-full.txt' || pathname === '/.well-known/security.txt') {
         headers.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
-        if (pathname.startsWith('/sitemap') && pathname.endsWith('.xml')) {
-          headers.set('Content-Type', 'application/xml; charset=utf-8');
+        if (pathname.startsWith('/sitemap') && (pathname.endsWith('.xml') || pathname.endsWith('.gz'))) {
+          headers.set('Content-Type', pathname.endsWith('.gz') ? 'application/x-gzip' : 'application/xml; charset=utf-8');
           headers.set('X-Robots-Tag', hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow');
+          headers.set('Access-Control-Allow-Origin', '*');
         } else if (pathname === '/robots.txt') {
           headers.set('Content-Type', 'text/plain; charset=utf-8');
           headers.set('X-Robots-Tag', hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow');
+          headers.set('Access-Control-Allow-Origin', '*');
         } else if (pathname === '/feed.xml') {
           headers.set('Content-Type', 'application/rss+xml; charset=utf-8');
         } else if (pathname === '/llms.txt' || pathname === '/llms-full.txt' || pathname === '/.well-known/security.txt') {
