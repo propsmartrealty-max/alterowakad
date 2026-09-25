@@ -772,11 +772,12 @@ Please connect me with the sales director and share official MahaRERA P521000796
     let articleMeta = null;
     let assetRequest = request;
 
-    if (ARTICLE_SLUGS[pathname]) {
+    const cleanArticleSlug = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+    if (ARTICLE_SLUGS[cleanArticleSlug]) {
       isArticleRoute = true;
-      articleMeta = ARTICLE_SLUGS[pathname];
-      // Resolve clean slug directly to the directory index.html
-      assetRequest = new Request(new URL(`${pathname}/index.html`, request.url), request);
+      articleMeta = ARTICLE_SLUGS[cleanArticleSlug];
+      // Fetch directory path with trailing slash directly from env.ASSETS (resolves immediately to articles/<slug>/index.html)
+      assetRequest = new Request(new URL(`${cleanArticleSlug}/`, request.url), request);
     }
 
     // =========================================================================
@@ -786,10 +787,6 @@ Please connect me with the sales director and share official MahaRERA P521000796
     try {
       if (env.ASSETS) {
         response = await env.ASSETS.fetch(assetRequest);
-        // If Pages responds with a redirect (301/308) or 404, fetch the directory path or clean slug directly
-        if ((response.status >= 300 && response.status < 400) || response.status === 404) {
-          response = await env.ASSETS.fetch(new Request(new URL(`${pathname}/`, request.url), request));
-        }
       } else {
         response = await fetch(assetRequest);
       }
