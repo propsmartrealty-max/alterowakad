@@ -119,6 +119,10 @@ export default {
         cachedRes.headers.set('X-Edge-Cache', 'HIT');
         return cachedRes;
       }
+    } else if (cache && isNoCacheQuery) {
+      try {
+        await cache.delete(cacheKey);
+      } catch (e) {}
     }
 
     // =========================================================================
@@ -381,6 +385,27 @@ export default {
       }
 
       return new Response(JSON.stringify(pingResults, null, 2), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+      });
+    }
+
+    // =========================================================================
+    // 3b. Edge Cache Purge Endpoint
+    // =========================================================================
+    if (pathname === '/_edge/purge-cache') {
+      if (cache) {
+        try {
+          const root1 = new Request(`https://${hostname}/`);
+          const root2 = new Request('https://altero.newlaunches.in/');
+          const root3 = new Request('https://alterowakad.pages.dev/');
+          await Promise.allSettled([
+            cache.delete(root1),
+            cache.delete(root2),
+            cache.delete(root3)
+          ]);
+        } catch (e) {}
+      }
+      return new Response(JSON.stringify({ status: 'purged', timestamp: new Date().toISOString() }, null, 2), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
       });
     }
@@ -970,7 +995,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       }));
 
       // Cache HTML at the Cloudflare Edge PoP for instantaneous subsequent hits
-      if (cache && isGetRequest && !isNoCacheQuery && ctx && ctx.waitUntil) {
+      if (cache && isGetRequest && ctx && ctx.waitUntil) {
         ctx.waitUntil(cache.put(cacheKey, transformedResponse.clone()));
       }
 
