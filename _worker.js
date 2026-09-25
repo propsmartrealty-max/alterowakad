@@ -26,42 +26,42 @@ const INDEXNOW_KEY = 'e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c';
 // Article URL Mapping for Clean SEO Slugs
 const ARTICLE_SLUGS = {
   '/articles/wakad-real-estate-investment-thesis-2026': {
-    title: 'Wakad Real Estate Market 2026: Why Lodha Altero Leads Pune’s Luxury Appreciation',
+    title: 'Lodha Altero Wakad: Real Estate Investment Thesis & Rental Yields 2026',
     desc: 'In-depth 2026 investment thesis analyzing 2, 3 and 4 BHK flats in Wakad, Hinjewadi IT corridor rental yields (4.8% to 5.5%), and capital growth at Lodha Altero Wakad.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi': {
-    title: 'Wakad vs Baner vs Mahalunge vs Hinjewadi: West Pune Micro-Market Deep Dive',
-    desc: 'Detailed comparative analysis of Wakad, Baner, Balewadi High Street, Mahalunge township projects, and Hinjewadi IT corridor real estate prices and lifestyle.',
+    title: 'Lodha Altero Wakad vs Baner vs Mahalunge vs Hinjewadi: West Pune Luxury Comparison',
+    desc: 'Detailed comparative analysis of Wakad, Baner, Balewadi High Street, Mahalunge township projects, and Hinjewadi IT corridor real estate prices vs Lodha Altero Wakad.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/lodha-altero-floor-plans-sky-duplex-penthouses': {
-    title: 'Lodha Altero Floor Plans Guide: 3 BHK, 4 BHK, 5 BHK Sky Duplex & Penthouses',
+    title: 'Lodha Altero Wakad Floor Plans: 3, 4 & 5 BHK Sky Duplex & Penthouse Layouts',
     desc: 'Detailed architectural review of 3 BHK, 4 BHK, 5 BHK Sky Duplex, Simplex and Penthouse floor plans, carpet areas, ceiling heights, and Vastu at Lodha Altero Wakad Pune.',
     anchor: '#residences'
   },
   '/articles/maharera-p52100079692-statutory-compliance': {
-    title: 'MahaRERA Registration P52100079692: Buyer Protection & Milestones | Lodha Altero Wakad',
+    title: 'Lodha Altero Wakad MahaRERA P52100079692: Statutory Compliance & Escrow Protection',
     desc: 'Complete legal due diligence review for MahaRERA P52100079692: statutory 70% escrow accounts, title verification, possession dates, and defect liability at Lodha Altero Wakad Pune.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/25000-sqft-rooftop-sky-club-infinity-pool': {
-    title: 'The 25,000 Sq.Ft. Rooftop Sky Club: Pune’s Highest Elevated Leisure Deck',
+    title: 'Lodha Altero Wakad: 25,000 Sq.Ft. Rooftop Sky Club & Heated Infinity Pool',
     desc: 'Explore Pune’s highest 25,000 sq.ft. Rooftop Sky Club on the 37th floor at Lodha Altero Wakad: 50m heated infinity pool, padel court, and stargazing observatory.',
     anchor: '#rooftop'
   },
   '/articles/pune-real-estate-macro-trends-east-vs-west': {
-    title: 'Pune Real Estate Macro Trends: East Pune (Hadapsar & Kharadi) vs West Pune (Wakad)',
-    desc: 'Macroeconomic real estate analysis comparing Kharadi and Hadapsar IT corridors with Wakad and Hinjewadi high-growth residential corridors in Pune.',
+    title: 'Lodha Altero Wakad vs East Pune: Macro Real Estate Growth & Capital Appreciation',
+    desc: 'Macroeconomic real estate analysis comparing Kharadi and Hadapsar IT corridors with Lodha Altero Wakad and Hinjewadi high-growth residential corridors in Pune.',
     anchor: '#pune-real-estate-hub'
   },
   '/articles/lodha-pune-residential-ecosystem': {
-    title: 'Lodha Group Pune Residential Portfolio: Altero Wakad, Panache, Giardino, Bella Vita & Belmondo',
+    title: 'Lodha Altero Wakad in Lodha Pune Ecosystem: Altero, Panache, Giardino & Belmondo',
     desc: "Official comparative guide to Lodha Group's residential developments in Pune: Lodha Altero Wakad, Lodha Panache Hinjewadi, Lodha Giardino Kharadi, Lodha Bella Vita NIBM, and Lodha Belmondo Gahunje.",
     anchor: '#pune-real-estate-hub'
   },
   '/articles/lodha-altero-wakad-price-list-cost-sheet-2026': {
-    title: 'Lodha Altero Wakad Price List 2026: 3 BHK, 4 BHK, 5 BHK Penthouse Cost Sheet & Payment Plans',
+    title: 'Lodha Altero Wakad Price List 2026: Cost Sheet, Payment Plans & Milestone Breakdown',
     desc: 'Official 2026 price breakdown, cost sheet, installment schedules, floor-rise calculations, and MahaRERA P52100079692 payment milestones for Lodha Altero, Wakad, Pune.',
     anchor: '#residences'
   },
