@@ -2217,6 +2217,36 @@ ${sitemapsXml}
 </sitemapindex>`;
 }
 
+export function getMasterSitemapIndex(hostname) {
+  const allSlugs = getAllProgrammaticSlugs();
+  const chunkSize = 2200;
+  const totalChunks = Math.ceil(allSlugs.length / chunkSize);
+  const today = new Date().toISOString().split('T')[0];
+
+  const programmaticSitemapsXml = Array.from({ length: totalChunks }, (_, i) => `  <sitemap>
+    <loc>https://${hostname}/sitemaps/programmatic-${i + 1}.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>`).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://${hostname}/sitemap-core.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://${hostname}/sitemap-articles.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://${hostname}/sitemap-images.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+${programmaticSitemapsXml}
+</sitemapindex>`;
+}
+
+
 /**
  * Deterministic Parametric Route Resolver
  * Takes any valid programmatic path and returns full E-E-A-T rich metadata

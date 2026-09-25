@@ -17,6 +17,7 @@ import {
   getAllProgrammaticSlugs,
   getProgrammaticSitemapChunk,
   getProgrammaticSitemapIndex,
+  getMasterSitemapIndex,
   renderProgrammaticPage,
   renderProgrammaticMarkdown
 } from './programmatic_data.js';
@@ -215,7 +216,15 @@ export default {
       '/healthcare': '/#location',
       '/healthcare/': '/#location',
       '/contact': '/#contact',
-      '/contact/': '/#contact'
+      '/contact/': '/#contact',
+      '/sitemap': '/sitemap_index.xml',
+      '/sitemap/': '/sitemap_index.xml',
+      '/sitemaps': '/sitemap_index.xml',
+      '/sitemaps/': '/sitemap_index.xml',
+      '/sitemap_index': '/sitemap_index.xml',
+      '/sitemap_index/': '/sitemap_index.xml',
+      '/sitemap-index': '/sitemap_index.xml',
+      '/sitemap-index/': '/sitemap_index.xml'
     };
     if (DIRECTORY_REDIRECTS[pathname]) {
       return Response.redirect(`https://${CANONICAL_HOST}${DIRECTORY_REDIRECTS[pathname]}`, 301);
@@ -333,7 +342,28 @@ export default {
       });
     }
 
-    if (pathname === '/sitemap.xml' || pathname === '/sitemap-articles.xml' || pathname === '/sitemap-images.xml') {
+    // Master Unified Sitemap Index (GSC & Bingbot discovery for all 11,055 URLs)
+    const MASTER_SITEMAP_INDEX_PATHS = new Set([
+      '/sitemap_index.xml',
+      '/sitemap-index.xml',
+      '/sitemaps/sitemap_index.xml',
+      '/sitemaps/sitemap-index.xml',
+      '/sitemap.xml'
+    ]);
+
+    if (MASTER_SITEMAP_INDEX_PATHS.has(pathname)) {
+      const masterIndexXml = getMasterSitemapIndex(CANONICAL_HOST);
+      return new Response(masterIndexXml, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
+          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
+        }
+      });
+    }
+
+    if (pathname === '/sitemap-core.xml' || pathname === '/sitemap-articles.xml' || pathname === '/sitemap-images.xml') {
       try {
         const sitemapReq = new Request(new URL(pathname, request.url), request);
         const sitemapRes = env.ASSETS ? await env.ASSETS.fetch(sitemapReq) : await fetch(sitemapReq);
@@ -390,12 +420,14 @@ export default {
         ...selectedProgrammaticUrls
       ];
 
-      const sitemapUrl = `https://${CANONICAL_HOST}/sitemap.xml`;
+      const sitemapIndexUrl = `https://${CANONICAL_HOST}/sitemap_index.xml`;
+      const sitemapCoreUrl = `https://${CANONICAL_HOST}/sitemap-core.xml`;
       const sitemapProgrammaticUrl = `https://${CANONICAL_HOST}/sitemap-programmatic.xml`;
       const pingResults = {
         timestamp: new Date().toISOString(),
         host: CANONICAL_HOST,
-        sitemapUrl,
+        sitemapIndexUrl,
+        sitemapCoreUrl,
         sitemapProgrammaticUrl,
         indexNowKey: INDEXNOW_KEY,
         urlsSubmittedCount: urlList.length,
@@ -458,22 +490,22 @@ export default {
         pingResults.engineResponses.push({ target: 'Yandex IndexNow Direct', status: 'error', message: e.message });
       }
 
-      // 4. Ping Google Sitemap Crawler (Core + Programmatic Sitemaps)
+      // 4. Ping Google Sitemap Crawler (Master Index + Core Sitemaps)
       try {
-        const googlePing1 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
-        const googlePing2 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapProgrammaticUrl)}`);
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Core)', status: googlePing1.status });
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Programmatic Master)', status: googlePing2.status });
+        const googlePing1 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapIndexUrl)}`);
+        const googlePing2 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapCoreUrl)}`);
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Master Index)', status: googlePing1.status });
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Core)', status: googlePing2.status });
       } catch (e) {
         pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: 'error', message: e.message });
       }
 
-      // 5. Ping Bing Sitemap Crawler (Core + Programmatic Sitemaps)
+      // 5. Ping Bing Sitemap Crawler (Master Index + Core Sitemaps)
       try {
-        const bingPing1 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
-        const bingPing2 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapProgrammaticUrl)}`);
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Core)', status: bingPing1.status });
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Programmatic Master)', status: bingPing2.status });
+        const bingPing1 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapIndexUrl)}`);
+        const bingPing2 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapCoreUrl)}`);
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Master Index)', status: bingPing1.status });
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Core)', status: bingPing2.status });
       } catch (e) {
         pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: 'error', message: e.message });
       }
@@ -1103,7 +1135,13 @@ Please connect me with the sales director and share official MahaRERA P521000796
         headers.set('CDN-Cache-Control', 'max-age=604800');
       } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml' || pathname === '/llms.txt' || pathname === '/llms-full.txt' || pathname === '/.well-known/security.txt') {
         headers.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
-        if (pathname === '/feed.xml') {
+        if (pathname.startsWith('/sitemap') && pathname.endsWith('.xml')) {
+          headers.set('Content-Type', 'application/xml; charset=utf-8');
+          headers.set('X-Robots-Tag', hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow');
+        } else if (pathname === '/robots.txt') {
+          headers.set('Content-Type', 'text/plain; charset=utf-8');
+          headers.set('X-Robots-Tag', hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow');
+        } else if (pathname === '/feed.xml') {
           headers.set('Content-Type', 'application/rss+xml; charset=utf-8');
         } else if (pathname === '/llms.txt' || pathname === '/llms-full.txt' || pathname === '/.well-known/security.txt') {
           headers.set('Content-Type', 'text/plain; charset=utf-8');

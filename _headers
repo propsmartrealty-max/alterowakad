@@ -28,12 +28,45 @@
   Service-Worker-Allowed: /
   Content-Type: application/javascript; charset=utf-8
 
-# SEO Crawl Discovery Files
+# SEO Crawl Discovery Files & XML Sitemaps
 /robots.txt
   Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: text/plain; charset=utf-8
 
 /sitemap.xml
   Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
+
+/sitemap_index.xml
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
+
+/sitemap-core.xml
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
+
+/sitemap-articles.xml
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
+
+/sitemap-images.xml
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
+
+/sitemap-programmatic.xml
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
+
+/sitemaps/*
+  Cache-Control: public, max-age=43200, s-maxage=43200
+  Content-Type: application/xml; charset=utf-8
+  X-Robots-Tag: index, follow
 
 /feed.xml
   Cache-Control: public, max-age=43200, s-maxage=43200

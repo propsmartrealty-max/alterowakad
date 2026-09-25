@@ -42,7 +42,10 @@ Allow: /assets/
 Allow: /assets/plans/
 Allow: /assets/gallery/
 Allow: /assets/logos/
+Allow: /sitemap_index.xml
+Allow: /sitemap-index.xml
 Allow: /sitemap.xml
+Allow: /sitemap-core.xml
 Allow: /sitemap-articles.xml
 Allow: /sitemap-programmatic.xml
 Allow: /sitemap-images.xml
@@ -151,7 +154,9 @@ Disallow: /_edge/
 # ==============================================================================
 # 7. Sitemaps & Feeds Indexation
 # ==============================================================================
+Sitemap: https://altero.newlaunches.in/sitemap_index.xml
 Sitemap: https://altero.newlaunches.in/sitemap.xml
+Sitemap: https://altero.newlaunches.in/sitemap-core.xml
 Sitemap: https://altero.newlaunches.in/sitemap-articles.xml
 Sitemap: https://altero.newlaunches.in/sitemap-programmatic.xml
 Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-1.xml
