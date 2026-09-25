@@ -402,10 +402,17 @@ export default {
           const root1 = new Request(`https://${hostname}/`);
           const root2 = new Request('https://altero.newlaunches.in/');
           const root3 = new Request('https://alterowakad.pages.dev/');
+          const articlePurgeList = Object.keys(ARTICLE_SLUGS).flatMap(slug => [
+            new Request(`https://${hostname}${slug}`),
+            new Request(`https://${hostname}${slug}/`),
+            new Request(`https://altero.newlaunches.in${slug}`),
+            new Request(`https://altero.newlaunches.in${slug}/`)
+          ]);
           await Promise.allSettled([
             cache.delete(root1),
             cache.delete(root2),
-            cache.delete(root3)
+            cache.delete(root3),
+            ...articlePurgeList.map(r => cache.delete(r))
           ]);
         } catch (e) {}
       }
@@ -778,6 +785,49 @@ Please connect me with the sales director and share official MahaRERA P521000796
       articleMeta = ARTICLE_SLUGS[cleanArticleSlug];
       // Fetch directory path with trailing slash directly from env.ASSETS (resolves immediately to articles/<slug>/index.html)
       assetRequest = new Request(new URL(`${cleanArticleSlug}/`, request.url), request);
+    } else if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap')) {
+      // Return authoritative 404 Not Found for non-existent routes to prevent Soft 404 penalties
+      return new Response(
+        `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404: Page Not Found | Lodha Altero Wakad</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-[#0C0A09] text-stone-200 font-sans min-h-screen flex items-center justify-center p-6 text-center">
+  <div class="max-w-md space-y-6">
+    <div class="inline-block p-4 border border-amber-600/30 rounded-2xl bg-amber-950/20">
+      <span class="text-amber-400 font-serif text-6xl font-light">404</span>
+    </div>
+    <h1 class="font-serif text-3xl text-white">Residence Not Found</h1>
+    <p class="text-stone-400 text-sm leading-relaxed">
+      The requested floor plan, corridor guide, or document does not exist. Please visit our official showcase.
+    </p>
+    <div class="pt-4">
+      <a href="/" class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-bold px-6 py-3 rounded-lg hover:brightness-110 transition-all text-xs tracking-wider uppercase">
+        Return to Official Showcase
+      </a>
+    </div>
+  </div>
+</body>
+</html>`,
+        {
+          status: 404,
+          statusText: 'Not Found',
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'X-Robots-Tag': 'noindex, nofollow, noarchive',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+            'X-Canonical-Host': CANONICAL_HOST,
+            'X-Staging-Host': STAGING_HOST,
+            'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.6'
+          }
+        }
+      );
     }
 
     // =========================================================================
