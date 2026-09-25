@@ -478,6 +478,7 @@ export default {
           const phone = (body.phone || '').trim();
           const email = (body.email || '').trim();
           const typology = (body.typology || '3/4 BHK Luxury Residence').trim();
+          const intent = (body.intent || 'VIP Site Visit & Floor Plans').trim();
           const source = (body.source || 'Website Showcase').trim();
 
           if (!phone || phone.length < 8) {
@@ -490,14 +491,53 @@ export default {
           const leadId = 'ALT-' + Date.now().toString(36).toUpperCase();
           const edgeTimestamp = new Date().toISOString();
 
-          // Construct formatted WhatsApp deep link message for instant handover
-          const waMessage = `New VIP Lead [${leadId}]:
-Name: ${name}
-Phone: ${phone}
-Email: ${email || 'N/A'}
-Typology: ${typology}
-Country: ${viewerCountry} (${viewerCity})
-Source: ${source}`;
+          // 1. Asynchronously dispatch lead notification email to propsmartrealty@gmail.com
+          const emailPayload = {
+            _subject: `New VIP Lead [${leadId}]: Lodha Altero Wakad - ${name} (+91 ${phone})`,
+            _replyto: (email && email.includes('@')) ? email : 'propsmartrealty@gmail.com',
+            _template: 'table',
+            _captcha: 'false',
+            Project: 'Lodha Altero Wakad, Pune',
+            MahaRERA: 'P52100079692',
+            Lead_ID: leadId,
+            Full_Name: name,
+            Phone_Number: `+91 ${phone}`,
+            Email: email || 'Not Provided',
+            Preferred_Typology: typology,
+            Pre_Text_Intention: intent,
+            Visitor_Geo: `${viewerCity}, ${viewerCountry}`,
+            Source_Page: source,
+            Timestamp: edgeTimestamp,
+            Direct_WhatsApp: `https://wa.me/917744009295?text=${encodeURIComponent(`Hi ${name}, confirming your enquiry for Lodha Altero Wakad [Ref: ${leadId}].`)}`
+          };
+
+          const emailPromise = fetch('https://formsubmit.co/ajax/propsmartrealty@gmail.com', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(emailPayload)
+          }).catch(e => {
+            console.error('Email dispatch error:', e);
+          });
+
+          if (ctx && ctx.waitUntil) {
+            ctx.waitUntil(emailPromise);
+          }
+
+          // 2. Construct formatted WhatsApp deep link with customer pre-text intention
+          const waMessage = `Hi Lodha Altero Wakad Concierge,
+
+I am inquiring regarding Lodha Altero Wakad:
+• Reference ID: ${leadId}
+• Name: ${name}
+• Phone: +91 ${phone}
+• Preferred Typology: ${typology}
+• My Intention: ${intent}
+• Location: ${viewerCity}, ${viewerCountry}
+
+Please connect me with the sales director and share official MahaRERA P52100079692 floor plans, cost sheet, and schedule my VIP site visit.`;
 
           const whatsappRedirectUrl = `https://wa.me/917744009295?text=${encodeURIComponent(waMessage)}`;
 
@@ -507,8 +547,9 @@ Source: ${source}`;
             edgeTimestamp,
             country: viewerCountry,
             city: viewerCity,
+            emailDispatchedTo: 'propsmartrealty@gmail.com',
             whatsappRedirectUrl,
-            message: 'Priority allocation registered under MahaRERA P52100079692'
+            message: 'Priority allocation registered under MahaRERA P52100079692. Lead sent to propsmartrealty@gmail.com.'
           }), {
             status: 200,
             headers: {

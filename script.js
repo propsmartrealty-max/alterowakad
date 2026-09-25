@@ -1735,11 +1735,17 @@ function initFormHandlers() {
       // 3. Extract & Sanitize User Inputs
       const nameInput = form.querySelector('input[type="text"]:not([name="website_security_token"])');
       const phoneInput = form.querySelector('input[type="tel"]');
+      const emailInput = form.querySelector('input[type="email"]');
       const configSelect = form.querySelector('select');
+      const intentInput = form.querySelector('input[name="intent"]') ? form.querySelector('input[name="intent"]').value : form.dataset.intent;
+      const modalHeading = form.closest('.modal-content')?.querySelector('h2, h3')?.innerText;
+      const formHeading = form.querySelector('h2, h3')?.innerText;
 
-      const rawName = nameInput ? nameInput.value.trim() : 'Guest';
+      const rawName = nameInput ? nameInput.value.trim() : 'Valued Patron';
       const rawPhone = phoneInput ? phoneInput.value.trim().replace(/\D/g, '') : '';
+      const rawEmail = emailInput ? emailInput.value.trim() : '';
       const preference = configSelect ? configSelect.value : '3/4 BHK Sky Residence';
+      const intent = intentInput || modalHeading || formHeading || 'Schedule VIP Site Visit & Request Cost Sheet';
 
       // 4. Strict Indian Mobile Validation (10 digits, starts with 6-9)
       if (rawPhone.length < 10) {
@@ -1757,7 +1763,7 @@ function initFormHandlers() {
 
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerText = 'Verifying & Transmitting...';
+        submitBtn.innerText = 'Transmitting Lead to Concierge...';
       }
 
       // Generate local fallback reference ID
@@ -1767,7 +1773,9 @@ function initFormHandlers() {
       const leadPayload = {
         name: cleanName,
         phone: validPhone,
+        email: rawEmail,
         typology: preference,
+        intent: intent,
         source: window.location.pathname || 'Direct Showcase'
       };
 
@@ -1796,19 +1804,43 @@ function initFormHandlers() {
         const refIdEl = document.getElementById('bookingRefId');
         if (refIdEl) refIdEl.innerText = activeRefId;
 
-        // Dynamic Concierge Direct Dispatch Link
+        // Client-side redundant email notification to propsmartrealty@gmail.com
+        fetch('https://formsubmit.co/ajax/propsmartrealty@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: `New VIP Lead [${activeRefId}]: Lodha Altero Wakad - ${cleanName} (+91 ${validPhone})`,
+            _replyto: rawEmail && rawEmail.includes('@') ? rawEmail : 'propsmartrealty@gmail.com',
+            _template: 'table',
+            _captcha: 'false',
+            Project: 'Lodha Altero Wakad, Pune',
+            MahaRERA: 'P52100079692',
+            Lead_ID: activeRefId,
+            Full_Name: cleanName,
+            Phone_Number: `+91 ${validPhone}`,
+            Email: rawEmail || 'Not Provided',
+            Preferred_Typology: preference,
+            Customer_Intention: intent,
+            Source_Page: window.location.href,
+            Direct_WhatsApp: `https://wa.me/917744009295?text=${encodeURIComponent(`Hi ${cleanName}, thank you for inquiring about Lodha Altero Wakad [Ref: ${activeRefId}].`)}`
+          })
+        }).catch(() => {});
+
+        // Dynamic Concierge Direct Dispatch Link with Pre-Text Intention
         const waLink = document.getElementById('successWhatsAppLink');
         if (waLink) {
           if (edgeData && edgeData.whatsappRedirectUrl) {
             waLink.href = edgeData.whatsappRedirectUrl;
           } else {
             const encodedMsg = encodeURIComponent(
-              `Hi Lodha Concierge, I have scheduled a VIP Preview for Lodha Altero Wakad.\n\n` +
+              `Hi Lodha Altero Wakad Concierge,\n\n` +
+              `I have submitted an inquiry on the official website:\n` +
               `• Reference ID: ${activeRefId}\n` +
               `• Name: ${cleanName}\n` +
               `• Mobile: +91 ${validPhone}\n` +
-              `• Interest: ${preference}\n\n` +
-              `Please confirm my site visit & share sanctioned plans.`
+              `• Preferred Typology: ${preference}\n` +
+              `• Intention: ${intent}\n\n` +
+              `Please connect me with the sales director and share official MahaRERA P52100079692 floor plans, cost sheet, and schedule my VIP site visit.`
             );
             waLink.href = `https://wa.me/917744009295?text=${encodedMsg}`;
           }
@@ -1819,7 +1851,7 @@ function initFormHandlers() {
           successModal.classList.add('active');
         }
 
-        showToast(`VIP Preview Confirmed! Reference ID: ${activeRefId}`);
+        showToast(`VIP Preview Confirmed! Details sent to Concierge Desk & Reference ID: ${activeRefId}`);
       });
     });
   });
