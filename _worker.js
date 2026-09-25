@@ -874,6 +874,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
       progHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
       progHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
       progHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+      progHeaders.set('X-Permitted-Cross-Domain-Policies', 'none');
+      progHeaders.set('X-DNS-Prefetch-Control', 'on');
       if (hostname === STAGING_HOST) {
         progHeaders.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
         progHeaders.set('X-Environment', 'staging');
@@ -902,7 +904,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       progHeaders.set('X-Target-Audience', viewerCountry === 'IN' ? 'Domestic-India' : `Global-NRI-${viewerCountry}`);
 
       // Military-Grade Content Security Policy & Privacy Directives
-      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
       progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self), browsing-topics=(), interest-cohort=(), screen-wake-lock=()');
 
       if (request.cf) {
@@ -1039,6 +1041,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self), browsing-topics=(), interest-cohort=(), screen-wake-lock=()');
     headers.set('Timing-Allow-Origin', '*');
+    headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+    headers.set('X-DNS-Prefetch-Control', 'on');
 
     // ── STAGING & PRODUCTION SUBDOMAIN HARDENING ──
     if (hostname === STAGING_HOST) {
@@ -1068,7 +1072,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('X-Canonical-Host', CANONICAL_HOST);
     headers.set('X-Staging-Host', STAGING_HOST);
     headers.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
 
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
