@@ -2409,7 +2409,8 @@ export function renderProgrammaticPage(url, pageData) {
     faqs = []
   } = pageData;
 
-  const canonicalUrl = `https://${url.hostname}${url.pathname}`;
+  const cleanPathname = (url.pathname.endsWith('/') && url.pathname.length > 1) ? url.pathname.slice(0, -1) : url.pathname;
+  const canonicalUrl = `https://altero.newlaunches.in${cleanPathname}`;
 
   const metricsHtml = metrics.map(m => `
     <div class="bg-stone-50 border border-stone-200/80 p-4 rounded-xl text-center">
@@ -2440,18 +2441,18 @@ export function renderProgrammaticPage(url, pageData) {
         "@id": `${canonicalUrl}#article`,
         "headline": title,
         "description": metaDesc,
-        "image": `https://${url.hostname}/assets/hero_banner.jpg`,
+        "image": "https://altero.newlaunches.in/assets/hero_banner.jpg",
         "author": {
           "@type": "Organization",
           "name": "Lodha Altero Research Desk",
-          "url": `https://${url.hostname}/`
+          "url": "https://altero.newlaunches.in/"
         },
         "publisher": {
           "@type": "Organization",
           "name": "Lodha Altero Wakad",
           "logo": {
             "@type": "ImageObject",
-            "url": `https://${url.hostname}/assets/logos/lodha_altero_partner_logo.svg`
+            "url": "https://altero.newlaunches.in/assets/logos/lodha_altero_partner_logo.svg"
           }
         },
         "datePublished": "2026-09-24",
@@ -2466,13 +2467,13 @@ export function renderProgrammaticPage(url, pageData) {
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": `https://${url.hostname}/`
+            "item": "https://altero.newlaunches.in/"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": category,
-            "item": `https://${url.hostname}/#pune-real-estate-hub`
+            "item": "https://altero.newlaunches.in/#pune-real-estate-hub"
           },
           {
             "@type": "ListItem",
@@ -2484,9 +2485,9 @@ export function renderProgrammaticPage(url, pageData) {
       },
       {
         "@type": "ApartmentComplex",
-        "@id": `https://${url.hostname}/#apartmentcomplex`,
+        "@id": "https://altero.newlaunches.in/#apartmentcomplex",
         "name": "Lodha Altero Wakad",
-        "url": `https://${url.hostname}/`,
+        "url": "https://altero.newlaunches.in/",
         "telephone": "+91-20-6716-1111",
         "priceRange": "₹2.09 Cr - ₹5.25 Cr",
         "address": {
@@ -2553,14 +2554,14 @@ export function renderProgrammaticPage(url, pageData) {
   <meta property="og:title" content="${metaTitle}">
   <meta property="og:description" content="${metaDesc}">
   <meta property="og:url" content="${canonicalUrl}">
-  <meta property="og:image" content="https://${url.hostname}/assets/hero_banner.jpg">
+  <meta property="og:image" content="https://altero.newlaunches.in/assets/hero_banner.jpg">
   <meta property="og:site_name" content="Lodha Altero Wakad">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${metaTitle}">
   <meta name="twitter:description" content="${metaDesc}">
-  <meta name="twitter:image" content="https://${url.hostname}/assets/hero_banner.jpg">
+  <meta name="twitter:image" content="https://altero.newlaunches.in/assets/hero_banner.jpg">
 
   <link rel="stylesheet" href="/styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -2579,11 +2580,11 @@ export function renderProgrammaticPage(url, pageData) {
       {
         "source": "list",
         "urls": [
-          "https://${url.hostname}/",
-          "https://${url.hostname}/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis",
-          "https://${url.hostname}/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner",
-          "https://${url.hostname}/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
-          "https://${url.hostname}/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall"
+          "https://altero.newlaunches.in/",
+          "https://altero.newlaunches.in/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis",
+          "https://altero.newlaunches.in/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner",
+          "https://altero.newlaunches.in/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
+          "https://altero.newlaunches.in/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall"
         ],
         "eagerness": "moderate"
       }
@@ -2763,12 +2764,14 @@ export function renderProgrammaticMarkdown(url, pageData) {
     : '';
   const faqsMd = faqs.map(f => `### ${f.q}\n${f.a}`).join('\n\n');
 
+  const cleanPath = url.pathname.replace(/\.md$/, '').replace(/\/$/, '');
+
   return `# ${h1 || title}
 
 > **Project**: Lodha Altero Wakad, Pune
 > **Developer**: Lodha Group (Macrotech Developers Ltd)
 > **MahaRERA Registration**: P52100079692 (maharera.maharashtra.gov.in)
-> **Official Canonical URL**: https://${url.hostname}${url.pathname.replace(/\.md$/, '')}
+> **Official Canonical URL**: https://altero.newlaunches.in${cleanPath}
 > **Site Address**: Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057
 > **Sales Concierge**: +91 20 6716 1111 | WhatsApp Priority: +91 77440 09295 (https://wa.me/917744009295)
 
@@ -2788,14 +2791,14 @@ ${tableTitle ? `## ${tableTitle}\n${tableHeaderMd}\n` : ''}
 ${faqs.length > 0 ? `## Frequently Asked Questions\n${faqsMd}\n` : ''}
 
 ## Direct Concierge Contact & Authority Resources
-- Official Showcase Website: https://${url.hostname}/
-- Luxury 3, 4 & 5 BHK Carpet Area Analysis: https://${url.hostname}/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis
-- Pune Luxury Real Estate Market Report 2026–2030: https://${url.hostname}/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner
-- Official Price List & Cost Sheet: https://${url.hostname}/articles/lodha-altero-wakad-price-list-cost-sheet-2026
-- Connectivity to Hinjewadi & Phoenix Mall: https://${url.hostname}/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall
-- Rooftop Sky Club & Heated Infinity Pool: https://${url.hostname}/articles/25000-sqft-rooftop-sky-club-infinity-pool
-- MahaRERA Statutory Compliance & Escrow: https://${url.hostname}/articles/maharera-p52100079692-statutory-compliance
-- Machine Knowledge Graph API: https://${url.hostname}/_edge/knowledge-graph.json
+- Official Showcase Website: https://altero.newlaunches.in/
+- Luxury 3, 4 & 5 BHK Carpet Area Analysis: https://altero.newlaunches.in/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis
+- Pune Luxury Real Estate Market Report 2026–2030: https://altero.newlaunches.in/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner
+- Official Price List & Cost Sheet: https://altero.newlaunches.in/articles/lodha-altero-wakad-price-list-cost-sheet-2026
+- Connectivity to Hinjewadi & Phoenix Mall: https://altero.newlaunches.in/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall
+- Rooftop Sky Club & Heated Infinity Pool: https://altero.newlaunches.in/articles/25000-sqft-rooftop-sky-club-infinity-pool
+- MahaRERA Statutory Compliance & Escrow: https://altero.newlaunches.in/articles/maharera-p52100079692-statutory-compliance
+- Machine Knowledge Graph API: https://altero.newlaunches.in/_edge/knowledge-graph.json
 - MahaRERA Official Portal: https://maharera.maharashtra.gov.in (P52100079692)
 `;
 }

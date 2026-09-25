@@ -221,6 +221,16 @@ export default {
       return Response.redirect(`https://${CANONICAL_HOST}${DIRECTORY_REDIRECTS[pathname]}`, 301);
     }
 
+    // RFC 9116 security.txt Canonical 301 Redirect
+    if (pathname === '/security.txt') {
+      return Response.redirect(`https://${CANONICAL_HOST}/.well-known/security.txt`, 301);
+    }
+
+    // Trailing slash 301 normalization (eliminates duplicate URLs in Google Search Console)
+    if (pathname.length > 1 && pathname.endsWith('/') && !DIRECTORY_REDIRECTS[pathname]) {
+      return Response.redirect(`https://${CANONICAL_HOST}${pathname.slice(0, -1)}${search}`, 301);
+    }
+
     // =========================================================================
     // 2. Google Search Console & IndexNow Verification Key Handlers
     // =========================================================================
@@ -880,7 +890,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       progHeaders.set('X-Target-Audience', viewerCountry === 'IN' ? 'Domestic-India' : `Global-NRI-${viewerCountry}`);
 
       // Military-Grade Content Security Policy & Privacy Directives
-      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
       progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self), browsing-topics=(), interest-cohort=(), screen-wake-lock=()');
 
       if (request.cf) {
@@ -1046,7 +1056,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('X-Canonical-Host', CANONICAL_HOST);
     headers.set('X-Staging-Host', STAGING_HOST);
     headers.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
 
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
@@ -1073,9 +1083,11 @@ Please connect me with the sales director and share official MahaRERA P521000796
       } else if (/\.(css|js)$/i.test(pathname)) {
         headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
         headers.set('CDN-Cache-Control', 'max-age=604800');
-      } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml' || pathname === '/llms.txt' || pathname === '/llms-full.txt') {
+      } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml' || pathname === '/llms.txt' || pathname === '/llms-full.txt' || pathname === '/.well-known/security.txt') {
         headers.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
-        if (pathname === '/llms.txt' || pathname === '/llms-full.txt') {
+        if (pathname === '/feed.xml') {
+          headers.set('Content-Type', 'application/rss+xml; charset=utf-8');
+        } else if (pathname === '/llms.txt' || pathname === '/llms-full.txt' || pathname === '/.well-known/security.txt') {
           headers.set('Content-Type', 'text/plain; charset=utf-8');
           headers.set('Access-Control-Allow-Origin', '*');
         }
