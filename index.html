@@ -1242,11 +1242,11 @@
           <input type="text" name="website_security_token" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none !important;">
           <div>
             <label class="block text-[11px] uppercase tracking-wider text-stone-300 mb-1">Full Name</label>
-            <input type="text" required placeholder="e.g. Rahul Sharma" class="w-full bg-stone-950/70 border border-stone-700 text-stone-100 text-xs px-3.5 py-2.5 focus:border-amber-400 focus:outline-none">
+            <input type="text" required maxlength="60" autocomplete="name" placeholder="e.g. Rahul Sharma" class="w-full bg-stone-950/70 border border-stone-700 text-stone-100 text-xs px-3.5 py-2.5 focus:border-amber-400 focus:outline-none">
           </div>
           <div>
             <label class="block text-[11px] uppercase tracking-wider text-stone-300 mb-1">Contact Number</label>
-            <input type="tel" required placeholder="+91 98765 43210" class="w-full bg-stone-950/70 border border-stone-700 text-stone-100 text-xs px-3.5 py-2.5 focus:border-amber-400 focus:outline-none">
+            <input type="tel" required minlength="8" maxlength="20" autocomplete="tel" placeholder="+91 98765 43210" class="w-full bg-stone-950/70 border border-stone-700 text-stone-100 text-xs px-3.5 py-2.5 focus:border-amber-400 focus:outline-none">
           </div>
           <div>
             <label class="block text-[11px] uppercase tracking-wider text-stone-300 mb-1">Configuration Interested</label>
@@ -3153,11 +3153,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-[11px] uppercase tracking-wider text-stone-700 font-medium mb-1">Your Name *</label>
-                <input type="text" name="full_name" required placeholder="Full Name" class="w-full bg-white border border-amber-600/30 text-stone-900 text-xs px-3.5 py-3 rounded focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all">
+                <input type="text" name="full_name" required maxlength="60" autocomplete="name" placeholder="Full Name" class="w-full bg-white border border-amber-600/30 text-stone-900 text-xs px-3.5 py-3 rounded focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all">
               </div>
               <div>
                 <label class="block text-[11px] uppercase tracking-wider text-stone-700 font-medium mb-1">Mobile Phone *</label>
-                <input type="tel" name="phone_number" required pattern="[6-9][0-9]{9}" title="Enter valid 10-digit Indian mobile number" placeholder="+91 98765 43210" class="w-full bg-white border border-amber-600/30 text-stone-900 text-xs px-3.5 py-3 rounded focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all">
+                <input type="tel" name="phone_number" required minlength="8" maxlength="20" autocomplete="tel" placeholder="+91 98765 43210 (or NRI with code)" class="w-full bg-white border border-amber-600/30 text-stone-900 text-xs px-3.5 py-3 rounded focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all">
               </div>
             </div>
 
@@ -3167,7 +3167,7 @@
 
             <div>
               <label class="block text-[11px] uppercase tracking-wider text-stone-700 font-medium mb-1">Email Address *</label>
-              <input type="email" name="email_address" required placeholder="name@domain.com" class="w-full bg-white border border-amber-600/30 text-stone-900 text-xs px-3.5 py-3 rounded focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all">
+              <input type="email" name="email_address" required maxlength="100" autocomplete="email" placeholder="name@domain.com" class="w-full bg-white border border-amber-600/30 text-stone-900 text-xs px-3.5 py-3 rounded focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -4019,15 +4019,15 @@
         <input type="text" name="website_security_token" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none !important;">
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">Full Name *</label>
-          <input type="text" required placeholder="Enter your full name" class="luxury-input rounded">
+          <input type="text" required maxlength="60" autocomplete="name" placeholder="Enter your full name" class="luxury-input rounded">
         </div>
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">Phone Number *</label>
-          <input type="tel" required placeholder="+91 98765 43210" class="luxury-input rounded">
+          <input type="tel" required minlength="8" maxlength="20" autocomplete="tel" placeholder="+91 98765 43210" class="luxury-input rounded">
         </div>
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">Email ID *</label>
-          <input type="email" required placeholder="name@domain.com" class="luxury-input rounded">
+          <input type="email" required maxlength="100" autocomplete="email" placeholder="name@domain.com" class="luxury-input rounded">
         </div>
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">Configuration Interested In</label>
@@ -4072,15 +4072,15 @@
         <input type="text" name="website_security_token" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none !important;">
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">Your Name *</label>
-          <input type="text" required placeholder="Enter full name" class="luxury-input rounded">
+          <input type="text" required maxlength="60" autocomplete="name" placeholder="Enter full name" class="luxury-input rounded">
         </div>
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">WhatsApp / Phone Number *</label>
-          <input type="tel" required placeholder="+91 98765 43210" class="luxury-input rounded">
+          <input type="tel" required minlength="8" maxlength="20" autocomplete="tel" placeholder="+91 98765 43210" class="luxury-input rounded">
         </div>
         <div>
           <label class="block text-xs uppercase tracking-wider text-stone-700 font-semibold mb-1">Email Address (For PDF Delivery) *</label>
-          <input type="email" required placeholder="name@domain.com" class="luxury-input rounded">
+          <input type="email" required maxlength="100" autocomplete="email" placeholder="name@domain.com" class="luxury-input rounded">
         </div>
         <div class="pt-2">
           <button type="submit" class="w-full btn-gold gold-shimmer-btn text-xs py-3.5 shadow-lg cursor-pointer">
@@ -4396,13 +4396,13 @@
 
         <div>
           <label class="block text-xs font-medium text-stone-700 mb-1">Your Full Name</label>
-          <input type="text" required placeholder="e.g. Rahul Sharma" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
+          <input type="text" required maxlength="60" autocomplete="name" placeholder="e.g. Rahul Sharma" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-stone-700 mb-1">Mobile Number (+91)</label>
-            <input type="tel" required placeholder="10-digit mobile" maxlength="10" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
+            <label class="block text-xs font-medium text-stone-700 mb-1">Mobile Number</label>
+            <input type="tel" required minlength="8" maxlength="20" autocomplete="tel" placeholder="+91 98765 43210" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
           </div>
           <div>
             <label class="block text-xs font-medium text-stone-700 mb-1">Preferred Typology</label>
@@ -4417,7 +4417,7 @@
 
         <div>
           <label class="block text-xs font-medium text-stone-700 mb-1">Email Address (Optional for PDF Cost Sheet)</label>
-          <input type="email" placeholder="e.g. rahul@example.com" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
+          <input type="email" maxlength="100" autocomplete="email" placeholder="e.g. rahul@example.com" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
         </div>
 
         <button type="submit" class="w-full btn-gold py-3 text-xs font-bold tracking-wider uppercase rounded-lg shadow-lg flex items-center justify-center gap-2">
@@ -4456,13 +4456,13 @@
 
         <div>
           <label class="block text-xs font-medium text-stone-700 mb-1">Your Full Name</label>
-          <input type="text" name="name" required placeholder="e.g. Vikram Malhotra" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
+          <input type="text" name="name" required maxlength="60" autocomplete="name" placeholder="e.g. Vikram Malhotra" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-stone-700 mb-1">Mobile (+91)</label>
-            <input type="tel" name="phone" required placeholder="10-digit mobile" maxlength="10" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
+            <label class="block text-xs font-medium text-stone-700 mb-1">Mobile Phone</label>
+            <input type="tel" name="phone" required minlength="8" maxlength="20" autocomplete="tel" placeholder="+91 98765 43210" class="w-full px-4 py-2.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:border-amber-600 bg-white">
           </div>
           <div>
             <label class="block text-xs font-medium text-stone-700 mb-1">Interested Typology</label>

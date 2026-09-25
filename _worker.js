@@ -131,9 +131,11 @@ export default {
       return Response.redirect(`https://${hostname}${pathname}${search}`, 301);
     }
 
-    // Geo & NRI Visitor Intelligence
-    const viewerCountry = request.cf?.country || 'IN';
-    const viewerCity = request.cf?.city || 'Pune';
+    // Geo & NRI Visitor Intelligence (Sanitized against injection)
+    const rawCountry = request.cf?.country || 'IN';
+    const rawCity = request.cf?.city || 'Pune';
+    const viewerCountry = String(rawCountry).replace(/[^A-Z]/g, '').slice(0, 2) || 'IN';
+    const viewerCity = String(rawCity).replace(/[^a-zA-Z0-9\s.-]/g, '').slice(0, 50) || 'Pune';
     const acceptsMarkdown = request.headers.get('Accept')?.includes('text/markdown') || false;
     const isMarkdownPath = pathname.endsWith('.md');
     const cleanMdPath = pathname.replace(/\.md$/, '');
@@ -641,16 +643,30 @@ export default {
             });
           }
 
-          // Input sanitization against XSS and control character injection
-          const sanitize = (str, maxLen = 120) => String(str || '').replace(/<[^>]*>?/gm, '').replace(/[\r\n\t]/g, ' ').trim().slice(0, maxLen);
-          const name = sanitize(body.name || 'Valued Patron', 80);
-          const phone = sanitize(body.phone || body.mobile || '', 30).replace(/[^\d+ ]/g, '');
-          const email = sanitize(body.email || '', 100);
+          // Input sanitization against XSS, HTML tag injection, CRLF injection & command characters
+          const sanitize = (str, maxLen = 120) => {
+            return String(str || '')
+              .replace(/<[^>]*>?/gm, '')
+              .replace(/[<>\"\'&;`\\]/g, '')
+              .replace(/[\r\n\t]/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .slice(0, maxLen);
+          };
+
+          const name = sanitize(body.name || 'Valued Patron', 80) || 'Valued Patron';
+          const phone = String(body.phone || body.mobile || '').replace(/[^\d+ ]/g, '').slice(0, 25).trim();
+
+          // Strict RFC email validation to eliminate email header injection
+          const rawEmail = String(body.email || '').trim().toLowerCase();
+          const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+          const email = (emailRegex.test(rawEmail) && rawEmail.length <= 100) ? rawEmail : '';
+
           const typology = sanitize(body.typology || '3/4 BHK Luxury Residence', 60);
           const intent = sanitize(body.intent || 'VIP Site Visit & Floor Plans', 80);
-          const source = sanitize(body.source || 'Website Showcase', 60);
+          const source = sanitize(body.source || 'Website Showcase', 80);
 
-          if (!phone || phone.length < 8) {
+          if (!phone || phone.replace(/\D/g, '').length < 8) {
             return new Response(JSON.stringify({ success: false, error: 'Valid phone number required' }), {
               status: 400,
               headers: { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }
@@ -658,7 +674,8 @@ export default {
           }
 
           // 1. Edge Rate Limiter (Max 5 submissions per 60s per client IP)
-          const clientIp = request.headers.get('CF-Connecting-IP') || '127.0.0.1';
+          const rawClientIp = request.headers.get('CF-Connecting-IP') || '127.0.0.1';
+          const clientIp = rawClientIp.replace(/[^\w.:]/g, '').slice(0, 45);
           if (env && env.ALTERO_LEADS_KV) {
             const rlKey = `rl:${clientIp}`;
             const currentHits = parseInt(await env.ALTERO_LEADS_KV.get(rlKey) || '0', 10);

@@ -1722,8 +1722,10 @@ function showToast(message) {
 
   toast.innerHTML = `
     <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-    <span>${message}</span>
+    <span class="toast-content"></span>
   `;
+  const span = toast.querySelector('.toast-content');
+  if (span) span.textContent = String(message || '');
   toast.classList.add('show');
 
   setTimeout(() => {
@@ -1757,8 +1759,18 @@ function initFormHandlers() {
         return;
       }
 
-      // 3. Extract & Sanitize User Inputs
-      const nameInput = form.querySelector('input[type="text"]:not([name="website_security_token"])');
+      // 3. Extract & Deep-Sanitize User Inputs
+      const sanitizeInput = (val, maxLen = 100) => {
+        return String(val || '')
+          .replace(/<[^>]*>?/gm, '')
+          .replace(/[<>\"\'&;`\\]/g, '')
+          .replace(/[\r\n\t]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, maxLen);
+      };
+
+      const nameInput = form.querySelector('input[type="text"]:not([name="website_security_token"]):not([name="company_website"]):not([name="fax_number"])');
       const phoneInput = form.querySelector('input[type="tel"]');
       const emailInput = form.querySelector('input[type="email"]');
       const configSelect = form.querySelector('select');
@@ -1766,40 +1778,46 @@ function initFormHandlers() {
       const modalHeading = form.closest('.modal-content')?.querySelector('h2, h3')?.innerText;
       const formHeading = form.querySelector('h2, h3')?.innerText;
 
-      const rawName = nameInput ? nameInput.value.trim() : 'Valued Patron';
-      const rawPhone = phoneInput ? phoneInput.value.trim().replace(/\D/g, '') : '';
-      const rawEmail = emailInput ? emailInput.value.trim() : '';
+      const rawName = nameInput ? nameInput.value : 'Valued Patron';
+      const rawPhone = phoneInput ? phoneInput.value : '';
+      const rawEmail = emailInput ? emailInput.value.trim().toLowerCase() : '';
       const preference = configSelect ? configSelect.value : '3/4 BHK Sky Residence';
       const intent = intentInput || modalHeading || formHeading || 'Schedule VIP Site Visit & Request Cost Sheet';
 
+      const cleanName = sanitizeInput(rawName, 60) || 'Valued Patron';
+      const cleanPhoneDigits = rawPhone.replace(/\D/g, '').slice(0, 15);
+      
+      // Strict RFC-5322 basic pattern validation to prevent email header injection
+      const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+      const cleanEmail = (emailRegex.test(rawEmail) && rawEmail.length <= 100) ? rawEmail : '';
+      const cleanPreference = sanitizeInput(preference, 60);
+      const cleanIntent = sanitizeInput(intent, 100);
+
       // 4. Smart Domestic & International Phone Validation
-      if (rawPhone.length < 8) {
+      if (cleanPhoneDigits.length < 8) {
         showToast('Please provide a valid mobile or international phone number.');
         if (phoneInput) phoneInput.focus();
         return;
       }
-
-      // Sanitize against HTML/XSS injection
-      const cleanName = rawName.replace(/[<>\"\'&]/g, '');
       
       // Intelligent International & Domestic Phone Standardizer
-      let validPhone = rawPhone;
-      if (rawPhone.length === 10 && /^[6-9]/.test(rawPhone)) {
-        validPhone = `+91 ${rawPhone}`;
-      } else if (rawPhone.startsWith('91') && rawPhone.length === 12) {
-        validPhone = `+91 ${rawPhone.slice(2)}`;
-      } else if (rawPhone.startsWith('1') && rawPhone.length === 11) {
-        validPhone = `+1 ${rawPhone.slice(1)}`;
-      } else if (rawPhone.startsWith('971') && rawPhone.length >= 11) {
-        validPhone = `+971 ${rawPhone.slice(3)}`;
-      } else if (rawPhone.startsWith('44') && rawPhone.length >= 11) {
-        validPhone = `+44 ${rawPhone.slice(2)}`;
-      } else if (rawPhone.startsWith('65') && rawPhone.length >= 10) {
-        validPhone = `+65 ${rawPhone.slice(2)}`;
-      } else if (rawPhone.startsWith('61') && rawPhone.length >= 10) {
-        validPhone = `+61 ${rawPhone.slice(2)}`;
+      let validPhone = cleanPhoneDigits;
+      if (cleanPhoneDigits.length === 10 && /^[6-9]/.test(cleanPhoneDigits)) {
+        validPhone = `+91 ${cleanPhoneDigits}`;
+      } else if (cleanPhoneDigits.startsWith('91') && cleanPhoneDigits.length === 12) {
+        validPhone = `+91 ${cleanPhoneDigits.slice(2)}`;
+      } else if (cleanPhoneDigits.startsWith('1') && cleanPhoneDigits.length === 11) {
+        validPhone = `+1 ${cleanPhoneDigits.slice(1)}`;
+      } else if (cleanPhoneDigits.startsWith('971') && cleanPhoneDigits.length >= 11) {
+        validPhone = `+971 ${cleanPhoneDigits.slice(3)}`;
+      } else if (cleanPhoneDigits.startsWith('44') && cleanPhoneDigits.length >= 11) {
+        validPhone = `+44 ${cleanPhoneDigits.slice(2)}`;
+      } else if (cleanPhoneDigits.startsWith('65') && cleanPhoneDigits.length >= 10) {
+        validPhone = `+65 ${cleanPhoneDigits.slice(2)}`;
+      } else if (cleanPhoneDigits.startsWith('61') && cleanPhoneDigits.length >= 10) {
+        validPhone = `+61 ${cleanPhoneDigits.slice(2)}`;
       } else {
-        validPhone = `+${rawPhone}`;
+        validPhone = `+${cleanPhoneDigits}`;
       }
 
       const submitBtn = form.querySelector('button[type="submit"]');
@@ -1817,15 +1835,15 @@ function initFormHandlers() {
       const honeypotInput = form.querySelector('input[name="website_security_token"], input[name="company_website"], input[name="fax_number"]');
       const honeypotVal = honeypotInput ? honeypotInput.value.trim() : '';
 
-      // Edge-native submission payload
+      // Edge-native submission payload with hardened sanitization
       const leadPayload = {
         name: cleanName,
         phone: validPhone,
-        email: rawEmail,
-        typology: preference,
-        intent: intent,
-        company_website: honeypotVal,
-        source: window.location.pathname || 'Direct Showcase'
+        email: cleanEmail,
+        typology: cleanPreference,
+        intent: cleanIntent,
+        company_website: sanitizeInput(honeypotVal, 100),
+        source: window.location.pathname ? window.location.pathname.replace(/[^\w\-\/]/g, '').slice(0, 80) : 'Direct Showcase'
       };
 
       // Asynchronous POST to Edge Lead Webhook
@@ -1859,7 +1877,7 @@ function initFormHandlers() {
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
             _subject: `New VIP Lead [${activeRefId}]: Lodha Altero Wakad - ${cleanName} (${validPhone})`,
-            _replyto: rawEmail && rawEmail.includes('@') ? rawEmail : 'propsmartrealty@gmail.com',
+            _replyto: cleanEmail || 'propsmartrealty@gmail.com',
             _template: 'table',
             _captcha: 'false',
             Project: 'Lodha Altero Wakad, Pune',
@@ -1867,9 +1885,9 @@ function initFormHandlers() {
             Lead_ID: activeRefId,
             Full_Name: cleanName,
             Phone_Number: validPhone,
-            Email: rawEmail || 'Not Provided',
-            Preferred_Typology: preference,
-            Customer_Intention: intent,
+            Email: cleanEmail || 'Not Provided',
+            Preferred_Typology: cleanPreference,
+            Customer_Intention: cleanIntent,
             Source_Page: window.location.href,
             Direct_WhatsApp: `https://wa.me/917744009295?text=${encodeURIComponent(`Hi ${cleanName}, thank you for inquiring about Lodha Altero Wakad [Ref: ${activeRefId}].`)}`
           })
@@ -1887,8 +1905,8 @@ function initFormHandlers() {
               `• Reference ID: ${activeRefId}\n` +
               `• Name: ${cleanName}\n` +
               `• Mobile: ${validPhone}\n` +
-              `• Preferred Typology: ${preference}\n` +
-              `• Intention: ${intent}\n\n` +
+              `• Preferred Typology: ${cleanPreference}\n` +
+              `• Intention: ${cleanIntent}\n\n` +
               `Please connect me with the sales director and share official MahaRERA P52100079692 floor plans, cost sheet, and schedule my VIP site visit.`
             );
             waLink.href = `https://wa.me/917744009295?text=${encodedMsg}`;

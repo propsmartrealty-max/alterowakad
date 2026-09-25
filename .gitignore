@@ -4,3 +4,18 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Environment & Sensitive Keys
+.env*
+*.pem
+*.key
+*.cert
+
+# Editor & Build Artifacts
+.vscode/
+.idea/
+.wrangler/
+scratch/
+dist/
+*.bak
+*.tmp
