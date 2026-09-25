@@ -66,7 +66,7 @@ To ensure Googlebot and search crawlers never get challenged, throttled, or dela
 
 ### Option A: Cloudflare Pages (Git Integrated - Recommended)
 1. In Cloudflare Dashboard, go to **Workers & Pages** -> **Create application** -> **Pages**.
-2. Connect to GitHub repository: `propsmartrealty-max/lodhaalterowakad`.
+2. Connect to GitHub repository: `propsmartrealty-max/alterowakad`.
 3. Set Build settings:
    - Framework preset: `None`
    - Build command: *(leave empty)*
