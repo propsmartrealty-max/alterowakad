@@ -366,8 +366,7 @@ export default {
         '/sitemap_index.xml',
         '/sitemap-index.xml',
         '/sitemaps/sitemap_index.xml',
-        '/sitemaps/sitemap-index.xml',
-        '/sitemap.xml'
+        '/sitemaps/sitemap-index.xml'
       ]);
 
       // 2. Programmatic Master Sitemap Index
@@ -389,7 +388,7 @@ export default {
       } else if (chunkMatch) {
         const chunkIdx = parseInt(chunkMatch[1], 10);
         targetXml = getProgrammaticSitemapChunk(chunkIdx, CANONICAL_HOST);
-      } else if (baseXmlPath === '/sitemap-core.xml' || baseXmlPath === '/sitemap-articles.xml' || baseXmlPath === '/sitemap-images.xml') {
+      } else if (baseXmlPath === '/sitemap.xml' || baseXmlPath === '/sitemap-core.xml' || baseXmlPath === '/sitemap-articles.xml' || baseXmlPath === '/sitemap-images.xml') {
         try {
           const sitemapReq = new Request(new URL(baseXmlPath, request.url), request);
           const sitemapRes = env.ASSETS ? await env.ASSETS.fetch(sitemapReq) : await fetch(sitemapReq);

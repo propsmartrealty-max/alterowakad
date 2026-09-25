@@ -2231,7 +2231,7 @@ export function getMasterSitemapIndex(hostname) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://${hostname}/sitemap-core.xml</loc>
+    <loc>https://${hostname}/sitemap.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
