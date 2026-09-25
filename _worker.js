@@ -11,7 +11,15 @@
  * 7. Canonical 301 Normalization (http -> https, /index.html -> /)
  */
 
-import { PROGRAMMATIC_PAGES, renderProgrammaticPage, renderProgrammaticMarkdown } from './programmatic_data.js';
+import {
+  PROGRAMMATIC_PAGES,
+  resolveProgrammaticPage,
+  getAllProgrammaticSlugs,
+  getProgrammaticSitemapChunk,
+  getProgrammaticSitemapIndex,
+  renderProgrammaticPage,
+  renderProgrammaticMarkdown
+} from './programmatic_data.js';
 
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
 
@@ -181,7 +189,7 @@ export default {
         const fullTxtRes = env.ASSETS ? await env.ASSETS.fetch(fullTxtReq) : await fetch(fullTxtReq);
         mdText = await fullTxtRes.text();
       } catch (e) {
-        mdText = '# Lodha Altero Wakad Pune\nMahaRERA: P52100079692\nOfficial Website: https://lodhaaltero.newlaunches.in/';
+        mdText = '# Lodha Altero Wakad Pune\nMahaRERA: P52100079692\nOfficial Website: https://altero.newlaunches.in/';
       }
 
       const mdRes = new Response(mdText, {
@@ -201,23 +209,26 @@ export default {
       return mdRes;
     }
 
-    if ((isMarkdownPath || acceptsMarkdown) && PROGRAMMATIC_PAGES[cleanMdPath]) {
-      const mdText = renderProgrammaticMarkdown(url, PROGRAMMATIC_PAGES[cleanMdPath]);
-      const mdRes = new Response(mdText, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/markdown; charset=utf-8',
-          'Cache-Control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
-          'CDN-Cache-Control': 'max-age=86400',
-          'X-Robots-Tag': 'index, follow',
-          'Cache-Tag': `lodha-altero-markdown, lodha-altero-${PROGRAMMATIC_PAGES[cleanMdPath].categorySlug}`,
-          'Vary': 'Accept'
+    if (isMarkdownPath || acceptsMarkdown) {
+      const progDataForMd = PROGRAMMATIC_PAGES[cleanMdPath] || resolveProgrammaticPage(cleanMdPath);
+      if (progDataForMd) {
+        const mdText = renderProgrammaticMarkdown(url, progDataForMd);
+        const mdRes = new Response(mdText, {
+          status: 200,
+          headers: {
+            'Content-Type': 'text/markdown; charset=utf-8',
+            'Cache-Control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
+            'CDN-Cache-Control': 'max-age=86400',
+            'X-Robots-Tag': 'index, follow',
+            'Cache-Tag': `lodha-altero-markdown, lodha-altero-${progDataForMd.categorySlug || 'general'}`,
+            'Vary': 'Accept'
+          }
+        });
+        if (cache && isGetRequest && !isNoCacheQuery && ctx?.waitUntil) {
+          ctx.waitUntil(cache.put(cacheKey, mdRes.clone()));
         }
-      });
-      if (cache && isGetRequest && !isNoCacheQuery && ctx?.waitUntil) {
-        ctx.waitUntil(cache.put(cacheKey, mdRes.clone()));
+        return mdRes;
       }
-      return mdRes;
     }
 
     // =========================================================================
@@ -267,11 +278,12 @@ export default {
     // 4. Search Engine Indexing & IndexNow Real-Time Notification Handler
     // =========================================================================
     if (pathname === '/_edge/ping-index') {
-      const sitemapUrl = `https://${hostname}/sitemap.xml`;
+      const allSlugs = getAllProgrammaticSlugs();
+      const topProgrammaticUrls = allSlugs.slice(0, 250).map(slug => `https://${hostname}${slug}`);
       const urlList = [
         `https://${hostname}/`,
         ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${hostname}${slug}`),
-        ...Object.keys(PROGRAMMATIC_PAGES).map(slug => `https://${hostname}${slug}`)
+        ...topProgrammaticUrls
       ];
 
       const pingResults = {
@@ -372,8 +384,8 @@ export default {
           googlebotOptimized: true,
           schemaGraphActive: true,
           articlesRouted: Object.keys(ARTICLE_SLUGS).length,
-          programmaticPagesActive: Object.keys(PROGRAMMATIC_PAGES).length,
-          keywordsHardened: '46 Core + Regional Pune Real Estate Ecosystem + 32 Programmatic Clusters'
+          programmaticPagesActive: getAllProgrammaticSlugs().length,
+          keywordsHardened: '46 Core + Regional Pune Real Estate Ecosystem + 10,000+ Programmatic Clusters'
         }
       };
       return new Response(JSON.stringify(statusData, null, 2), {
@@ -422,7 +434,7 @@ export default {
           "400m Cushioned Sky Jogging Loop suspended above skyline",
           "Mivan Monolithic RCC Aluminum Formwork with 38 dB Acoustic Fenestrations"
         ],
-        "canonicalCorridorsCount": Object.keys(PROGRAMMATIC_PAGES).length,
+        "canonicalCorridorsCount": getAllProgrammaticSlugs().length,
         "programmaticCorridors": Object.keys(PROGRAMMATIC_PAGES).map(slug => ({
           "slug": slug,
           "url": `https://${hostname}${slug}`,
@@ -513,23 +525,25 @@ Source: ${source}`;
     }
 
     // =========================================================================
-    // 5. Dynamic Programmatic XML Sitemap Generation
+    // 5. Dynamic Programmatic XML Sitemap Generation (10,000+ routes)
     // =========================================================================
-    if (pathname === '/sitemap-programmatic.xml' || pathname === '/sitemaps/sitemap-programmatic.xml') {
-      const today = new Date().toISOString().split('T')[0];
-      const urlsXml = Object.keys(PROGRAMMATIC_PAGES).map(slug => `  <url>
-    <loc>https://${hostname}${slug}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>`).join('\n');
+    if (pathname === '/sitemap-programmatic.xml' || pathname === '/sitemaps/sitemap-programmatic.xml' || pathname === '/sitemap-programmatic-index.xml') {
+      const sitemapIndexXml = getProgrammaticSitemapIndex(hostname);
+      return new Response(sitemapIndexXml, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
+          'X-Robots-Tag': 'index, follow'
+        }
+      });
+    }
 
-      const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlsXml}
-</urlset>`;
-
-      return new Response(sitemapXml, {
+    const chunkMatch = pathname.match(/^\/sitemaps\/programmatic-([1-6])\.xml$/);
+    if (chunkMatch) {
+      const chunkIdx = parseInt(chunkMatch[1], 10);
+      const chunkXml = getProgrammaticSitemapChunk(chunkIdx, hostname);
+      return new Response(chunkXml, {
         status: 200,
         headers: {
           'Content-Type': 'application/xml; charset=utf-8',
@@ -540,10 +554,11 @@ ${urlsXml}
     }
 
     // =========================================================================
-    // 6. Dynamic Programmatic SEO Page Edge Rendering
+    // 6. Dynamic Programmatic SEO Page Edge Rendering (10,000+ routes)
     // =========================================================================
-    if (PROGRAMMATIC_PAGES[pathname]) {
-      const pageHtml = renderProgrammaticPage(url, PROGRAMMATIC_PAGES[pathname]);
+    const progData = PROGRAMMATIC_PAGES[pathname] || resolveProgrammaticPage(pathname);
+    if (progData) {
+      const pageHtml = renderProgrammaticPage(url, progData);
       const progHeaders = new Headers();
       progHeaders.set('Content-Type', 'text/html; charset=utf-8');
       progHeaders.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400, stale-if-error=604800');
@@ -556,9 +571,9 @@ ${urlsXml}
       progHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
       progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
       progHeaders.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.3');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.4');
       progHeaders.set('X-Edge-Cache', 'MISS');
-      progHeaders.set('Cache-Tag', `lodha-altero-programmatic, lodha-altero-${PROGRAMMATIC_PAGES[pathname].categorySlug || 'general'}`);
+      progHeaders.set('Cache-Tag', `lodha-altero-programmatic, lodha-altero-${progData.categorySlug || 'general'}`);
       progHeaders.set('X-Viewer-Country', viewerCountry);
       progHeaders.set('X-Viewer-City', viewerCity);
 

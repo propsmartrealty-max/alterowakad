@@ -28,10 +28,13 @@ Allow: /pricing/
 Allow: /compare/
 Allow: /amenities/
 Allow: /nri/
-Allow: /vastu/
+Allow: /corporate/
 Allow: /investment/
+Allow: /lifestyle/
+Allow: /vastu/
 Allow: /schools/
 Allow: /healthcare/
+Allow: /sitemaps/
 Allow: /manifest.webmanifest
 Allow: /sw.js
 Allow: /index.md
@@ -139,5 +142,11 @@ Disallow: /_edge/
 Sitemap: https://altero.newlaunches.in/sitemap.xml
 Sitemap: https://altero.newlaunches.in/sitemap-articles.xml
 Sitemap: https://altero.newlaunches.in/sitemap-programmatic.xml
+Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-1.xml
+Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-2.xml
+Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-3.xml
+Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-4.xml
+Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-5.xml
+Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-6.xml
 Sitemap: https://altero.newlaunches.in/sitemap-images.xml
 Sitemap: https://altero.newlaunches.in/feed.xml
