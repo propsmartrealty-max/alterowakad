@@ -3841,26 +3841,56 @@
       {
         "source": "list",
         "urls": [
-          "https://altero.newlaunches.in/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
-          "https://altero.newlaunches.in/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall",
-          "https://altero.newlaunches.in/articles/lodha-pune-residential-ecosystem",
-          "https://altero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026",
-          "https://altero.newlaunches.in/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
-          "https://altero.newlaunches.in/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
-          "https://altero.newlaunches.in/articles/maharera-p52100079692-statutory-compliance",
-          "https://altero.newlaunches.in/articles/25000-sqft-rooftop-sky-club-infinity-pool",
-          "https://altero.newlaunches.in/articles/pune-real-estate-macro-trends-east-vs-west"
+          "/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
+          "/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall",
+          "/articles/lodha-pune-residential-ecosystem",
+          "/articles/wakad-real-estate-investment-thesis-2026",
+          "/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
+          "/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
+          "/articles/maharera-p52100079692-statutory-compliance",
+          "/articles/25000-sqft-rooftop-sky-club-infinity-pool",
+          "/articles/pune-real-estate-macro-trends-east-vs-west"
         ],
         "eagerness": "moderate"
+      },
+      {
+        "source": "document",
+        "where": {
+          "and": [
+            { "href_matches": "/*" },
+            { "not": { "href_matches": "/_edge/*" } },
+            { "not": { "href_matches": "/assets/*" } }
+          ]
+        },
+        "eagerness": "conservative"
       }
     ],
     "prefetch": [
       {
+        "source": "document",
+        "where": {
+          "or": [
+            { "href_matches": "/transit/*" },
+            { "href_matches": "/residences/*" },
+            { "href_matches": "/pricing/*" },
+            { "href_matches": "/compare/*" },
+            { "href_matches": "/amenities/*" },
+            { "href_matches": "/nri/*" },
+            { "href_matches": "/corporate/*" },
+            { "href_matches": "/investment/*" },
+            { "href_matches": "/lifestyle/*" },
+            { "href_matches": "/vastu/*" },
+            { "href_matches": "/articles/*" }
+          ]
+        },
+        "eagerness": "moderate"
+      },
+      {
         "source": "list",
         "urls": [
-          "https://altero.newlaunches.in/assets/plans/plan_3bed_unit4_t1_t2.webp",
-          "https://altero.newlaunches.in/assets/plans/plan_4bed_unit1_t3.webp",
-          "https://altero.newlaunches.in/assets/gallery/rooftop_pool.jpg"
+          "/assets/plans/plan_3bed_unit4_t1_t2.webp",
+          "/assets/plans/plan_4bed_unit1_t3.webp",
+          "/assets/gallery/rooftop_pool.jpg"
         ],
         "eagerness": "immediate"
       }

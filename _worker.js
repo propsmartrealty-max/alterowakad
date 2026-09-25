@@ -103,7 +103,11 @@ export default {
     
     // Normalize cache key by removing non-functional tracking query parameters (utm_*, fbclid, gclid, etc.)
     const cleanCacheUrl = new URL(url.toString());
-    const trackingParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', '_ga', 'mc_cid', 'mc_eid', 'ref'];
+    const trackingParams = [
+      'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id', 'utm_source_platform',
+      'fbclid', 'gclid', 'gbraid', 'wbraid', 'msclkid', 'twclid', 'li_fat_id', 'ttclid', 'yclid',
+      '_ga', '_gl', 'mc_cid', 'mc_eid', 'ref', 'source', 'trk', 's_kwcid', 'dclid'
+    ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -277,34 +281,39 @@ export default {
     // =========================================================================
     // 4. Search Engine Indexing & IndexNow Real-Time Notification Handler
     // =========================================================================
-    if (pathname === '/_edge/ping-index') {
+    if (pathname === '/_edge/ping-index' || pathname === '/_edge/indexnow-ping') {
       const allSlugs = getAllProgrammaticSlugs();
-      const topProgrammaticUrls = allSlugs.slice(0, 250).map(slug => `https://${hostname}${slug}`);
+      const limitParam = parseInt(url.searchParams.get('limit') || '1000', 10);
+      const batchLimit = Math.min(Math.max(limitParam, 50), 10000);
+      const selectedProgrammaticUrls = allSlugs.slice(0, batchLimit).map(slug => `https://${hostname}${slug}`);
       const urlList = [
         `https://${hostname}/`,
         ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${hostname}${slug}`),
-        ...topProgrammaticUrls
+        ...selectedProgrammaticUrls
       ];
 
       const sitemapUrl = `https://${hostname}/sitemap.xml`;
+      const sitemapProgrammaticUrl = `https://${hostname}/sitemap-programmatic.xml`;
       const pingResults = {
         timestamp: new Date().toISOString(),
         host: hostname,
         sitemapUrl,
+        sitemapProgrammaticUrl,
         indexNowKey: INDEXNOW_KEY,
         urlsSubmittedCount: urlList.length,
-        submittedUrls: urlList,
+        submittedUrlsSample: urlList.slice(0, 10),
         engineResponses: []
       };
 
-      // 1. Submit batch to IndexNow API (Bing, Yandex, Seznam, Naver)
+      const indexNowPayload = {
+        host: hostname,
+        key: INDEXNOW_KEY,
+        keyLocation: `https://${hostname}/${INDEXNOW_KEY}.txt`,
+        urlList
+      };
+
+      // 1. Submit batch to IndexNow Global Hub (Bing, Yandex, Seznam, Naver)
       try {
-        const indexNowPayload = {
-          host: hostname,
-          key: INDEXNOW_KEY,
-          keyLocation: `https://${hostname}/${INDEXNOW_KEY}.txt`,
-          urlList
-        };
         const indexNowRes = await fetch('https://api.indexnow.org/IndexNow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -324,12 +333,7 @@ export default {
         const bingIndexNowRes = await fetch('https://www.bing.com/indexnow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json; charset=utf-8' },
-          body: JSON.stringify({
-            host: hostname,
-            key: INDEXNOW_KEY,
-            keyLocation: `https://${hostname}/${INDEXNOW_KEY}.txt`,
-            urlList
-          })
+          body: JSON.stringify(indexNowPayload)
         });
         pingResults.engineResponses.push({
           target: 'Bing IndexNow Direct',
@@ -340,18 +344,38 @@ export default {
         pingResults.engineResponses.push({ target: 'Bing IndexNow Direct', status: 'error', message: e.message });
       }
 
-      // 3. Ping Google Sitemap Crawler
+      // 3. Submit directly to Yandex IndexNow
       try {
-        const googlePing = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: googlePing.status });
+        const yandexRes = await fetch('https://yandex.com/indexnow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          body: JSON.stringify(indexNowPayload)
+        });
+        pingResults.engineResponses.push({
+          target: 'Yandex IndexNow Direct',
+          status: yandexRes.status,
+          statusText: yandexRes.statusText
+        });
+      } catch (e) {
+        pingResults.engineResponses.push({ target: 'Yandex IndexNow Direct', status: 'error', message: e.message });
+      }
+
+      // 4. Ping Google Sitemap Crawler (Core + Programmatic Sitemaps)
+      try {
+        const googlePing1 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
+        const googlePing2 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapProgrammaticUrl)}`);
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Core)', status: googlePing1.status });
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Programmatic Master)', status: googlePing2.status });
       } catch (e) {
         pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: 'error', message: e.message });
       }
 
-      // 4. Ping Bing Sitemap Crawler
+      // 5. Ping Bing Sitemap Crawler (Core + Programmatic Sitemaps)
       try {
-        const bingPing = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: bingPing.status });
+        const bingPing1 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`);
+        const bingPing2 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapProgrammaticUrl)}`);
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Core)', status: bingPing1.status });
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Programmatic Master)', status: bingPing2.status });
       } catch (e) {
         pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: 'error', message: e.message });
       }
