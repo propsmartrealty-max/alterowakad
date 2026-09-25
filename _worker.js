@@ -23,10 +23,10 @@ import {
 
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
 
-// Verified Google, Bing & Search Engine Crawler User-Agents
-const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|googleother|storebot-google|google-read-aloud|google-safety|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|msnbot|adidxbot|duckduckbot|slurp|baiduspider|yandexbot|applebot|yandex|seznam|naverbot/i;
-const AI_CRAWLER_REGEX = /gptbot|chatgpt-user|oai-searchbot|perplexitybot|claudebot|claude-web|anthropic-ai|google-extended|cohere-ai|meta-externalagent|bytespider|diffbot|ccbot/i;
-const SOCIAL_CRAWLER_REGEX = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|slackbot/i;
+// Verified Google, Bing & Global Search Engine Crawler User-Agents
+const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|googleother|storebot-google|google-read-aloud|google-safety|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|bingpreview|msnbot|adidxbot|duckduckbot|slurp|baiduspider|yandexbot|applebot|applebot-extended|yandex|seznam|naverbot|qwantify|sogou|coccoc|ecosia|daum/i;
+const AI_CRAWLER_REGEX = /gptbot|chatgpt-user|oai-searchbot|perplexitybot|claudebot|claude-web|anthropic-ai|google-extended|cohere-ai|meta-externalagent|meta-externalfetch|bytespider|diffbot|ccbot|amazonbot|deepseek|mistralai|grok|xai|timpibot/i;
+const SOCIAL_CRAWLER_REGEX = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|slackbot|discordbot|skypeuripreview|viber|vkshare/i;
 
 // IndexNow Verification Key for Instant Search Engine Crawl Notifications
 const INDEXNOW_KEY = 'e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c';
@@ -178,6 +178,45 @@ export default {
       const cleanPath = pathname.replace(/\/index\.html$/, '/') || '/';
       url.pathname = cleanPath;
       return Response.redirect(url.toString(), 301);
+    }
+
+    // Category & Directory Root Normalization to Master Showcase Anchors
+    const DIRECTORY_REDIRECTS = {
+      '/articles': '/#pune-real-estate-hub',
+      '/articles/': '/#pune-real-estate-hub',
+      '/residences': '/#residences',
+      '/residences/': '/#residences',
+      '/amenities': '/#amenities',
+      '/amenities/': '/#amenities',
+      '/pricing': '/#calculator',
+      '/pricing/': '/#calculator',
+      '/transit': '/#location',
+      '/transit/': '/#location',
+      '/location': '/#location',
+      '/location/': '/#location',
+      '/rooftop': '/#rooftop',
+      '/rooftop/': '/#rooftop',
+      '/gallery': '/#gallery',
+      '/gallery/': '/#gallery',
+      '/calculator': '/#calculator',
+      '/calculator/': '/#calculator',
+      '/compare': '/#pune-real-estate-hub',
+      '/compare/': '/#pune-real-estate-hub',
+      '/nri': '/#contact',
+      '/nri/': '/#contact',
+      '/investment': '/#pune-real-estate-hub',
+      '/investment/': '/#pune-real-estate-hub',
+      '/vastu': '/#residences',
+      '/vastu/': '/#residences',
+      '/schools': '/#location',
+      '/schools/': '/#location',
+      '/healthcare': '/#location',
+      '/healthcare/': '/#location',
+      '/contact': '/#contact',
+      '/contact/': '/#contact'
+    };
+    if (DIRECTORY_REDIRECTS[pathname]) {
+      return Response.redirect(`https://${CANONICAL_HOST}${DIRECTORY_REDIRECTS[pathname]}`, 301);
     }
 
     // =========================================================================
@@ -804,7 +843,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.7');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.8');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -812,6 +851,20 @@ Please connect me with the sales director and share official MahaRERA P521000796
       progHeaders.set('Cache-Tag', `lodha-altero-programmatic, lodha-altero-${progData.categorySlug || 'general'}`);
       progHeaders.set('X-Viewer-Country', viewerCountry);
       progHeaders.set('X-Viewer-City', viewerCity);
+
+      // Global NRI Localization: Dynamic currency hint & audience context
+      const currencyMap = {
+        US: 'USD', AE: 'AED', GB: 'GBP', SG: 'SGD', AU: 'AUD', CA: 'CAD',
+        DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR',
+        QA: 'QAR', SA: 'SAR', KW: 'KWD', OM: 'OMR', BH: 'BHD', JP: 'JPY'
+      };
+      const currencyHint = currencyMap[viewerCountry] || 'INR';
+      progHeaders.set('X-Currency-Hint', currencyHint);
+      progHeaders.set('X-Target-Audience', viewerCountry === 'IN' ? 'Domestic-India' : `Global-NRI-${viewerCountry}`);
+
+      // Military-Grade Content Security Policy & Privacy Directives
+      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+      progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self), browsing-topics=(), interest-cohort=(), screen-wake-lock=()');
 
       if (request.cf) {
         progHeaders.set('X-Edge-Colo', request.cf.colo || 'BOM');
@@ -895,7 +948,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
             'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
             'X-Canonical-Host': CANONICAL_HOST,
             'X-Staging-Host': STAGING_HOST,
-            'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.6'
+            'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.8'
           }
         }
       );
@@ -945,7 +998,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
     headers.set('Cross-Origin-Resource-Policy', 'same-origin');
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-    headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
+    headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self), browsing-topics=(), interest-cohort=(), screen-wake-lock=()');
     headers.set('Timing-Allow-Origin', '*');
 
     // ── STAGING & PRODUCTION SUBDOMAIN HARDENING ──
@@ -957,7 +1010,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.7');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.8');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
@@ -976,7 +1029,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('X-Canonical-Host', CANONICAL_HOST);
     headers.set('X-Staging-Host', STAGING_HOST);
     headers.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com;");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
 
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
@@ -1039,13 +1092,13 @@ Please connect me with the sales director and share official MahaRERA P521000796
       let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', {
           element(el) {
-            const liveCanonical = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}` : `https://${CANONICAL_HOST}/`;
+            const liveCanonical = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}` : `https://${CANONICAL_HOST}/`;
             el.setAttribute('href', liveCanonical);
           }
         })
         .on('meta[property="og:url"]', {
           element(el) {
-            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}` : `https://${CANONICAL_HOST}/`;
+            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}` : `https://${CANONICAL_HOST}/`;
             el.setAttribute('content', liveUrl);
           }
         })
@@ -1061,7 +1114,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         })
         .on('meta[name="twitter:url"]', {
           element(el) {
-            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}` : `https://${CANONICAL_HOST}/`;
+            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}` : `https://${CANONICAL_HOST}/`;
             el.setAttribute('content', liveUrl);
           }
         })
@@ -1071,7 +1124,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
             el.append('<meta name="edge-rendered" content="cloudflare-worker-pune-optimized">', { html: true });
             el.append(`<meta name="viewer-country" content="${viewerCountry}">`, { html: true });
             el.append(`<meta name="viewer-city" content="${viewerCity}">`, { html: true });
-            const markdownUrl = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}.md` : `https://${CANONICAL_HOST}/index.md`;
+            const markdownUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}.md` : `https://${CANONICAL_HOST}/index.md`;
             el.append(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`, { html: true });
             el.append(`<link rel="alternate" type="application/json" href="https://${CANONICAL_HOST}/_edge/knowledge-graph.json" title="Semantic Knowledge Graph">`, { html: true });
             el.append(`<script type="speculationrules">

@@ -2580,6 +2580,8 @@ export function renderProgrammaticPage(url, pageData) {
         "source": "list",
         "urls": [
           "https://${url.hostname}/",
+          "https://${url.hostname}/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis",
+          "https://${url.hostname}/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner",
           "https://${url.hostname}/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
           "https://${url.hostname}/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall"
         ],
@@ -2700,10 +2702,50 @@ export function renderProgrammaticPage(url, pageData) {
     </article>
   </main>
 
-  <footer class="bg-[#141210] text-stone-500 text-xs py-8 px-6 text-center border-t border-stone-800 space-y-2">
-    <p>© Lodha Altero Wakad • MahaRERA Registration: P52100079692</p>
-    <p class="text-[11px] text-stone-600">Site Address: Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune, Maharashtra 411057</p>
-    <p class="mt-2"><a href="/" class="text-amber-400 hover:underline">Back to Main Showcase</a></p>
+  <footer class="bg-[#141210] text-stone-500 text-xs py-12 px-6 border-t border-stone-800 space-y-8">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-left">
+      <div>
+        <h4 class="font-serif text-sm text-amber-300 font-semibold mb-3 tracking-wide">Pillar Research &amp; Analysis</h4>
+        <ul class="space-y-2 text-[11px] text-stone-400">
+          <li><a href="/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis" class="hover:text-amber-400 transition-colors">Luxury 3, 4 &amp; 5 BHK Carpet Area Analysis</a></li>
+          <li><a href="/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner" class="hover:text-amber-400 transition-colors">Pune Luxury Market Report 2026–2030</a></li>
+          <li><a href="/articles/lodha-altero-wakad-price-list-cost-sheet-2026" class="hover:text-amber-400 transition-colors">Official Price List &amp; Cost Sheet 2026</a></li>
+          <li><a href="/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall" class="hover:text-amber-400 transition-colors">Connectivity to Hinjewadi &amp; Metro Line 3</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-serif text-sm text-amber-300 font-semibold mb-3 tracking-wide">Compliance &amp; Architecture</h4>
+        <ul class="space-y-2 text-[11px] text-stone-400">
+          <li><a href="/articles/maharera-p52100079692-statutory-compliance" class="hover:text-amber-400 transition-colors">MahaRERA P52100079692 Escrow Shield</a></li>
+          <li><a href="/articles/25000-sqft-rooftop-sky-club-infinity-pool" class="hover:text-amber-400 transition-colors">25,000 Sq.Ft. Rooftop Sky Club &amp; Pool</a></li>
+          <li><a href="/articles/lodha-altero-floor-plans-sky-duplex-penthouses" class="hover:text-amber-400 transition-colors">Sky Duplex &amp; Penthouse Layouts</a></li>
+          <li><a href="/articles/lodha-pune-residential-ecosystem" class="hover:text-amber-400 transition-colors">Lodha Group Pune Residential Portfolio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-serif text-sm text-amber-300 font-semibold mb-3 tracking-wide">Interactive Showcase</h4>
+        <ul class="space-y-2 text-[11px] text-stone-400">
+          <li><a href="/" class="hover:text-amber-400 transition-colors">Official Master Showcase</a></li>
+          <li><a href="/#residences" class="hover:text-amber-400 transition-colors">Residence Floor Plans</a></li>
+          <li><a href="/#rooftop" class="hover:text-amber-400 transition-colors">Rooftop Infinity Sanctuary</a></li>
+          <li><a href="/#calculator" class="hover:text-amber-400 transition-colors">Cost Sheet &amp; EMI Calculator</a></li>
+          <li><a href="/#contact" class="hover:text-amber-400 transition-colors">VIP Concierge Desk</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto pt-6 border-t border-stone-800/80 flex flex-wrap items-center justify-between gap-4 text-[11px] text-stone-500">
+      <div class="space-y-1 text-left">
+        <p class="font-medium text-stone-400">© Lodha Altero Wakad • Registered under MahaRERA No. P52100079692</p>
+        <p class="text-[10px] text-stone-600">Site Address: Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057</p>
+      </div>
+      <div class="flex items-center gap-4 text-[10px]">
+        <a href="/sitemap.xml" class="text-amber-500 hover:underline">XML Sitemap</a>
+        <a href="/feed.xml" class="text-amber-500 hover:underline">RSS Feed</a>
+        <a href="/llms.txt" class="text-amber-500 hover:underline">LLM Index</a>
+        <a href="/_edge/knowledge-graph.json" class="text-amber-500 hover:underline">Knowledge Graph</a>
+      </div>
+    </div>
   </footer>
 
 </body>
@@ -2745,9 +2787,15 @@ ${tableTitle ? `## ${tableTitle}\n${tableHeaderMd}\n` : ''}
 
 ${faqs.length > 0 ? `## Frequently Asked Questions\n${faqsMd}\n` : ''}
 
-## Direct Concierge Contact
+## Direct Concierge Contact & Authority Resources
 - Official Showcase Website: https://${url.hostname}/
-- Official Price List: https://${url.hostname}/articles/lodha-altero-wakad-price-list-cost-sheet-2026
-- MahaRERA Portal: https://maharera.maharashtra.gov.in (P52100079692)
+- Luxury 3, 4 & 5 BHK Carpet Area Analysis: https://${url.hostname}/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis
+- Pune Luxury Real Estate Market Report 2026–2030: https://${url.hostname}/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner
+- Official Price List & Cost Sheet: https://${url.hostname}/articles/lodha-altero-wakad-price-list-cost-sheet-2026
+- Connectivity to Hinjewadi & Phoenix Mall: https://${url.hostname}/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall
+- Rooftop Sky Club & Heated Infinity Pool: https://${url.hostname}/articles/25000-sqft-rooftop-sky-club-infinity-pool
+- MahaRERA Statutory Compliance & Escrow: https://${url.hostname}/articles/maharera-p52100079692-statutory-compliance
+- Machine Knowledge Graph API: https://${url.hostname}/_edge/knowledge-graph.json
+- MahaRERA Official Portal: https://maharera.maharashtra.gov.in (P52100079692)
 `;
 }
