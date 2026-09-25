@@ -80,6 +80,17 @@ const ARTICLE_SLUGS = {
   }
 };
 
+// ─── CANONICAL DOMAIN AUTHORITY ─────────────────────────────────────────────
+// Primary canonical domain: altero.newlaunches.in
+// Staging origin:           alterowakad.pages.dev
+// Any other hostname MUST 301 to canonical. Zero anomalies tolerated.
+const CANONICAL_HOST = 'altero.newlaunches.in';
+const ALLOWED_HOSTS = new Set([
+  'altero.newlaunches.in',
+  'www.altero.newlaunches.in',   // 301 → canonical below
+  'alterowakad.pages.dev',        // staging origin — allow pass-through
+]);
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -90,6 +101,27 @@ export default {
     const isSocialCrawler = SOCIAL_CRAWLER_REGEX.test(userAgent);
     const isGetRequest = request.method === 'GET';
     const isNoCacheQuery = url.searchParams.has('nocache') || url.searchParams.has('purge');
+
+    // ── STEP 0: CANONICAL HOST ENFORCEMENT (Zero-Anomaly Guard) ──────────────
+    // Redirect www.altero → canonical. Block every unknown hostname.
+    if (hostname === 'www.altero.newlaunches.in') {
+      return Response.redirect(
+        `https://${CANONICAL_HOST}${pathname}${search}`,
+        301
+      );
+    }
+    if (!ALLOWED_HOSTS.has(hostname)) {
+      // Unknown/rogue hostname → hard 301 to canonical root
+      return Response.redirect(`https://${CANONICAL_HOST}${pathname}${search}`, 301);
+    }
+
+    // ── STEP 0b: Force HTTPS ──────────────────────────────────────────────────
+    if (protocol === 'http:') {
+      return Response.redirect(
+        `https://${hostname}${pathname}${search}`,
+        301
+      );
+    }
 
     // Geo & NRI Visitor Intelligence
     const viewerCountry = request.cf?.country || 'IN';
@@ -801,10 +833,12 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
     headers.set('Timing-Allow-Origin', '*');
     headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.3');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.5');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
+    // ── CANONICAL AUTHORITY SIGNALS ── Force canonical host on every response
+    headers.set('X-Canonical-Host', CANONICAL_HOST);
     headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com;");
 
     if (request.cf) {
