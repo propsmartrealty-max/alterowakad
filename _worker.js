@@ -620,9 +620,14 @@ export default {
             if (ctx && ctx.waitUntil) ctx.waitUntil(kvPromise);
           }
 
+          // Standardize phone for email & WhatsApp notification
+          const formattedPhone = (phone.startsWith('+'))
+            ? phone
+            : (phone.length === 10 && /^[6-9]/.test(phone) ? `+91 ${phone}` : `+${phone}`);
+
           // 3. Asynchronously dispatch lead notification email to propsmartrealty@gmail.com
           const emailPayload = {
-            _subject: `New VIP Lead [${leadId}]: Lodha Altero Wakad - ${name} (+91 ${phone})`,
+            _subject: `New VIP Lead [${leadId}]: Lodha Altero Wakad - ${name} (${formattedPhone})`,
             _replyto: (email && email.includes('@')) ? email : 'propsmartrealty@gmail.com',
             _template: 'table',
             _captcha: 'false',
@@ -630,7 +635,7 @@ export default {
             MahaRERA: 'P52100079692',
             Lead_ID: leadId,
             Full_Name: name,
-            Phone_Number: `+91 ${phone}`,
+            Phone_Number: formattedPhone,
             Email: email || 'Not Provided',
             Preferred_Typology: typology,
             Pre_Text_Intention: intent,
@@ -661,7 +666,7 @@ export default {
 I am inquiring regarding Lodha Altero Wakad:
 • Reference ID: ${leadId}
 • Name: ${name}
-• Phone: +91 ${phone}
+• Phone: ${formattedPhone}
 • Preferred Typology: ${typology}
 • My Intention: ${intent}
 • Location: ${viewerCity}, ${viewerCountry}
@@ -900,7 +905,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.6');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.7');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);

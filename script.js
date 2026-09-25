@@ -1772,16 +1772,35 @@ function initFormHandlers() {
       const preference = configSelect ? configSelect.value : '3/4 BHK Sky Residence';
       const intent = intentInput || modalHeading || formHeading || 'Schedule VIP Site Visit & Request Cost Sheet';
 
-      // 4. Strict Indian Mobile Validation (10 digits, starts with 6-9)
-      if (rawPhone.length < 10) {
-        showToast('Please provide a valid 10-digit mobile number.');
+      // 4. Smart Domestic & International Phone Validation
+      if (rawPhone.length < 8) {
+        showToast('Please provide a valid mobile or international phone number.');
         if (phoneInput) phoneInput.focus();
         return;
       }
 
       // Sanitize against HTML/XSS injection
       const cleanName = rawName.replace(/[<>\"\'&]/g, '');
-      const validPhone = rawPhone.slice(-10);
+      
+      // Intelligent International & Domestic Phone Standardizer
+      let validPhone = rawPhone;
+      if (rawPhone.length === 10 && /^[6-9]/.test(rawPhone)) {
+        validPhone = `+91 ${rawPhone}`;
+      } else if (rawPhone.startsWith('91') && rawPhone.length === 12) {
+        validPhone = `+91 ${rawPhone.slice(2)}`;
+      } else if (rawPhone.startsWith('1') && rawPhone.length === 11) {
+        validPhone = `+1 ${rawPhone.slice(1)}`;
+      } else if (rawPhone.startsWith('971') && rawPhone.length >= 11) {
+        validPhone = `+971 ${rawPhone.slice(3)}`;
+      } else if (rawPhone.startsWith('44') && rawPhone.length >= 11) {
+        validPhone = `+44 ${rawPhone.slice(2)}`;
+      } else if (rawPhone.startsWith('65') && rawPhone.length >= 10) {
+        validPhone = `+65 ${rawPhone.slice(2)}`;
+      } else if (rawPhone.startsWith('61') && rawPhone.length >= 10) {
+        validPhone = `+61 ${rawPhone.slice(2)}`;
+      } else {
+        validPhone = `+${rawPhone}`;
+      }
 
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn ? submitBtn.innerText : 'Submit';
@@ -1834,7 +1853,7 @@ function initFormHandlers() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
-            _subject: `New VIP Lead [${activeRefId}]: Lodha Altero Wakad - ${cleanName} (+91 ${validPhone})`,
+            _subject: `New VIP Lead [${activeRefId}]: Lodha Altero Wakad - ${cleanName} (${validPhone})`,
             _replyto: rawEmail && rawEmail.includes('@') ? rawEmail : 'propsmartrealty@gmail.com',
             _template: 'table',
             _captcha: 'false',
@@ -1842,7 +1861,7 @@ function initFormHandlers() {
             MahaRERA: 'P52100079692',
             Lead_ID: activeRefId,
             Full_Name: cleanName,
-            Phone_Number: `+91 ${validPhone}`,
+            Phone_Number: validPhone,
             Email: rawEmail || 'Not Provided',
             Preferred_Typology: preference,
             Customer_Intention: intent,
@@ -1862,7 +1881,7 @@ function initFormHandlers() {
               `I have submitted an inquiry on the official website:\n` +
               `• Reference ID: ${activeRefId}\n` +
               `• Name: ${cleanName}\n` +
-              `• Mobile: +91 ${validPhone}\n` +
+              `• Mobile: ${validPhone}\n` +
               `• Preferred Typology: ${preference}\n` +
               `• Intention: ${intent}\n\n` +
               `Please connect me with the sales director and share official MahaRERA P52100079692 floor plans, cost sheet, and schedule my VIP site visit.`
