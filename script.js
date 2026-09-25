@@ -1616,9 +1616,12 @@ function initGallery() {
 function initModals() {
   const enquiryTriggers = document.querySelectorAll('[data-open-enquiry]');
   const brochureTriggers = document.querySelectorAll('[data-open-brochure]');
+  const chauffeurTriggers = document.querySelectorAll('[data-open-chauffeur]');
   const enquiryModal = document.getElementById('enquiryModal');
   const brochureModal = document.getElementById('brochureModal');
+  const chauffeurModal = document.getElementById('chauffeurModal');
   const closeBtns = document.querySelectorAll('.modal-close');
+  const closeChauffeurBtns = document.querySelectorAll('[data-close-chauffeur]');
 
   enquiryTriggers.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -1634,6 +1637,13 @@ function initModals() {
     });
   });
 
+  chauffeurTriggers.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (chauffeurModal) chauffeurModal.classList.add('active');
+    });
+  });
+
   closeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       if (enquiryModal) enquiryModal.classList.remove('active');
@@ -1641,7 +1651,13 @@ function initModals() {
     });
   });
 
-  [enquiryModal, brochureModal].forEach(modal => {
+  closeChauffeurBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (chauffeurModal) chauffeurModal.classList.remove('active');
+    });
+  });
+
+  [enquiryModal, brochureModal, chauffeurModal].forEach(modal => {
     if (!modal) return;
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
