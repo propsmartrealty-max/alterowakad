@@ -775,8 +775,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
     if (ARTICLE_SLUGS[pathname]) {
       isArticleRoute = true;
       articleMeta = ARTICLE_SLUGS[pathname];
-      // Resolve clean slug to physical article HTML file
-      assetRequest = new Request(new URL(`${pathname}.html`, request.url), request);
+      // Resolve clean slug directly to the directory index.html
+      assetRequest = new Request(new URL(`${pathname}/index.html`, request.url), request);
     }
 
     // =========================================================================
@@ -786,8 +786,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
     try {
       if (env.ASSETS) {
         response = await env.ASSETS.fetch(assetRequest);
-        if (response.status === 404 && isArticleRoute) {
-          response = await env.ASSETS.fetch(new Request(new URL(pathname, request.url), request));
+        // If Pages responds with a redirect (301/308) or 404, fetch the directory path or clean slug directly
+        if ((response.status >= 300 && response.status < 400) || response.status === 404) {
+          response = await env.ASSETS.fetch(new Request(new URL(`${pathname}/`, request.url), request));
         }
       } else {
         response = await fetch(assetRequest);
