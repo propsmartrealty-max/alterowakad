@@ -110,4 +110,28 @@
     </image:image>
   </url>
 
+  <!-- Article 10: 3 BHK, 4 BHK & 5 BHK Big Carpet Analysis -->
+  <url>
+    <loc>https://altero.newlaunches.in/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://altero.newlaunches.in/assets/plans/plan_4bed_unit1_t3.webp</image:loc>
+      <image:title>Luxury 3 BHK, 4 BHK and 5 BHK Big Carpet Residences Wakad Hinjewadi</image:title>
+    </image:image>
+  </url>
+
+  <!-- Article 11: Pune Luxury Real Estate Market Report 2026-2030 -->
+  <url>
+    <loc>https://altero.newlaunches.in/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://altero.newlaunches.in/assets/hero_banner.jpg</image:loc>
+      <image:title>Pune Luxury Real Estate Market Report 2026-2030 Wakad Hinjewadi Baner</image:title>
+    </image:image>
+  </url>
+
 </urlset>

@@ -77,6 +77,16 @@ const ARTICLE_SLUGS = {
     title: 'Connectivity Guide: Lodha Altero Wakad to Hinjewadi IT Park & Phoenix Mall',
     desc: 'Transit analysis, commuting routes, and travel times from Lodha Altero Wakad to Rajiv Gandhi Infotech Park Hinjewadi Phase 1, 2, 3, Phoenix Mall, and Metro Line 3.',
     anchor: '#location'
+  },
+  '/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis': {
+    title: 'Lodha Altero Wakad: Luxury 3, 4 & 5 BHK Big Carpet Area Analysis',
+    desc: 'Architectural breakdown of 1,185 - 3,416 sq.ft. carpet layouts, 10.5 ft ceiling clearances, 3-side open residences, and Mivan formwork at Lodha Altero Wakad.',
+    anchor: '#residences'
+  },
+  '/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner': {
+    title: 'Pune Luxury Real Estate Market Report 2026–2030: Wakad, Hinjewadi & Baner',
+    desc: 'Comprehensive 2026–2030 Pune luxury real estate report examining capital appreciation (9.6% CAGR), 4.8%-5.5% rental yields, Metro Line 3, and Lodha Altero Wakad.',
+    anchor: '#pune-real-estate-hub'
   }
 };
 
@@ -1024,6 +1034,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
         "/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
         "/articles/pune-real-estate-macro-trends-east-vs-west",
         "/articles/lodha-pune-residential-ecosystem",
+        "/articles/wakad-hinjewadi-luxury-3bhk-4bhk-5bhk-carpet-area-analysis",
+        "/articles/pune-luxury-real-estate-market-report-wakad-hinjewadi-baner",
         "/residences/3-bhk-luxury-wakad",
         "/pricing/lodha-wakad-cost-sheet",
         "/transit/hinjewadi-it-park-commute"
