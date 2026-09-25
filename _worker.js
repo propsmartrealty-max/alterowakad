@@ -471,6 +471,13 @@ ${urlsXml}
       if (/\.(jpg|jpeg|webp|png|svg|woff2|woff)$/i.test(pathname)) {
         headers.set('Cache-Control', 'public, max-age=31536000, immutable');
         headers.set('CDN-Cache-Control', 'max-age=31536000');
+      } else if (pathname === '/sw.js') {
+        headers.set('Cache-Control', 'public, max-age=0, no-cache');
+        headers.set('Service-Worker-Allowed', '/');
+        headers.set('Content-Type', 'application/javascript; charset=utf-8');
+      } else if (pathname === '/manifest.webmanifest' || pathname === '/site.webmanifest') {
+        headers.set('Content-Type', 'application/manifest+json; charset=utf-8');
+        headers.set('Cache-Control', 'public, max-age=86400');
       } else if (/\.(css|js)$/i.test(pathname)) {
         headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
         headers.set('CDN-Cache-Control', 'max-age=604800');

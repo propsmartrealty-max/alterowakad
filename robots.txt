@@ -30,6 +30,11 @@ Allow: /amenities/
 Allow: /nri/
 Allow: /vastu/
 Allow: /investment/
+Allow: /schools/
+Allow: /healthcare/
+Allow: /manifest.webmanifest
+Allow: /sw.js
+Allow: /index.md
 Allow: /assets/
 Allow: /assets/plans/
 Allow: /assets/gallery/
@@ -117,6 +122,11 @@ Allow: /amenities/
 Allow: /nri/
 Allow: /vastu/
 Allow: /investment/
+Allow: /schools/
+Allow: /healthcare/
+Allow: /manifest.webmanifest
+Allow: /sw.js
+Allow: /index.md
 Allow: /assets/
 Allow: /llms.txt
 Allow: /llms-full.txt

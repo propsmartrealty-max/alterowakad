@@ -1,0 +1,26 @@
+{
+  "name": "Lodha Altero Wakad | Luxury Residences",
+  "short_name": "Lodha Altero",
+  "description": "Official Landmark Portal for Lodha Altero Wakad, Pune. G+37 Sky Sanctuary with 25,000 sq.ft. Rooftop Sky Club & Heated Infinity Pool.",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#141210",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logos/lodha_altero_partner_logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["real estate", "lifestyle", "finance"],
+  "lang": "en-IN",
+  "dir": "ltr"
+}

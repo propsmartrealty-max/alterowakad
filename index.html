@@ -706,14 +706,43 @@
             "url": "https://lodhaaltero.newlaunches.in/articles/lodha-pune-residential-ecosystem#belmondo"
           }
         ]
+      },
+      {
+        "@type": "Dataset",
+        "@id": "https://lodhaaltero.newlaunches.in/#transit-dataset",
+        "name": "Lodha Altero Wakad Pune Transit & Commute Times Dataset",
+        "description": "Empirical commuting durations and highway distances from Lodha Altero Wakad to Hinjewadi Phase 1, Phase 2, Phase 3, Phoenix Mall, Balewadi High Street, and Pune Airport.",
+        "url": "https://lodhaaltero.newlaunches.in/#location",
+        "keywords": ["Lodha Altero commute", "Wakad to Hinjewadi transit times", "Pune West real estate connectivity"],
+        "creator": {
+          "@type": "Organization",
+          "name": "Lodha Group (Macrotech Developers Ltd)"
+        },
+        "variableMeasured": [
+          "Commute Distance in Kilometres",
+          "Peak Driving Duration in Minutes",
+          "Off-Peak Driving Duration in Minutes"
+        ]
+      },
+      {
+        "@type": "Dataset",
+        "@id": "https://lodhaaltero.newlaunches.in/#pricing-dataset",
+        "name": "Lodha Altero Wakad RERA Sanctioned Pricing & Floor Plan Specifications Dataset",
+        "description": "Sanctioned carpet areas, bedroom typologies, ceiling clear heights, and price specifications in INR, USD, and AED under MahaRERA P52100079692.",
+        "url": "https://lodhaaltero.newlaunches.in/#residences",
+        "keywords": ["Lodha Altero price", "Wakad 3 BHK price", "Wakad 4 BHK price", "Lodha Altero cost sheet"],
+        "creator": {
+          "@type": "Organization",
+          "name": "Lodha Group (Macrotech Developers Ltd)"
+        }
       }
     ]
   }
   </script>
 
   <!-- Favicon & PWA Manifest -->
-  <link rel="icon" href="https://www.lodhagroup.com/sites/default/files/favicon-lodha.png" type="image/png">
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="alternate" type="application/rss+xml" title="Lodha Altero Wakad RSS Feed" href="feed.xml">
   <meta name="theme-color" content="#0C0A09">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1194,17 +1223,29 @@
 
           <!-- Configuration & Official Price Guide Q1 2026 (Right Col) -->
           <div class="lg:col-span-6 reveal-init reveal-fade-up delay-200 glass-panel-light boxing-card boxing-corners rounded-2xl p-6 sm:p-8 shadow-xl shadow-amber-950/5">
-            <h4 class="font-serif text-xl text-stone-900 mb-4 pb-3 border-b border-amber-600/20 font-semibold flex items-center justify-between">
-              <span>Date-Stamped Pricing & Typologies</span>
-              <span class="text-[11px] font-mono text-amber-800 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-600/30">Q1 2026 Guide</span>
-            </h4>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-amber-600/20">
+              <div>
+                <h4 class="font-serif text-xl text-stone-900 font-semibold">
+                  Date-Stamped Pricing & Typologies
+                </h4>
+                <span class="text-[11px] font-mono text-amber-800 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-600/30">Q1 2026 Direct Guide</span>
+              </div>
+              <!-- Global Multi-Currency Switcher Pill -->
+              <div class="currency-switcher-group inline-flex items-center gap-1 p-1 bg-stone-200/70 rounded-lg text-xs font-semibold self-start sm:self-auto">
+                <button type="button" class="currency-btn active px-2.5 py-1 rounded text-[11px] bg-amber-800 text-white font-bold transition-all shadow-xs" data-currency="INR">₹ INR</button>
+                <button type="button" class="currency-btn px-2.5 py-1 rounded text-[11px] text-stone-700 hover:text-stone-900 transition-all" data-currency="USD">$ USD</button>
+                <button type="button" class="currency-btn px-2.5 py-1 rounded text-[11px] text-stone-700 hover:text-stone-900 transition-all" data-currency="AED">د.إ AED</button>
+                <button type="button" class="currency-btn px-2.5 py-1 rounded text-[11px] text-stone-700 hover:text-stone-900 transition-all" data-currency="GBP">£ GBP</button>
+                <button type="button" class="currency-btn px-2.5 py-1 rounded text-[11px] text-stone-700 hover:text-stone-900 transition-all" data-currency="SGD">S$ SGD</button>
+              </div>
+            </div>
             <div class="space-y-3.5">
               
               <!-- 3 BHK -->
               <div class="p-3 rounded-lg border border-amber-600/20 bg-stone-50/70 hover:border-amber-600/50 transition-colors">
                 <div class="flex justify-between items-baseline mb-1">
                   <span class="font-serif font-bold text-stone-900 text-sm">3 BHK Grande Sky Residence</span>
-                  <span class="text-amber-800 font-serif font-bold text-sm">₹2.09 Cr* Onwards</span>
+                  <span class="text-amber-800 font-serif font-bold text-sm price-val" data-base-price="20900000">₹2.09 Cr* Onwards</span>
                 </div>
                 <div class="flex justify-between text-[11px] text-stone-500">
                   <span>Carpet: 1,185 – 1,396 Sq.Ft.</span>
@@ -1217,7 +1258,7 @@
               <div class="p-3 rounded-lg border border-amber-600/20 bg-stone-50/70 hover:border-amber-600/50 transition-colors">
                 <div class="flex justify-between items-baseline mb-1">
                   <span class="font-serif font-bold text-stone-900 text-sm">3.5 BHK Royal Suite with Study</span>
-                  <span class="text-amber-800 font-serif font-bold text-sm">₹2.45 Cr* Onwards</span>
+                  <span class="text-amber-800 font-serif font-bold text-sm price-val" data-base-price="24500000">₹2.45 Cr* Onwards</span>
                 </div>
                 <div class="flex justify-between text-[11px] text-stone-500">
                   <span>Carpet: 1,450 Sq.Ft.</span>
@@ -1230,7 +1271,7 @@
               <div class="p-3 rounded-lg border border-amber-600/20 bg-stone-50/70 hover:border-amber-600/50 transition-colors">
                 <div class="flex justify-between items-baseline mb-1">
                   <span class="font-serif font-bold text-stone-900 text-sm">4 BHK Imperial Haven</span>
-                  <span class="text-amber-800 font-serif font-bold text-sm">₹3.15 Cr* Onwards</span>
+                  <span class="text-amber-800 font-serif font-bold text-sm price-val" data-base-price="31500000">₹3.15 Cr* Onwards</span>
                 </div>
                 <div class="flex justify-between text-[11px] text-stone-500">
                   <span>Carpet: 1,559 – 2,105 Sq.Ft.</span>
@@ -1243,7 +1284,7 @@
               <div class="p-3 rounded-lg border border-amber-600/20 bg-stone-50/70 hover:border-amber-600/50 transition-colors">
                 <div class="flex justify-between items-baseline mb-1">
                   <span class="font-serif font-bold text-stone-900 text-sm">5 BHK Sky Penthouse (L35–37)</span>
-                  <span class="text-amber-800 font-serif font-bold text-sm">₹5.25 Cr* Onwards</span>
+                  <span class="text-amber-800 font-serif font-bold text-sm price-val" data-base-price="52500000">₹5.25 Cr* Onwards</span>
                 </div>
                 <div class="flex justify-between text-[11px] text-stone-500">
                   <span>Carpet: 2,600 – 3,416 Sq.Ft.</span>
@@ -2049,91 +2090,136 @@
         <!-- Controls Column -->
         <div class="lg:col-span-7 space-y-6">
           
+          <!-- Mode Switcher Tabs -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-stone-200">
+            <div class="inline-flex p-1 bg-stone-200/80 rounded-xl gap-1">
+              <button type="button" id="calcModeEmi" class="calc-mode-btn active px-3.5 py-1.5 text-xs rounded-lg font-bold bg-amber-800 text-white shadow-xs transition-all cursor-pointer">
+                Monthly EMI Estimator
+              </button>
+              <button type="button" id="calcModeCost" class="calc-mode-btn px-3.5 py-1.5 text-xs rounded-lg font-semibold text-stone-700 hover:text-stone-900 transition-all cursor-pointer">
+                All-Inclusive Cost Sheet
+              </button>
+            </div>
+            <div class="flex items-center gap-1.5 text-[11px] font-mono text-stone-500">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+              <span>MahaRERA &amp; PCMC Sanctioned</span>
+            </div>
+          </div>
+
           <!-- Typology Budget Presets -->
           <div>
-            <span class="text-[11px] uppercase tracking-wider text-stone-600 block mb-2 font-medium">Select Residence Budget Preset:</span>
+            <span class="text-[11px] uppercase tracking-wider text-stone-600 block mb-2 font-medium">Select Residence Typology Preset:</span>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button type="button" data-budget="160" data-name="3 BHK Grande" class="emi-budget-btn active px-3 py-2 text-xs rounded border border-amber-600 bg-amber-500/15 text-amber-900 font-semibold text-center transition-all cursor-pointer">
+              <button type="button" data-budget="160" data-base="20900000" data-name="3 BHK Grande" class="emi-budget-btn active px-3 py-2 text-xs rounded border border-amber-600 bg-amber-500/15 text-amber-900 font-semibold text-center transition-all cursor-pointer">
                 3 BHK (₹2.09 Cr)
               </button>
-              <button type="button" data-budget="196" data-name="3.5 BHK Royal" class="emi-budget-btn px-3 py-2 text-xs rounded border border-stone-300 bg-white text-stone-700 hover:border-amber-600 text-center transition-all cursor-pointer">
+              <button type="button" data-budget="196" data-base="24500000" data-name="3.5 BHK Royal" class="emi-budget-btn px-3 py-2 text-xs rounded border border-stone-300 bg-white text-stone-700 hover:border-amber-600 text-center transition-all cursor-pointer">
                 3.5 BHK (₹2.45 Cr)
               </button>
-              <button type="button" data-budget="250" data-name="4 BHK Imperial" class="emi-budget-btn px-3 py-2 text-xs rounded border border-stone-300 bg-white text-stone-700 hover:border-amber-600 text-center transition-all cursor-pointer">
-                4 BHK (₹3.12 Cr)
+              <button type="button" data-budget="250" data-base="31500000" data-name="4 BHK Imperial" class="emi-budget-btn px-3 py-2 text-xs rounded border border-stone-300 bg-white text-stone-700 hover:border-amber-600 text-center transition-all cursor-pointer">
+                4 BHK (₹3.15 Cr)
               </button>
-              <button type="button" data-budget="600" data-name="5 BHK Penthouse" class="emi-budget-btn px-3 py-2 text-xs rounded border border-stone-300 bg-white text-stone-700 hover:border-amber-600 text-center transition-all cursor-pointer">
-                Penthouse (₹7.60 Cr)
+              <button type="button" data-budget="600" data-base="52500000" data-name="5 BHK Penthouse" class="emi-budget-btn px-3 py-2 text-xs rounded border border-stone-300 bg-white text-stone-700 hover:border-amber-600 text-center transition-all cursor-pointer">
+                Penthouse (₹5.25 Cr)
               </button>
             </div>
           </div>
 
-          <!-- Loan Amount Slider -->
-          <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-xs uppercase tracking-wider font-semibold text-stone-800">
-                Loan Amount
-              </label>
-              <span id="emiLoanVal" class="font-serif text-xl font-bold text-amber-800">₹160.0 Lakhs</span>
+          <!-- Controls for EMI Mode -->
+          <div id="calcEmiControls" class="space-y-6">
+            <!-- Loan Amount Slider -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs uppercase tracking-wider font-semibold text-stone-800">
+                  Loan Amount
+                </label>
+                <span id="emiLoanVal" class="font-serif text-xl font-bold text-amber-800">₹160.0 Lakhs</span>
+              </div>
+              <input type="range" id="emiLoanSlider" min="50" max="600" step="5" value="160">
+              <div class="flex justify-between text-[11px] text-stone-500 mt-1 font-mono">
+                <span>₹50 Lakhs</span>
+                <span>₹3 Crore</span>
+                <span>₹6 Crore</span>
+              </div>
             </div>
-            <input type="range" id="emiLoanSlider" min="50" max="600" step="5" value="160">
-            <div class="flex justify-between text-[11px] text-stone-500 mt-1 font-mono">
-              <span>₹50 Lakhs</span>
-              <span>₹3 Crore</span>
-              <span>₹6 Crore</span>
+
+            <!-- Interest Rate Slider -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs uppercase tracking-wider font-semibold text-stone-800">
+                  Interest Rate (p.a.)
+                </label>
+                <span id="emiRateVal" class="font-serif text-xl font-bold text-amber-800">8.5%</span>
+              </div>
+              <input type="range" id="emiRateSlider" min="7.0" max="11.5" step="0.1" value="8.5">
+              <div class="flex justify-between text-[11px] text-stone-500 mt-1 font-mono">
+                <span>7.0%</span>
+                <span>8.5% (Prime)</span>
+                <span>11.5%</span>
+              </div>
+            </div>
+
+            <!-- Tenure Slider -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs uppercase tracking-wider font-semibold text-stone-800">
+                  Loan Tenure
+                </label>
+                <span id="emiTenureVal" class="font-serif text-xl font-bold text-amber-800">20 Years</span>
+              </div>
+              <input type="range" id="emiTenureSlider" min="5" max="30" step="1" value="20">
+              <div class="flex justify-between text-[11px] text-stone-500 mt-1 font-mono">
+                <span>5 Yrs</span>
+                <span>15 Yrs</span>
+                <span>30 Yrs</span>
+              </div>
+              <!-- Quick Tenure Buttons -->
+              <div class="flex items-center flex-wrap gap-2 mt-2.5">
+                <span class="text-[11px] text-stone-500 font-medium">Quick Select:</span>
+                <button type="button" data-tenure="10" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">10 Yrs</button>
+                <button type="button" data-tenure="15" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">15 Yrs</button>
+                <button type="button" data-tenure="20" class="emi-tenure-btn active px-2.5 py-1 text-xs rounded border border-amber-600 bg-amber-500/15 text-amber-900 font-semibold transition-colors cursor-pointer">20 Yrs</button>
+                <button type="button" data-tenure="25" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">25 Yrs</button>
+                <button type="button" data-tenure="30" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">30 Yrs</button>
+              </div>
             </div>
           </div>
 
-          <!-- Interest Rate Slider -->
-          <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-xs uppercase tracking-wider font-semibold text-stone-800">
-                Interest Rate (p.a.)
-              </label>
-              <span id="emiRateVal" class="font-serif text-xl font-bold text-amber-800">8.5%</span>
+          <!-- Controls for Cost Sheet Mode -->
+          <div id="calcCostControls" class="hidden space-y-4">
+            <div class="p-4 bg-amber-500/10 border border-amber-600/20 rounded-xl space-y-2 text-xs text-stone-700">
+              <div class="flex justify-between items-center font-semibold text-stone-900">
+                <span>Active Typology:</span>
+                <span id="costTypologyName" class="text-amber-900 font-bold">3 BHK Grande Sky Residence</span>
+              </div>
+              <p class="text-stone-600 leading-relaxed">
+                Statutory levies for Maharashtra &amp; PCMC include: <strong>7% Stamp Duty</strong>, <strong>1% Local Metro Cess</strong>, <strong>5% GST (Under-Construction Luxury)</strong>, and <strong>₹30,000 Govt Registration</strong>.
+              </p>
             </div>
-            <input type="range" id="emiRateSlider" min="7.0" max="11.5" step="0.1" value="8.5">
-            <div class="flex justify-between text-[11px] text-stone-500 mt-1 font-mono">
-              <span>7.0%</span>
-              <span>8.5% (Prime)</span>
-              <span>11.5%</span>
-            </div>
-          </div>
-
-          <!-- Tenure Slider -->
-          <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-xs uppercase tracking-wider font-semibold text-stone-800">
-                Loan Tenure
-              </label>
-              <span id="emiTenureVal" class="font-serif text-xl font-bold text-amber-800">20 Years</span>
-            </div>
-            <input type="range" id="emiTenureSlider" min="5" max="30" step="1" value="20">
-            <div class="flex justify-between text-[11px] text-stone-500 mt-1 font-mono">
-              <span>5 Yrs</span>
-              <span>15 Yrs</span>
-              <span>30 Yrs</span>
-            </div>
-            <!-- Quick Tenure Buttons -->
-            <div class="flex items-center flex-wrap gap-2 mt-2.5">
-              <span class="text-[11px] text-stone-500 font-medium">Quick Select:</span>
-              <button type="button" data-tenure="10" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">10 Yrs</button>
-              <button type="button" data-tenure="15" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">15 Yrs</button>
-              <button type="button" data-tenure="20" class="emi-tenure-btn active px-2.5 py-1 text-xs rounded border border-amber-600 bg-amber-500/15 text-amber-900 font-semibold transition-colors cursor-pointer">20 Yrs</button>
-              <button type="button" data-tenure="25" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">25 Yrs</button>
-              <button type="button" data-tenure="30" class="emi-tenure-btn px-2.5 py-1 text-xs rounded border border-stone-300 bg-white hover:border-amber-600 text-stone-700 transition-colors cursor-pointer">30 Yrs</button>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <span class="text-stone-500 block text-[10px] uppercase font-semibold">Statutory Escrow Compliance</span>
+                <span class="font-serif text-sm font-bold text-stone-900">MahaRERA: P52100079692</span>
+              </div>
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <span class="text-stone-500 block text-[10px] uppercase font-semibold">Payment Milestone Structure</span>
+                <span class="font-serif text-sm font-bold text-amber-800">10:90 / Construction Linked</span>
+              </div>
             </div>
           </div>
 
           <div class="p-4 bg-amber-500/10 border border-amber-600/20 rounded-xl text-xs text-stone-700">
-            <p><span class="text-amber-900 font-semibold">✦ Lodha Advantage:</span> Special preferential home loan interest rates and expedited processing with leading partner banks for Altero patrons.</p>
+            <p><span class="text-amber-900 font-semibold">✦ Lodha Advantage:</span> Preferential home loan interest rates (8.4%*) with leading partner banks and zero pre-EMI options on select units.</p>
           </div>
 
         </div>
 
         <!-- Result Summary Column with Boxing Animations -->
         <div class="lg:col-span-5 bg-[#0e1218]/90 text-white p-8 rounded-xl flex flex-col justify-between boxing-card boxing-beam boxing-corners shadow-2xl relative overflow-hidden border border-amber-500/40">
-          <div>
+          
+          <!-- EMI Result View -->
+          <div id="emiResultView">
             <span class="text-[11px] uppercase tracking-widest text-amber-400 font-semibold block mb-2">Monthly Commitment</span>
             <div class="mb-6">
               <span class="text-xs text-stone-400 block">Estimated Monthly EMI</span>
@@ -2171,9 +2257,47 @@
             </div>
           </div>
 
+          <!-- Cost Sheet Result View -->
+          <div id="costSheetResultView" class="hidden">
+            <span class="text-[11px] uppercase tracking-widest text-amber-400 font-semibold block mb-2">All-Inclusive On-Road Estimation</span>
+            <div class="mb-6">
+              <span class="text-xs text-stone-400 block">Total Estimated On-Road Price</span>
+              <span id="costTotalVal" class="font-serif text-4xl sm:text-5xl font-bold text-amber-300">
+                ₹2.38 Cr*
+              </span>
+            </div>
+
+            <div class="space-y-2.5 shining-border-t pt-4 text-xs">
+              <div class="flex justify-between">
+                <span class="text-stone-400">Base Agreement Value</span>
+                <span id="costBaseVal" class="font-mono text-stone-200 font-semibold">₹2.09 Cr</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-stone-400">Stamp Duty (7.0% Maharashtra)</span>
+                <span id="costStampVal" class="font-mono text-stone-200">₹14.63 Lakhs</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-stone-400">Metro Cess / LBT (1.0% PCMC)</span>
+                <span id="costCessVal" class="font-mono text-stone-200">₹2.09 Lakhs</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-stone-400">GST (5.0% Under-Construction)</span>
+                <span id="costGstVal" class="font-mono text-stone-200">₹10.45 Lakhs</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-stone-400">Government Registration</span>
+                <span class="font-mono text-stone-200">₹30,000</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-stone-400">Society &amp; Sinking Fund Deposit</span>
+                <span class="font-mono text-stone-200">₹1,50,000</span>
+              </div>
+            </div>
+          </div>
+
           <div class="mt-8 pt-6 shining-border-t">
-            <button data-open-enquiry class="w-full btn-gold gold-shimmer-btn text-xs py-3.5">
-              Request Bank Sanction & Payment Plan
+            <button id="calcActionBtn" data-open-enquiry class="w-full btn-gold gold-shimmer-btn text-xs py-3.5 flex items-center justify-center gap-2 cursor-pointer">
+              <span id="calcActionText">Request Bank Sanction &amp; Payment Plan</span>
             </button>
           </div>
         </div>

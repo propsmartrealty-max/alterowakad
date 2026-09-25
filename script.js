@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Location Connectivity Categories Switcher
   initLocationTabs();
 
-  // 8. Interactive EMI Loan Calculator
-  initEmiCalculator();
+  // 8. Interactive Financial Hub (EMI & All-Inclusive Cost Sheet)
+  initFinancialHub();
 
   // 9. Gallery Category Filter & Lightbox
   initGallery();
@@ -45,6 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 14. Interactive Boxing Card Effects & Cursor Glow
   initBoxingCardEffects();
+
+  // 15. Global Multi-Currency Purchasing Engine
+  initCurrencyConverter();
+
+  // 16. Progressive Web App (PWA) Offline Service Worker
+  initPwaServiceWorker();
 });
 
 /* ============================================================
@@ -1094,9 +1100,9 @@ function initLocationTabs() {
 }
 
 /* ============================================================
-   8. Interactive EMI Loan Calculator
+   8. Interactive Financial Hub (EMI & All-Inclusive Cost Sheet)
    ============================================================ */
-function initEmiCalculator() {
+function initFinancialHub() {
   const loanSlider = document.getElementById('emiLoanSlider');
   const loanText = document.getElementById('emiLoanVal');
   const rateSlider = document.getElementById('emiRateSlider');
@@ -1111,9 +1117,31 @@ function initEmiCalculator() {
   const barPrincipal = document.getElementById('emiBarPrincipal');
   const barInterest = document.getElementById('emiBarInterest');
 
+  // Mode Switcher Elements
+  const btnModeEmi = document.getElementById('calcModeEmi');
+  const btnModeCost = document.getElementById('calcModeCost');
+  const emiControls = document.getElementById('calcEmiControls');
+  const costControls = document.getElementById('calcCostControls');
+  const emiResultView = document.getElementById('emiResultView');
+  const costSheetResultView = document.getElementById('costSheetResultView');
+  const calcActionBtn = document.getElementById('calcActionBtn');
+  const calcActionText = document.getElementById('calcActionText');
+
+  // Cost Sheet Elements
+  const costTypologyName = document.getElementById('costTypologyName');
+  const costTotalVal = document.getElementById('costTotalVal');
+  const costBaseVal = document.getElementById('costBaseVal');
+  const costStampVal = document.getElementById('costStampVal');
+  const costCessVal = document.getElementById('costCessVal');
+  const costGstVal = document.getElementById('costGstVal');
+
   if (!loanSlider) return;
 
-  function calculate() {
+  let currentMode = 'emi';
+  let currentBasePrice = 20900000;
+  let currentTypologyTitle = '3 BHK Grande Sky Residence';
+
+  function calculateEmi() {
     const P = parseFloat(loanSlider.value) * 100000;
     const annualRate = parseFloat(rateSlider.value);
     const r = (annualRate / 12) / 100;
@@ -1147,6 +1175,63 @@ function initEmiCalculator() {
     }
   }
 
+  function calculateCostSheet() {
+    const base = currentBasePrice;
+    const stampDuty = base * 0.07;
+    const metroCess = base * 0.01;
+    const gst = base * 0.05;
+    const registration = 30000;
+    const societyDeposit = 150000;
+    const total = base + stampDuty + metroCess + gst + registration + societyDeposit;
+
+    if (costTypologyName) costTypologyName.textContent = currentTypologyTitle;
+    if (costBaseVal) costBaseVal.textContent = `₹${(base / 10000000).toFixed(2)} Cr`;
+    if (costStampVal) costStampVal.textContent = `₹${(stampDuty / 100000).toFixed(2)} Lakhs`;
+    if (costCessVal) costCessVal.textContent = `₹${(metroCess / 100000).toFixed(2)} Lakhs`;
+    if (costGstVal) costGstVal.textContent = `₹${(gst / 100000).toFixed(2)} Lakhs`;
+    if (costTotalVal) costTotalVal.textContent = `₹${(total / 10000000).toFixed(2)} Cr*`;
+  }
+
+  function setMode(mode) {
+    currentMode = mode;
+    if (mode === 'emi') {
+      if (btnModeEmi) {
+        btnModeEmi.classList.add('active', 'bg-amber-800', 'text-white', 'font-bold');
+        btnModeEmi.classList.remove('text-stone-700');
+      }
+      if (btnModeCost) {
+        btnModeCost.classList.remove('active', 'bg-amber-800', 'text-white', 'font-bold');
+        btnModeCost.classList.add('text-stone-700');
+      }
+      if (emiControls) emiControls.classList.remove('hidden');
+      if (costControls) costControls.classList.add('hidden');
+      if (emiResultView) emiResultView.classList.remove('hidden');
+      if (costSheetResultView) costSheetResultView.classList.add('hidden');
+      if (calcActionText) calcActionText.textContent = 'Request Bank Sanction & Payment Plan';
+      calculateEmi();
+    } else {
+      if (btnModeCost) {
+        btnModeCost.classList.add('active', 'bg-amber-800', 'text-white', 'font-bold');
+        btnModeCost.classList.remove('text-stone-700');
+      }
+      if (btnModeEmi) {
+        btnModeEmi.classList.remove('active', 'bg-amber-800', 'text-white', 'font-bold');
+        btnModeEmi.classList.add('text-stone-700');
+      }
+      if (costControls) costControls.classList.remove('hidden');
+      if (emiControls) emiControls.classList.add('hidden');
+      if (costSheetResultView) costSheetResultView.classList.remove('hidden');
+      if (emiResultView) emiResultView.classList.add('hidden');
+      if (calcActionText) calcActionText.textContent = 'Share Cost Sheet Breakdown on WhatsApp (+91 77440 09295)';
+      calculateCostSheet();
+    }
+  }
+
+  if (btnModeEmi && btnModeCost) {
+    btnModeEmi.addEventListener('click', () => setMode('emi'));
+    btnModeCost.addEventListener('click', () => setMode('cost'));
+  }
+
   // Budget Presets Handler
   const budgetBtns = document.querySelectorAll('.emi-budget-btn');
   budgetBtns.forEach(btn => {
@@ -1156,10 +1241,44 @@ function initEmiCalculator() {
       const budgetVal = parseFloat(btn.dataset.budget);
       if (!isNaN(budgetVal)) {
         loanSlider.value = budgetVal;
-        calculate();
+      }
+      if (btn.dataset.base) {
+        currentBasePrice = parseFloat(btn.dataset.base);
+      }
+      if (btn.dataset.name) {
+        currentTypologyTitle = btn.dataset.name;
+      }
+      if (currentMode === 'emi') {
+        calculateEmi();
+      } else {
+        calculateCostSheet();
       }
     });
   });
+
+  // Action Button Handler
+  if (calcActionBtn) {
+    calcActionBtn.addEventListener('click', (e) => {
+      if (currentMode === 'cost') {
+        e.preventDefault();
+        e.stopPropagation();
+        const base = currentBasePrice;
+        const stampDuty = base * 0.07;
+        const metroCess = base * 0.01;
+        const gst = base * 0.05;
+        const total = base + stampDuty + metroCess + gst + 30000 + 150000;
+        const msg = `Hello Lodha Altero Sales Team, please share the official cost sheet and allotment details for ${currentTypologyTitle}:
+- Base Price: ₹${(base / 10000000).toFixed(2)} Cr
+- Stamp Duty (7%): ₹${(stampDuty / 100000).toFixed(2)} Lakhs
+- Metro Cess (1%): ₹${(metroCess / 100000).toFixed(2)} Lakhs
+- GST (5%): ₹${(gst / 100000).toFixed(2)} Lakhs
+- Registration: ₹30,000
+- Estimated Total On-Road: ₹${(total / 10000000).toFixed(2)} Cr
+MahaRERA: P52100079692.`;
+        window.open(`https://wa.me/917744009295?text=${encodeURIComponent(msg)}`, '_blank');
+      }
+    });
+  }
 
   // Quick Tenure Buttons Handler
   const tenureBtns = document.querySelectorAll('.emi-tenure-btn');
@@ -1170,16 +1289,16 @@ function initEmiCalculator() {
       const tenureVal = parseInt(btn.dataset.tenure, 10);
       if (!isNaN(tenureVal)) {
         tenureSlider.value = tenureVal;
-        calculate();
+        calculateEmi();
       }
     });
   });
 
   loanSlider.addEventListener('input', () => {
     budgetBtns.forEach(b => b.classList.remove('active'));
-    calculate();
+    calculateEmi();
   });
-  rateSlider.addEventListener('input', calculate);
+  rateSlider.addEventListener('input', calculateEmi);
   tenureSlider.addEventListener('input', () => {
     const currentTenure = parseInt(tenureSlider.value, 10);
     tenureBtns.forEach(b => {
@@ -1189,10 +1308,96 @@ function initEmiCalculator() {
         b.classList.remove('active');
       }
     });
-    calculate();
+    calculateEmi();
   });
 
-  calculate();
+  calculateEmi();
+  calculateCostSheet();
+}
+
+/* ============================================================
+   15. Global Multi-Currency Purchasing Engine (INR, USD, AED, GBP, SGD)
+   ============================================================ */
+function initCurrencyConverter() {
+  const RATES = {
+    INR: { rate: 1, symbol: '₹', code: 'INR' },
+    USD: { rate: 86.5, symbol: '$', code: 'USD' },
+    AED: { rate: 23.5, symbol: 'د.إ', code: 'AED', suffix: ' AED' },
+    GBP: { rate: 110.0, symbol: '£', code: 'GBP' },
+    SGD: { rate: 64.5, symbol: 'S$', code: 'SGD' }
+  };
+
+  let activeCurrency = 'INR';
+
+  // Check geo-meta tag injected by edge worker
+  const geoMeta = document.querySelector('meta[name="viewer-country"]');
+  const country = geoMeta ? geoMeta.getAttribute('content') : 'IN';
+  if (country === 'US') activeCurrency = 'USD';
+  else if (country === 'AE') activeCurrency = 'AED';
+  else if (country === 'GB') activeCurrency = 'GBP';
+  else if (country === 'SG') activeCurrency = 'SGD';
+
+  function formatPrice(inrVal, currencyCode) {
+    if (currencyCode === 'INR') {
+      const cr = (inrVal / 10000000).toFixed(2);
+      return `₹${cr} Cr* Onwards`;
+    }
+    const conf = RATES[currencyCode];
+    const converted = Math.round(inrVal / conf.rate);
+    const cr = (inrVal / 10000000).toFixed(2);
+    if (conf.suffix) {
+      return `${converted.toLocaleString('en-US')}${conf.suffix}* (₹${cr} Cr)`;
+    }
+    return `${conf.symbol}${converted.toLocaleString('en-US')}* (₹${cr} Cr)`;
+  }
+
+  function updateAllPrices(code) {
+    activeCurrency = code;
+    document.querySelectorAll('.currency-btn').forEach(btn => {
+      if (btn.dataset.currency === code) {
+        btn.classList.add('active', 'bg-amber-800', 'text-white', 'font-bold');
+        btn.classList.remove('text-stone-700');
+      } else {
+        btn.classList.remove('active', 'bg-amber-800', 'text-white', 'font-bold');
+        btn.classList.add('text-stone-700');
+      }
+    });
+
+    document.querySelectorAll('.price-val[data-base-price]').forEach(el => {
+      const base = parseFloat(el.dataset.basePrice);
+      if (!isNaN(base)) {
+        el.textContent = formatPrice(base, code);
+      }
+    });
+  }
+
+  document.querySelectorAll('.currency-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.dataset.currency;
+      if (RATES[code]) {
+        updateAllPrices(code);
+      }
+    });
+  });
+
+  if (activeCurrency !== 'INR') {
+    updateAllPrices(activeCurrency);
+  }
+}
+
+/* ============================================================
+   16. Progressive Web App (PWA) Offline Service Worker
+   ============================================================ */
+function initPwaServiceWorker() {
+  if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        console.log('[PWA] Service Worker registered:', reg.scope);
+      }).catch((err) => {
+        console.warn('[PWA] Service Worker registration failed:', err);
+      });
+    });
+  }
 }
 
 /* ============================================================
