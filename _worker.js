@@ -440,8 +440,12 @@ export default {
           "escrowPercentage": "70% Ring-Fenced Section 4(2)(l)(D)"
         },
         "geoCoordinates": {
-          "latitude": 18.5987,
-          "longitude": 73.7684,
+          "latitude": 18.5902448,
+          "longitude": 73.7718644,
+          "googleMapsCid": "6038659290505691842",
+          "googleMapsUrl": "https://maps.google.com/?cid=6038659290505691842",
+          "googlePlaceUrl": "https://www.google.com/maps/place/Lodha+Altero+Gallery/@18.5902448,73.7692895,17z/data=!3m1!4b1!4m6!3m5!1s0x3bc2b9004e99e127:0x53cda0a16a3442c2!8m2!3d18.5902448!4d73.7718644!16s%2Fg%2F11ly_c7xw0",
+          "googleKgmid": "/g/11ly_c7xw0",
           "region": "PCMC West Pune",
           "address": "Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057"
         },

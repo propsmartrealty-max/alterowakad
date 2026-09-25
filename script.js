@@ -57,6 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 18. Interactive Competitor Battlecard Selector
   initCompetitorBattlecard();
+
+  // 19. Multi-Intent WhatsApp Concierge Dock
+  initWhatsAppConciergeDock();
+
+  // 20. High-Net-Worth Exit-Intent Lead Recovery Modal
+  initExitIntentModal();
+
+  // 21. Progressive Web App (PWA) Mobile Install Banner
+  initPwaInstallPrompt();
 });
 
 /* ============================================================
@@ -2127,4 +2136,147 @@ function initCompetitorBattlecard() {
 
   renderCompetitor(compSelect.value || 'kolte-patil');
 }
+
+/* ============================================================
+   19. Multi-Intent WhatsApp Concierge Dock
+   ============================================================ */
+function initWhatsAppConciergeDock() {
+  const modal = document.getElementById('whatsappConciergeModal');
+  const triggers = document.querySelectorAll('[data-open-whatsapp-concierge]');
+  const closeBtns = document.querySelectorAll('[data-close-whatsapp]');
+
+  if (!modal) return;
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.classList.add('active');
+    });
+  });
+
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
+  });
+}
+
+/* ============================================================
+   20. High-Net-Worth Exit-Intent Lead Recovery Modal
+   ============================================================ */
+function initExitIntentModal() {
+  const modal = document.getElementById('exitIntentModal');
+  const closeBtns = document.querySelectorAll('[data-close-exit-intent]');
+
+  if (!modal) return;
+
+  let hasShown = false;
+  try {
+    hasShown = sessionStorage.getItem('altero_exit_shown') === 'true';
+  } catch (e) {}
+
+  if (hasShown) return;
+
+  const triggerModal = () => {
+    if (hasShown) return;
+    hasShown = true;
+    try {
+      sessionStorage.setItem('altero_exit_shown', 'true');
+    } catch (e) {}
+    modal.classList.add('active');
+  };
+
+  // 1. Desktop Exit Intent (Cursor leaves top of viewport)
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY <= 10 && !hasShown) {
+      triggerModal();
+    }
+  });
+
+  // 2. Mobile Inactivity / Scroll Reversal Trigger
+  let maxScroll = 0;
+  let lastScrollY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    if (currentScrollY > maxScroll) maxScroll = currentScrollY;
+
+    // If scrolled past 55% of page and scrolls up rapidly > 300px
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight > 1000 && maxScroll / docHeight > 0.55) {
+      if (maxScroll - currentScrollY > 300 && !hasShown) {
+        triggerModal();
+      }
+    }
+    lastScrollY = currentScrollY;
+  }, { passive: true });
+
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
+  });
+}
+
+/* ============================================================
+   21. Progressive Web App (PWA) Mobile Install Banner
+   ============================================================ */
+function initPwaInstallPrompt() {
+  const banner = document.getElementById('pwaInstallBanner');
+  const installBtn = document.getElementById('pwaInstallBtn');
+  const dismissBtn = document.getElementById('pwaDismissBtn');
+
+  if (!banner) return;
+
+  let deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Check if dismissed previously this session
+    try {
+      if (sessionStorage.getItem('altero_pwa_dismissed') === 'true') return;
+    } catch (err) {}
+
+    banner.classList.remove('hidden');
+    banner.classList.add('flex');
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        showToast('Lodha Altero Portal Installed Successfully!');
+      }
+      deferredPrompt = null;
+    });
+  }
+
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+      try {
+        sessionStorage.setItem('altero_pwa_dismissed', 'true');
+      } catch (err) {}
+    });
+  }
+}
+
 
