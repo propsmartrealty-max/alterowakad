@@ -1619,6 +1619,68 @@
         </div>
       </div>
 
+      <!-- Interactive Vastu & Sun Path Illumination Simulator -->
+      <div class="mt-12 glass-panel-light boxing-card boxing-beam boxing-corners p-6 sm:p-10 rounded-2xl shadow-xl shadow-amber-950/5 reveal-init reveal-fade-up delay-300 border border-amber-600/30">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-6 border-b border-amber-600/20">
+          <div>
+            <span class="luxury-eyebrow mb-1">Architectural Micro-Climate &amp; Vastu Shastra</span>
+            <h3 class="font-serif text-2xl sm:text-3xl text-stone-900">
+              Interactive Sun Path &amp; Vastu Directional Simulator
+            </h3>
+          </div>
+          <!-- Time Scrubber Buttons -->
+          <div class="inline-flex p-1 bg-stone-200/80 rounded-xl gap-1">
+            <button type="button" class="vastu-time-btn active px-3.5 py-1.5 text-xs rounded-lg font-bold bg-amber-800 text-white shadow-xs transition-all cursor-pointer" data-time="morning">
+              🌅 Morning (07:00 AM)
+            </button>
+            <button type="button" class="vastu-time-btn px-3.5 py-1.5 text-xs rounded-lg font-semibold text-stone-700 hover:text-stone-900 transition-all cursor-pointer" data-time="noon">
+              ☀️ Midday (12:30 PM)
+            </button>
+            <button type="button" class="vastu-time-btn px-3.5 py-1.5 text-xs rounded-lg font-semibold text-stone-700 hover:text-stone-900 transition-all cursor-pointer" data-time="sunset">
+              🌇 Sunset (06:15 PM)
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 bg-[#141210] p-6 rounded-xl border border-amber-500/30 text-white relative overflow-hidden min-h-[280px] flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <div>
+                <span id="vastuSunPhase" class="text-xs uppercase tracking-widest text-amber-400 font-bold block mb-1">Sunrise Stage • East-Facing Illumination</span>
+                <h4 id="vastuHeadline" class="font-serif text-xl sm:text-2xl text-amber-200">Morning Golden Light across Master Balconies</h4>
+              </div>
+              <span id="vastuSunIcon" class="text-3xl animate-bounce">🌅</span>
+            </div>
+            <p id="vastuNarrative" class="text-stone-300 text-xs sm:text-sm leading-relaxed my-4">
+              At dawn, unobstructed sunlight from the Sahyadri horizon directly energizes the East and North-East facing private viewing decks of Towers 1 &amp; 2, filling master suites with pure natural morning radiance in full accordance with Ishan Vastu principles.
+            </p>
+            <div class="grid grid-cols-3 gap-2 pt-3 border-t border-amber-500/25 text-[11px] font-mono">
+              <div><span class="text-stone-400 block">Direct Light:</span><span id="vastuLightVal" class="text-amber-300 font-bold">100% East Decks</span></div>
+              <div><span class="text-stone-400 block">Acoustic Shield:</span><span class="text-amber-300 font-bold">38 dB Glazing</span></div>
+              <div><span class="text-stone-400 block">Cross Breeze:</span><span id="vastuBreezeVal" class="text-emerald-400 font-bold">Optimal 3-Side</span></div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-3 text-xs text-stone-700">
+            <div class="p-3 bg-white rounded-xl border border-stone-200 shadow-xs">
+              <span class="text-[10px] text-amber-800 font-bold uppercase tracking-wider block">Entrance Alignment</span>
+              <strong class="text-stone-900 text-sm font-serif">100% East-Facing Main Doorways</strong>
+              <p class="text-stone-500 text-[11px] mt-0.5">Compliant with traditional Vastu Shastra for prosperous cosmic energy entry.</p>
+            </div>
+            <div class="p-3 bg-white rounded-xl border border-stone-200 shadow-xs">
+              <span class="text-[10px] text-amber-800 font-bold uppercase tracking-wider block">Kitchen Orientation</span>
+              <strong class="text-stone-900 text-sm font-serif">Agneya (South-East) Corner</strong>
+              <p class="text-stone-500 text-[11px] mt-0.5">Cooking platforms engineered toward fire element zone with external utility ventilation.</p>
+            </div>
+            <div class="p-3 bg-white rounded-xl border border-stone-200 shadow-xs">
+              <span class="text-[10px] text-amber-800 font-bold uppercase tracking-wider block">Master Sanctuary</span>
+              <strong class="text-stone-900 text-sm font-serif">Nairutya (South-West) Position</strong>
+              <p class="text-stone-500 text-[11px] mt-0.5">Anchored for family stability, peaceful sleep acoustics, and sunset landscape vistas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1844,6 +1906,56 @@
           ></iframe>
         </div>
 
+      </div>
+
+      <!-- Interactive Micro-Market Competitor Battlecard Selector -->
+      <div id="competitor-comparator" class="mt-16 glass-panel-light boxing-card boxing-beam boxing-corners p-6 sm:p-10 rounded-2xl shadow-xl shadow-amber-950/5 reveal-init reveal-fade-up border border-amber-600/30">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-amber-600/20">
+          <div>
+            <span class="luxury-eyebrow mb-1">Architectural &amp; Location Superiority</span>
+            <h3 class="font-serif text-2xl sm:text-3xl text-stone-900">
+              Interactive Micro-Market Battlecard Selector
+            </h3>
+          </div>
+          <!-- Competitor Dropdown -->
+          <div class="flex items-center gap-2">
+            <label for="competitorSelect" class="text-xs text-stone-600 font-medium hidden sm:inline">Compare vs:</label>
+            <select id="competitorSelect" class="px-3.5 py-2 text-xs rounded-xl bg-white border border-amber-600/40 text-stone-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer shadow-xs">
+              <option value="kolte-patil">Kolte Patil 24K Glamore (Wakad)</option>
+              <option value="godrej-woodsville">Godrej Woodsville (Hinjewadi)</option>
+              <option value="vtp-bellissimo">VTP Bellissimo (Hinjewadi)</option>
+              <option value="kohinoor-courtyard">Kohinoor Courtyard One (Wakad)</option>
+              <option value="pride-world-city">Pride World City (Charholi)</option>
+              <option value="kalpataru-jade">Kalpataru Jade (Baner)</option>
+              <option value="anp-universe">ANP Universe (Balewadi)</option>
+              <option value="rohan-tarang">Rohan Tarang (Wakad)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Comparative Spec Matrix -->
+        <div class="overflow-x-auto -webkit-overflow-scrolling-touch">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="border-b border-stone-200">
+                <th class="p-3 text-stone-500 font-semibold uppercase tracking-wider text-[11px]">Specification Metric</th>
+                <th class="p-3 text-amber-950 bg-amber-500/15 font-bold rounded-t-lg font-serif text-sm">⭐ Lodha Altero Wakad (G+37)</th>
+                <th id="compTableHeader" class="p-3 text-stone-700 font-semibold text-sm">Kolte Patil 24K Glamore</th>
+              </tr>
+            </thead>
+            <tbody id="compTableBody" class="divide-y divide-stone-100">
+              <!-- Dynamically populated via script.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-amber-600/20">
+          <span class="text-xs text-stone-500">MahaRERA: P52100079692 • Source: Public RERA Disclosures &amp; Site Surveys</span>
+          <a id="compDetailLink" href="/compare/lodha-altero-vs-kolte-patil-24k-wakad" class="btn-gold text-xs py-2.5 px-5 rounded-lg flex items-center gap-1.5 shadow-sm">
+            <span>Read In-Depth Comparative Guide</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
       </div>
 
     </div>
@@ -2391,6 +2503,68 @@
         <div>
           <span class="font-serif text-3xl sm:text-4xl font-bold text-amber-800 block">P52100079692</span>
           <span class="text-xs text-stone-600 uppercase tracking-wider font-medium">MahaRERA Registered</span>
+        </div>
+      </div>
+
+      <!-- Live MahaRERA Statutory Trust & Escrow Verification Badge -->
+      <div class="mt-8 glass-panel-light boxing-card boxing-beam boxing-corners p-6 sm:p-8 rounded-2xl border border-amber-600/30 shadow-xl shadow-amber-950/5 reveal-init reveal-fade-up delay-300">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0 text-2xl shadow-inner">
+              🏛️
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap mb-1">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                  Statutory RERA Verified
+                </span>
+                <span class="text-xs font-mono font-bold text-amber-900 bg-amber-100/80 px-2.5 py-0.5 rounded-full border border-amber-300">
+                  Reg No: P52100079692
+                </span>
+              </div>
+              <h3 class="font-serif text-xl sm:text-2xl text-stone-900 font-bold">
+                MahaRERA Statutory Compliance &amp; 70% Escrow Protection
+              </h3>
+              <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
+                Purchaser capital is fully safeguarded under Maharashtra Real Estate Regulatory Authority (MahaRERA) Section 4(2)(l)(D). 70% of all collections are ring-fenced in a designated project escrow account exclusively for construction and land outlays.
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
+            <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer" class="btn-gold text-xs py-2.5 px-5 rounded-xl font-bold flex items-center justify-center gap-2 text-center shadow-md">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              <span>Verify on MahaRERA Portal</span>
+            </a>
+            <div class="text-[11px] text-stone-500 text-center flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <span>100% Clear &amp; Marketable Title</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-amber-600/15 text-xs text-stone-600">
+          <div class="flex items-start gap-2.5">
+            <span class="text-amber-700 font-bold text-base leading-none">✓</span>
+            <div>
+              <strong class="text-stone-900 block font-medium">Clear PCMC Sanction CC</strong>
+              <span>Commencement Certificate granted by Pimpri Chinchwad Municipal Corporation.</span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="text-amber-700 font-bold text-base leading-none">✓</span>
+            <div>
+              <strong class="text-stone-900 block font-medium">BSE / NSE Listed Transparency</strong>
+              <span>Macrotech Developers Ltd (Lodha Group) — Audited quarterly disclosures under SEBI.</span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="text-amber-700 font-bold text-base leading-none">✓</span>
+            <div>
+              <strong class="text-stone-900 block font-medium">Zero Encumbrance Certification</strong>
+              <span>Independently vetted title search reports by top-tier legal advisory firms.</span>
+            </div>
+          </div>
         </div>
       </div>
 

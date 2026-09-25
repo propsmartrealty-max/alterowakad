@@ -126,6 +126,12 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    // Redirect legacy staging subdomain to new staging link alterowakad.pages.dev
+    if (hostname === 'lodhaalterowakad.pages.dev') {
+      url.hostname = 'alterowakad.pages.dev';
+      return Response.redirect(url.toString(), 301);
+    }
+
     // =========================================================================
     // 2. Google Search Console & IndexNow Verification Key Handlers
     // =========================================================================
@@ -318,6 +324,137 @@ export default {
       return new Response(JSON.stringify(statusData, null, 2), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
       });
+    }
+
+    // =========================================================================
+    // 4b. AI Search Unified Knowledge Graph API (Gemini, Perplexity, SearchGPT)
+    // =========================================================================
+    if (pathname === '/_edge/knowledge-graph.json') {
+      const kgPayload = {
+        "@context": "https://schema.org",
+        "@type": "ApartmentComplex",
+        "name": "Lodha Altero Wakad",
+        "alternateName": "Lodha Wakad Pune",
+        "url": `https://${hostname}/`,
+        "developer": {
+          "@type": "RealEstateDeveloper",
+          "name": "Lodha Group (Macrotech Developers Ltd)",
+          "url": "https://www.lodhagroup.com"
+        },
+        "statutoryCompliance": {
+          "authority": "Maharashtra Real Estate Regulatory Authority (MahaRERA)",
+          "registrationNumber": "P52100079692",
+          "verificationUrl": "https://maharera.maharashtra.gov.in",
+          "escrowPercentage": "70% Ring-Fenced Section 4(2)(l)(D)"
+        },
+        "geoCoordinates": {
+          "latitude": 18.5987,
+          "longitude": 73.7684,
+          "region": "PCMC West Pune",
+          "address": "Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057"
+        },
+        "typologies": [
+          { "type": "3 BHK Grande", "carpetSqFt": "1185 - 1396", "priceInr": 20900000, "priceUsd": 241600, "priceAed": 912600 },
+          { "type": "3.5 BHK Royal Suite with Study", "carpetSqFt": "1450", "priceInr": 24500000, "priceUsd": 283200, "priceAed": 1070000 },
+          { "type": "4 BHK Imperial Haven", "carpetSqFt": "1559 - 2105", "priceInr": 31500000, "priceUsd": 364100, "priceAed": 1375000 },
+          { "type": "5 BHK Sky Penthouse", "carpetSqFt": "2600 - 3416", "priceInr": 52500000, "priceUsd": 606900, "priceAed": 2293000 }
+        ],
+        "amenityHighlights": [
+          "25,000 sq.ft. Rooftop Sanctuary on 37th Floor (~120m height)",
+          "50m Temperature-Regulated Heated Infinity Sky Pool",
+          "Tournament-Grade Rooftop Glass Padel Tennis Court",
+          "Computerized Stargazing Celestial Observatory",
+          "400m Cushioned Sky Jogging Loop suspended above skyline",
+          "Mivan Monolithic RCC Aluminum Formwork with 38 dB Acoustic Fenestrations"
+        ],
+        "canonicalCorridorsCount": Object.keys(PROGRAMMATIC_PAGES).length,
+        "programmaticCorridors": Object.keys(PROGRAMMATIC_PAGES).map(slug => ({
+          "slug": slug,
+          "url": `https://${hostname}${slug}`,
+          "category": PROGRAMMATIC_PAGES[slug].category,
+          "title": PROGRAMMATIC_PAGES[slug].title
+        })),
+        "lastUpdated": new Date().toISOString()
+      };
+
+      return new Response(JSON.stringify(kgPayload, null, 2), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+          'Access-Control-Allow-Origin': '*',
+          'X-Robots-Tag': 'index, follow'
+        }
+      });
+    }
+
+    // =========================================================================
+    // 4c. Edge-Native Lead Intake Webhook with Spam Mitigation
+    // =========================================================================
+    if (pathname === '/_edge/submit-lead') {
+      if (request.method === 'OPTIONS') {
+        return new Response(null, {
+          status: 204,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          }
+        });
+      }
+
+      if (request.method === 'POST') {
+        try {
+          const body = await request.json().catch(() => ({}));
+          const name = (body.name || 'Valued Patron').trim();
+          const phone = (body.phone || '').trim();
+          const email = (body.email || '').trim();
+          const typology = (body.typology || '3/4 BHK Luxury Residence').trim();
+          const source = (body.source || 'Website Showcase').trim();
+
+          if (!phone || phone.length < 8) {
+            return new Response(JSON.stringify({ success: false, error: 'Valid phone number required' }), {
+              status: 400,
+              headers: { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }
+            });
+          }
+
+          const leadId = 'ALT-' + Date.now().toString(36).toUpperCase();
+          const edgeTimestamp = new Date().toISOString();
+
+          // Construct formatted WhatsApp deep link message for instant handover
+          const waMessage = `New VIP Lead [${leadId}]:
+Name: ${name}
+Phone: ${phone}
+Email: ${email || 'N/A'}
+Typology: ${typology}
+Country: ${viewerCountry} (${viewerCity})
+Source: ${source}`;
+
+          const whatsappRedirectUrl = `https://wa.me/917744009295?text=${encodeURIComponent(waMessage)}`;
+
+          return new Response(JSON.stringify({
+            success: true,
+            leadId,
+            edgeTimestamp,
+            country: viewerCountry,
+            city: viewerCity,
+            whatsappRedirectUrl,
+            message: 'Priority allocation registered under MahaRERA P52100079692'
+          }), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              'Access-Control-Allow-Origin': '*'
+            }
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ success: false, error: 'Failed to process lead' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+      }
     }
 
     // =========================================================================
@@ -529,6 +666,7 @@ ${urlsXml}
             el.append(`<meta name="viewer-city" content="${viewerCity}">`, { html: true });
             const markdownUrl = isArticleRoute ? `https://${hostname}${pathname}.md` : `https://${hostname}/index.md`;
             el.append(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`, { html: true });
+            el.append(`<link rel="alternate" type="application/json" href="https://${hostname}/_edge/knowledge-graph.json" title="Semantic Knowledge Graph">`, { html: true });
             el.append(`<script type="speculationrules">
 {
   "prerender": [

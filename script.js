@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 16. Progressive Web App (PWA) Offline Service Worker
   initPwaServiceWorker();
+
+  // 17. Architectural Vastu & Sun Path Simulator
+  initVastuSimulator();
+
+  // 18. Interactive Competitor Battlecard Selector
+  initCompetitorBattlecard();
 });
 
 /* ============================================================
@@ -1754,7 +1760,26 @@ function initFormHandlers() {
         submitBtn.innerText = 'Verifying & Transmitting...';
       }
 
-      setTimeout(() => {
+      // Generate local fallback reference ID
+      const fallbackRefId = 'ALT-2026-' + Math.floor(10000 + Math.random() * 90000);
+
+      // Edge-native submission payload
+      const leadPayload = {
+        name: cleanName,
+        phone: validPhone,
+        typology: preference,
+        source: window.location.pathname || 'Direct Showcase'
+      };
+
+      // Asynchronous POST to Edge Lead Webhook
+      fetch('/_edge/submit-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leadPayload)
+      })
+      .then(res => res.json())
+      .catch(() => ({ success: false }))
+      .then(edgeData => {
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.innerText = originalText;
@@ -1767,23 +1792,26 @@ function initFormHandlers() {
           parentModal.classList.remove('active');
         }
 
-        // Generate Randomized VIP Booking Pass ID
-        const refId = 'ALT-2026-' + Math.floor(10000 + Math.random() * 90000);
+        const activeRefId = (edgeData && edgeData.leadId) ? edgeData.leadId : fallbackRefId;
         const refIdEl = document.getElementById('bookingRefId');
-        if (refIdEl) refIdEl.innerText = refId;
+        if (refIdEl) refIdEl.innerText = activeRefId;
 
         // Dynamic Concierge Direct Dispatch Link
         const waLink = document.getElementById('successWhatsAppLink');
         if (waLink) {
-          const encodedMsg = encodeURIComponent(
-            `Hi Lodha Concierge, I have scheduled a VIP Preview for Lodha Altero Wakad.\n\n` +
-            `• Reference ID: ${refId}\n` +
-            `• Name: ${cleanName}\n` +
-            `• Mobile: +91 ${validPhone}\n` +
-            `• Interest: ${preference}\n\n` +
-            `Please confirm my site visit & share sanctioned plans.`
-          );
-          waLink.href = `https://wa.me/917744009295?text=${encodedMsg}`;
+          if (edgeData && edgeData.whatsappRedirectUrl) {
+            waLink.href = edgeData.whatsappRedirectUrl;
+          } else {
+            const encodedMsg = encodeURIComponent(
+              `Hi Lodha Concierge, I have scheduled a VIP Preview for Lodha Altero Wakad.\n\n` +
+              `• Reference ID: ${activeRefId}\n` +
+              `• Name: ${cleanName}\n` +
+              `• Mobile: +91 ${validPhone}\n` +
+              `• Interest: ${preference}\n\n` +
+              `Please confirm my site visit & share sanctioned plans.`
+            );
+            waLink.href = `https://wa.me/917744009295?text=${encodedMsg}`;
+          }
         }
 
         const successModal = document.getElementById('bookingSuccessModal');
@@ -1791,8 +1819,8 @@ function initFormHandlers() {
           successModal.classList.add('active');
         }
 
-        showToast(`VIP Preview Confirmed! Reference ID: ${refId}`);
-      }, 750);
+        showToast(`VIP Preview Confirmed! Reference ID: ${activeRefId}`);
+      });
     });
   });
 
@@ -1856,5 +1884,215 @@ function initBoxingCardEffects() {
       card.style.setProperty('--mouse-y', `${y}px`);
     });
   });
+}
+
+/* ============================================================
+   17. Architectural Vastu & Sun Path Simulator
+   ============================================================ */
+function initVastuSimulator() {
+  const timeBtns = document.querySelectorAll('.vastu-time-btn');
+  const sunPhase = document.getElementById('vastuSunPhase');
+  const headline = document.getElementById('vastuHeadline');
+  const sunIcon = document.getElementById('vastuSunIcon');
+  const narrative = document.getElementById('vastuNarrative');
+  const lightVal = document.getElementById('vastuLightVal');
+  const breezeVal = document.getElementById('vastuBreezeVal');
+
+  if (!timeBtns.length || !headline) return;
+
+  const VASTU_DATA = {
+    morning: {
+      phase: 'Sunrise Stage • East-Facing Illumination',
+      headline: 'Morning Golden Light across Master Balconies',
+      icon: '🌅',
+      narrative: 'At dawn, unobstructed sunlight from the Sahyadri horizon directly energizes the East and North-East facing private viewing decks of Towers 1 & 2, filling master suites with pure natural morning radiance in full accordance with Ishan Vastu principles.',
+      light: '100% East Decks',
+      breeze: 'Optimal 3-Side'
+    },
+    noon: {
+      phase: 'Zenith Stage • Thermal & Acoustic Buffer',
+      headline: 'High Solar Altitude with Zero Harsh Glare',
+      icon: '☀️',
+      narrative: 'At solar peak, deep cantilevered 6-foot balconies cast architectural cooling shadows over primary living spaces. High-performance DGU low-E glazing rejects 76% infrared heat, maintaining ambient interior thermal comfort without excessive HVAC consumption.',
+      light: 'Indirect Diffuse 78%',
+      breeze: 'Continuous Cross-Draft'
+    },
+    sunset: {
+      phase: 'Golden Twilight • West Sahyadri Sunset Vistas',
+      headline: 'Spectacular Sahyadri Sunset over Horizon Decks',
+      icon: '🌇',
+      narrative: 'As the sun descends over the Western Ghats ridge, South-West master sanctuaries and rooftop lounge decks are bathed in soft amber twilight. Nairutya quadrant positioning anchors grounded domestic tranquility and acoustic insulation from the evening breeze.',
+      light: 'Warm Twilight 3000K',
+      breeze: 'Cool Evening Westerlies'
+    }
+  };
+
+  timeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const timeKey = btn.dataset.time;
+      const data = VASTU_DATA[timeKey];
+      if (!data) return;
+
+      timeBtns.forEach(b => {
+        b.classList.remove('active', 'bg-amber-800', 'text-white', 'shadow-xs', 'font-bold');
+        b.classList.add('text-stone-700', 'font-semibold');
+      });
+      btn.classList.add('active', 'bg-amber-800', 'text-white', 'shadow-xs', 'font-bold');
+      btn.classList.remove('text-stone-700');
+
+      if (sunPhase) sunPhase.textContent = data.phase;
+      if (headline) headline.textContent = data.headline;
+      if (sunIcon) sunIcon.textContent = data.icon;
+      if (narrative) narrative.textContent = data.narrative;
+      if (lightVal) lightVal.textContent = data.light;
+      if (breezeVal) breezeVal.textContent = data.breeze;
+    });
+  });
+}
+
+/* ============================================================
+   18. Interactive Competitor Battlecard Selector
+   ============================================================ */
+function initCompetitorBattlecard() {
+  const compSelect = document.getElementById('competitorSelect');
+  const compHeader = document.getElementById('compTableHeader');
+  const compBody = document.getElementById('compTableBody');
+  const compLink = document.getElementById('compDetailLink');
+
+  if (!compSelect || !compBody) return;
+
+  const COMPETITORS = {
+    'kolte-patil': {
+      name: 'Kolte Patil 24K Glamore (Wakad)',
+      link: '/compare/lodha-altero-vs-kolte-patil-24k-wakad',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+28 (~90m Height)', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.5 Ft Standard Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Ground & Podium Amenities Only', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins via Direct 36m BRTS Arterial', comp: '12–15 Mins via Congested Internal Wakad Lanes', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: '18-Metre Internal Access Road', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC High-Priority Urban Infrastructure', comp: 'PCMC Urban Jurisdiction', win: false },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹1.95 Cr* (3 BHK Standard 1,050 sq.ft.)', win: false }
+      ]
+    },
+    'godrej-woodsville': {
+      name: 'Godrej Woodsville (Hinjewadi Ph 1)',
+      link: '/compare/lodha-altero-vs-godrej-woodsville-hinjewadi',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+32 (~102m Height)', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.6 Ft Conventional Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Restricted Rooftop Viewing Deck Only', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins (Datta Mandir Road Bypass)', comp: '15–20 Mins (Maan Road Bottlenecks)', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: '24-Metre Sector Road', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Direct Water & Paved Infrastructure', comp: 'PMRDA Planning (Panchayat Water Reliance)', win: true },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹1.75 Cr* (3 BHK Compact 980 sq.ft.)', win: false }
+      ]
+    },
+    'vtp-bellissimo': {
+      name: 'VTP Bellissimo (Hinjewadi Ph 1)',
+      link: '/compare/lodha-altero-vs-vtp-bellissimo-hinjewadi',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+33 High Rise', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.5 Ft Standard Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Township Podium Club Life', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins (Datta Mandir Rd to Shivaji Chowk)', comp: '12–18 Mins via Phase 1 Choke Point', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: 'Township Internal Feeder Roads', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Urban Jurisdiction', comp: 'PMRDA Planning Area', win: true },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹1.80 Cr* (3 BHK 1,020 sq.ft.)', win: false }
+      ]
+    },
+    'kohinoor-courtyard': {
+      name: 'Kohinoor Courtyard One (Wakad)',
+      link: '/compare/lodha-altero-vs-kohinoor-courtyard-wakad',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+22 Mid-Rise Elevation', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.4 Ft Standard Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Ground Club & Podium Lawn', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins via Direct 36m BRTS Arterial', comp: '12–16 Mins via Kaspate Wasti Traffic', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: '15-Metre Access Road', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Urban Core Infrastructure', comp: 'PCMC Jurisdiction', win: false },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹1.65 Cr* (3 BHK 990 sq.ft.)', win: false }
+      ]
+    },
+    'pride-world-city': {
+      name: 'Pride World City (Charholi Pune)',
+      link: '/compare/lodha-altero-wakad-vs-pride-world-city-charholi',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+14 to G+24 Mid-Rise Clusters', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.5 Ft Standard Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Township Level Podium Clubs', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins (Direct West Pune Highway)', comp: '50–65 Mins (Cross-City East Pune)', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: 'Charholi-Alandi Link Road', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Prime West Sector', comp: 'PCMC Far East Perimeter', win: true },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹1.50 Cr* (3 BHK 950 sq.ft.)', win: false }
+      ]
+    },
+    'kalpataru-jade': {
+      name: 'Kalpataru Jade Residences (Baner)',
+      link: '/compare/lodha-altero-vs-kalpataru-jade-baner',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+21 to G+25 Towers', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '10.0 Ft Premium Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Central Park & Ground Clubhouse', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins (Direct without Toll)', comp: '20–25 Mins via Baner-Pashan Highway', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: 'Pan Card Club Road (Baner)', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Urban Core (Wide Grid Roads)', comp: 'PMC Baner Sector', win: false },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹2.95 Cr* (3 BHK Ultra-Luxury 1,350 sq.ft.)', win: true }
+      ]
+    },
+    'anp-universe': {
+      name: 'ANP Universe (Balewadi)',
+      link: '/compare/lodha-altero-vs-anp-universe-balewadi',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+30 Towers', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.8 Ft Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Podium Skywalk Features', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins', comp: '18–22 Mins via Balewadi High St Traffic', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: 'Balewadi Link Road', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Urban Core Infrastructure', comp: 'PMC Balewadi Sector', win: false },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹2.25 Cr* (3 BHK 1,100 sq.ft.)', win: false }
+      ]
+    },
+    'rohan-tarang': {
+      name: 'Rohan Tarang (Wakad)',
+      link: '/compare/lodha-altero-vs-rohan-tarang-wakad',
+      metrics: [
+        { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+14 Mid-Rise Elevation', win: true },
+        { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.2 Ft Standard Clear', win: true },
+        { label: 'Signature Rooftop Sky Club', altero: '25,000 sq.ft. on 37th Floor (Heated Pool, Padel Court)', comp: 'Podium Common Amenities', win: true },
+        { label: 'Hinjewadi Phase 1 Commute', altero: '8–10 Mins (Direct)', comp: '12–15 Mins via Internal Lanes', win: true },
+        { label: 'Main Road Frontage Width', altero: 'Direct on 36-Metre Arterial DP Road', comp: '12-Metre Sub-Road', win: true },
+        { label: 'Municipal Governance Quality', altero: 'PCMC Urban Core Infrastructure', comp: 'PCMC Jurisdiction', win: false },
+        { label: 'Starting Price (All-Inclusive)', altero: '₹2.09 Cr* (3 BHK Grande 1,185 sq.ft.)', comp: '₹1.45 Cr* (3 BHK Compact 880 sq.ft.)', win: false }
+      ]
+    }
+  };
+
+  function renderCompetitor(key) {
+    const comp = COMPETITORS[key] || COMPETITORS['kolte-patil'];
+    if (compHeader) compHeader.textContent = comp.name;
+    if (compLink) compLink.href = comp.link;
+
+    if (compBody) {
+      compBody.innerHTML = comp.metrics.map(m => `
+        <tr class="hover:bg-amber-500/5 transition-colors">
+          <td class="p-3 font-semibold text-stone-800">${m.label}</td>
+          <td class="p-3 font-bold text-amber-950 bg-amber-500/10 ${m.win ? 'border-l-2 border-amber-600' : ''}">
+            <div class="flex items-center gap-1.5">
+              ${m.win ? '<span class="text-emerald-700 text-xs font-black">★</span>' : ''}
+              <span>${m.altero}</span>
+            </div>
+          </td>
+          <td class="p-3 text-stone-600">${m.comp}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  compSelect.addEventListener('change', (e) => {
+    renderCompetitor(e.target.value);
+  });
+
+  renderCompetitor(compSelect.value || 'kolte-patil');
 }
 
