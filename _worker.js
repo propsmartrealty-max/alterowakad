@@ -119,16 +119,28 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
-    // Redirect /index.html to /
-    if (pathname === '/index.html' || pathname.endsWith('/index.html')) {
-      const cleanPath = pathname.replace(/\/index\.html$/, '/') || '/';
-      url.pathname = cleanPath;
+    // Redirect www.altero.newlaunches.in to naked apex altero.newlaunches.in
+    if (hostname === 'www.altero.newlaunches.in') {
+      url.hostname = 'altero.newlaunches.in';
+      return Response.redirect(url.toString(), 301);
+    }
+
+    // Redirect legacy domains lodhaaltero.newlaunches.in to altero.newlaunches.in
+    if (hostname === 'lodhaaltero.newlaunches.in' || hostname === 'www.lodhaaltero.newlaunches.in') {
+      url.hostname = 'altero.newlaunches.in';
       return Response.redirect(url.toString(), 301);
     }
 
     // Redirect legacy staging subdomain to new staging link alterowakad.pages.dev
     if (hostname === 'lodhaalterowakad.pages.dev') {
       url.hostname = 'alterowakad.pages.dev';
+      return Response.redirect(url.toString(), 301);
+    }
+
+    // Redirect /index.html to /
+    if (pathname === '/index.html' || pathname.endsWith('/index.html')) {
+      const cleanPath = pathname.replace(/\/index\.html$/, '/') || '/';
+      url.pathname = cleanPath;
       return Response.redirect(url.toString(), 301);
     }
 
@@ -206,6 +218,49 @@ export default {
         ctx.waitUntil(cache.put(cacheKey, mdRes.clone()));
       }
       return mdRes;
+    }
+
+    // =========================================================================
+    // 3b. Dynamic Domain-Aware Robots.txt & Static Sitemaps Normalization
+    // =========================================================================
+    if (pathname === '/robots.txt') {
+      let robotsContent = '';
+      try {
+        const robReq = new Request(new URL('/robots.txt', request.url), request);
+        const robRes = env.ASSETS ? await env.ASSETS.fetch(robReq) : await fetch(robReq);
+        robotsContent = await robRes.text();
+        robotsContent = robotsContent.replaceAll('altero.newlaunches.in', hostname);
+      } catch (e) {
+        robotsContent = `User-agent: *\nAllow: /\nSitemap: https://${hostname}/sitemap.xml`;
+      }
+
+      return new Response(robotsContent, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'public, max-age=43200, s-maxage=43200',
+          'X-Robots-Tag': 'index, follow'
+        }
+      });
+    }
+
+    if (pathname === '/sitemap.xml' || pathname === '/sitemap-articles.xml' || pathname === '/sitemap-images.xml') {
+      try {
+        const sitemapReq = new Request(new URL(pathname, request.url), request);
+        const sitemapRes = env.ASSETS ? await env.ASSETS.fetch(sitemapReq) : await fetch(sitemapReq);
+        let sitemapText = await sitemapRes.text();
+        sitemapText = sitemapText.replaceAll('altero.newlaunches.in', hostname);
+        return new Response(sitemapText, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/xml; charset=utf-8',
+            'Cache-Control': 'public, max-age=43200, s-maxage=43200',
+            'X-Robots-Tag': 'index, follow'
+          }
+        });
+      } catch (e) {
+        // Fall back to asset fetch
+      }
     }
 
     // =========================================================================
@@ -658,6 +713,29 @@ ${urlsXml}
             el.setAttribute('content', liveUrl);
           }
         })
+        .on('meta[property="og:image"]', {
+          element(el) {
+            el.setAttribute('content', `https://${hostname}/assets/hero_banner.jpg`);
+          }
+        })
+        .on('meta[name="twitter:image"]', {
+          element(el) {
+            el.setAttribute('content', `https://${hostname}/assets/hero_banner.jpg`);
+          }
+        })
+        .on('meta[name="twitter:url"]', {
+          element(el) {
+            const liveUrl = isArticleRoute ? `https://${hostname}${pathname}` : `https://${hostname}/`;
+            el.setAttribute('content', liveUrl);
+          }
+        })
+        .on('script[type="application/ld+json"]', {
+          text(textChunk) {
+            if (hostname !== 'altero.newlaunches.in' && textChunk.text.includes('altero.newlaunches.in')) {
+              textChunk.replace(textChunk.text.replaceAll('altero.newlaunches.in', hostname));
+            }
+          }
+        })
         .on('head', {
           element(el) {
             el.prepend('<meta name="google-site-verification" content="7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA">\n<meta name="google-site-verification" content="QFK7VqRHrq-mZJgA2maflTA7RLYKX1hvCK8B2djWkqI">\n', { html: true });
@@ -694,7 +772,7 @@ ${urlsXml}
               el.append('<meta name="crawler-intent" content="verified-search-crawler">', { html: true });
             }
             if (isAiCrawler) {
-              el.append('<meta name="ai-retrieval-source" content="https://lodhaaltero.newlaunches.in/llms-full.txt">', { html: true });
+              el.append(`<meta name="ai-retrieval-source" content="https://${hostname}/llms-full.txt">`, { html: true });
             }
             if (isArticleRoute && articleMeta) {
               el.append(`<meta name="article-title" content="${articleMeta.title}">`, { html: true });

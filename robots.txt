@@ -1,5 +1,5 @@
 # Robots.txt for Lodha Altero Wakad (Pune Luxury Real Estate Authority)
-# Official Canonical Domain: https://lodhaaltero.newlaunches.in/
+# Official Canonical Domain: https://altero.newlaunches.in/
 
 # ==============================================================================
 # 1. Google Search Ecosystem (Priority Crawling & Instant Indexation)
@@ -136,8 +136,8 @@ Disallow: /_edge/
 # ==============================================================================
 # 7. Sitemaps & Feeds Indexation
 # ==============================================================================
-Sitemap: https://lodhaaltero.newlaunches.in/sitemap.xml
-Sitemap: https://lodhaaltero.newlaunches.in/sitemap-articles.xml
-Sitemap: https://lodhaaltero.newlaunches.in/sitemap-programmatic.xml
-Sitemap: https://lodhaaltero.newlaunches.in/sitemap-images.xml
-Sitemap: https://lodhaaltero.newlaunches.in/feed.xml
+Sitemap: https://altero.newlaunches.in/sitemap.xml
+Sitemap: https://altero.newlaunches.in/sitemap-articles.xml
+Sitemap: https://altero.newlaunches.in/sitemap-programmatic.xml
+Sitemap: https://altero.newlaunches.in/sitemap-images.xml
+Sitemap: https://altero.newlaunches.in/feed.xml
