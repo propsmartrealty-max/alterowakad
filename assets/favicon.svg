@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E7C4" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="70%" stop-color="#AA8232" />
+      <stop offset="100%" stop-color="#7B5B1E" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1714" />
+      <stop offset="100%" stop-color="#0C0A09" />
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Shield with Subtle Border -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="url(#goldGrad)" stroke-width="4" stroke-opacity="0.35" />
+
+  <!-- 5 Gold Horizontal Architectural Bars (Lodha Signature Motif) -->
+  <g fill="url(#goldGrad)">
+    <rect x="72" y="128" width="56" height="8.5" rx="4.25" />
+    <rect x="72" y="146" width="56" height="8.5" rx="4.25" />
+    <rect x="72" y="164" width="56" height="8.5" rx="4.25" />
+    <rect x="72" y="182" width="56" height="8.5" rx="4.25" />
+    <rect x="72" y="200" width="56" height="8.5" rx="4.25" />
+  </g>
+
+  <!-- Central Altero Monogram Symbol 'A' in Pure Luxury Geometry -->
+  <g fill="url(#goldGrad)" filter="url(#goldGlow)">
+    <!-- Monumental A Frame -->
+    <path d="M256,92 L368,368 L314,368 L286,296 L226,296 L198,368 L144,368 Z M256,182 L239,248 L273,248 Z" />
+    <!-- Prestige Crown Horizon Bar -->
+    <rect x="176" y="396" width="160" height="12" rx="6" />
+    <circle cx="256" cy="432" r="7" />
+  </g>
+</svg>

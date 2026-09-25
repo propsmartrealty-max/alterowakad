@@ -719,9 +719,18 @@ Please connect me with the sales director and share official MahaRERA P521000796
       progHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
       progHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
       progHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-      progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
-      progHeaders.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.4');
+      if (hostname === STAGING_HOST) {
+        progHeaders.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+        progHeaders.set('X-Environment', 'staging');
+      } else {
+        progHeaders.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+        progHeaders.set('X-Environment', 'production');
+      }
+
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.6');
+      progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
+      progHeaders.set('X-Staging-Host', STAGING_HOST);
+      progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
       progHeaders.set('X-Edge-Cache', 'MISS');
       progHeaders.set('Cache-Tag', `lodha-altero-programmatic, lodha-altero-${progData.categorySlug || 'general'}`);
       progHeaders.set('X-Viewer-Country', viewerCountry);
@@ -766,8 +775,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
     if (ARTICLE_SLUGS[pathname]) {
       isArticleRoute = true;
       articleMeta = ARTICLE_SLUGS[pathname];
-      // Fetch the root template to dynamically rewrite at the edge with article metadata and canonical tags
-      assetRequest = new Request(new URL('/', request.url), request);
+      // Resolve clean slug to physical article HTML file
+      assetRequest = new Request(new URL(`${pathname}.html`, request.url), request);
     }
 
     // =========================================================================
@@ -777,6 +786,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
     try {
       if (env.ASSETS) {
         response = await env.ASSETS.fetch(assetRequest);
+        if (response.status === 404 && isArticleRoute) {
+          response = await env.ASSETS.fetch(new Request(new URL(pathname, request.url), request));
+        }
       } else {
         response = await fetch(assetRequest);
       }
@@ -784,11 +796,21 @@ Please connect me with the sales director and share official MahaRERA P521000796
       return new Response('Edge Gateway Temporary Error', { status: 502 });
     }
 
-    // If 404 on clean URL, serve root index.html with 200
+    // Prevent Soft 404: If 404 on unknown clean URL, serve root index.html with genuine 404 status and noindex
     if (response.status === 404 && !STATIC_EXTENSIONS.test(pathname)) {
       const fallbackReq = new Request(new URL('/', request.url), request);
       if (env.ASSETS) {
-        response = await env.ASSETS.fetch(fallbackReq);
+        const notFoundRes = await env.ASSETS.fetch(fallbackReq);
+        const notFoundHeaders = new Headers(notFoundRes.headers);
+        notFoundHeaders.set('X-Robots-Tag', 'noindex, nofollow');
+        notFoundHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        notFoundHeaders.set('X-Canonical-Host', CANONICAL_HOST);
+        notFoundHeaders.set('X-Staging-Host', STAGING_HOST);
+        return new Response(notFoundRes.body, {
+          status: 404,
+          statusText: 'Not Found',
+          headers: notFoundHeaders
+        });
       }
     }
 

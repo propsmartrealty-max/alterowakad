@@ -2,21 +2,26 @@
   "name": "Lodha Altero Wakad Pune",
   "short_name": "Lodha Altero",
   "description": "Ultra-luxury 3, 4 & 5 BHK Sky Residences in Wakad Pune by Lodha Group",
-  "start_url": "./",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#0C0A09",
   "theme_color": "#D4AF37",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://www.lodhagroup.com/sites/default/files/favicon-lodha.png",
+      "src": "/assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://www.lodhagroup.com/sites/default/files/favicon-lodha.png",
+      "src": "/assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }

@@ -20,15 +20,15 @@ jobs:
       - name: Ping Googlebot Sitemap Notification Endpoint
         run: |
           echo "Submitting all sitemaps to Googlebot ping endpoints..."
-          curl -s -I "https://www.google.com/ping?sitemap=https://lodhaaltero.newlaunches.in/sitemap.xml" || echo "Master sitemap ping completed"
-          curl -s -I "https://www.google.com/ping?sitemap=https://lodhaaltero.newlaunches.in/sitemap-articles.xml" || echo "Articles sitemap ping completed"
-          curl -s -I "https://www.google.com/ping?sitemap=https://lodhaaltero.newlaunches.in/sitemap-programmatic.xml" || echo "Programmatic sitemap ping completed"
-          curl -s -I "https://www.google.com/ping?sitemap=https://lodhaaltero.newlaunches.in/sitemap-images.xml" || echo "Images sitemap ping completed"
+          curl -s -I "https://www.google.com/ping?sitemap=https://altero.newlaunches.in/sitemap.xml" || echo "Master sitemap ping completed"
+          curl -s -I "https://www.google.com/ping?sitemap=https://altero.newlaunches.in/sitemap-articles.xml" || echo "Articles sitemap ping completed"
+          curl -s -I "https://www.google.com/ping?sitemap=https://altero.newlaunches.in/sitemap-programmatic.xml" || echo "Programmatic sitemap ping completed"
+          curl -s -I "https://www.google.com/ping?sitemap=https://altero.newlaunches.in/sitemap-images.xml" || echo "Images sitemap ping completed"
 
       - name: Ping Edge IndexNow Dispatcher
         run: |
-          echo "Calling Edge IndexNow Dispatcher on lodhaaltero.newlaunches.in..."
-          curl -s "https://lodhaaltero.newlaunches.in/_edge/ping-index" | jq . || curl -s "https://lodhaaltero.newlaunches.in/_edge/ping-index"
+          echo "Calling Edge IndexNow Dispatcher on altero.newlaunches.in..."
+          curl -s "https://altero.newlaunches.in/_edge/ping-index" | jq . || curl -s "https://altero.newlaunches.in/_edge/ping-index"
 
       - name: Direct Bing IndexNow Batch Submission
         run: |
@@ -36,28 +36,28 @@ jobs:
           curl -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d '{
-              "host": "lodhaaltero.newlaunches.in",
+              "host": "altero.newlaunches.in",
               "key": "e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c",
-              "keyLocation": "https://lodhaaltero.newlaunches.in/e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c.txt",
+              "keyLocation": "https://altero.newlaunches.in/e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c.txt",
               "urlList": [
-                "https://lodhaaltero.newlaunches.in/",
-                "https://lodhaaltero.newlaunches.in/sitemap.xml",
-                "https://lodhaaltero.newlaunches.in/sitemap-articles.xml",
-                "https://lodhaaltero.newlaunches.in/sitemap-programmatic.xml",
-                "https://lodhaaltero.newlaunches.in/sitemap-images.xml",
-                "https://lodhaaltero.newlaunches.in/residences/3-bhk-luxury-wakad",
-                "https://lodhaaltero.newlaunches.in/residences/4-bhk-luxury-wakad",
-                "https://lodhaaltero.newlaunches.in/pricing/lodha-wakad-cost-sheet",
-                "https://lodhaaltero.newlaunches.in/transit/hinjewadi-it-park-commute",
-                "https://lodhaaltero.newlaunches.in/compare/lodha-altero-vs-godrej-wakad",
-                "https://lodhaaltero.newlaunches.in/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
-                "https://lodhaaltero.newlaunches.in/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall",
-                "https://lodhaaltero.newlaunches.in/articles/lodha-pune-residential-ecosystem",
-                "https://lodhaaltero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026",
-                "https://lodhaaltero.newlaunches.in/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
-                "https://lodhaaltero.newlaunches.in/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
-                "https://lodhaaltero.newlaunches.in/articles/maharera-p52100079692-statutory-compliance",
-                "https://lodhaaltero.newlaunches.in/articles/25000-sqft-rooftop-sky-club-infinity-pool",
-                "https://lodhaaltero.newlaunches.in/articles/pune-real-estate-macro-trends-east-vs-west"
+                "https://altero.newlaunches.in/",
+                "https://altero.newlaunches.in/sitemap.xml",
+                "https://altero.newlaunches.in/sitemap-articles.xml",
+                "https://altero.newlaunches.in/sitemap-programmatic.xml",
+                "https://altero.newlaunches.in/sitemap-images.xml",
+                "https://altero.newlaunches.in/residences/3-bhk-luxury-wakad",
+                "https://altero.newlaunches.in/residences/4-bhk-luxury-wakad",
+                "https://altero.newlaunches.in/pricing/lodha-wakad-cost-sheet",
+                "https://altero.newlaunches.in/transit/hinjewadi-it-park-commute",
+                "https://altero.newlaunches.in/compare/lodha-altero-vs-godrej-wakad",
+                "https://altero.newlaunches.in/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
+                "https://altero.newlaunches.in/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall",
+                "https://altero.newlaunches.in/articles/lodha-pune-residential-ecosystem",
+                "https://altero.newlaunches.in/articles/wakad-real-estate-investment-thesis-2026",
+                "https://altero.newlaunches.in/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
+                "https://altero.newlaunches.in/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
+                "https://altero.newlaunches.in/articles/maharera-p52100079692-statutory-compliance",
+                "https://altero.newlaunches.in/articles/25000-sqft-rooftop-sky-club-infinity-pool",
+                "https://altero.newlaunches.in/articles/pune-real-estate-macro-trends-east-vs-west"
               ]
             }' || echo "IndexNow submission completed"
