@@ -2787,14 +2787,16 @@ export function renderProgrammaticPage(url, pageData) {
 
     <div class="max-w-5xl mx-auto pt-6 border-t border-stone-800/80 flex flex-wrap items-center justify-between gap-4 text-[11px] text-stone-500">
       <div class="space-y-1 text-left">
-        <p class="font-medium text-stone-400">© Lodha Altero Wakad • Registered under MahaRERA No. P52100079692</p>
-        <p class="text-[10px] text-stone-600">Site Address: Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057</p>
+        <p class="font-medium text-stone-400">© Lodha Altero Wakad • Marketed by PropSmart Realty, Authorized Channel Partner • MahaRERA No. P52100079692</p>
+        <p class="text-[10px] text-stone-600">Site Address: Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057 • Verified on <a href="https://maharera.mahaonline.gov.in" target="_blank" rel="noopener noreferrer" class="text-amber-600 hover:underline">maharera.mahaonline.gov.in</a></p>
       </div>
-      <div class="flex items-center gap-4 text-[10px]">
+      <div class="flex flex-wrap items-center gap-4 text-[10px]">
+        <a href="/privacy-policy" class="text-stone-400 hover:text-amber-400">Privacy Policy</a>
+        <a href="/terms-and-conditions" class="text-stone-400 hover:text-amber-400">Terms &amp; Conditions</a>
+        <a href="/disclaimer" class="text-stone-400 hover:text-amber-400">MahaRERA Disclaimer</a>
         <a href="/sitemap.xml" class="text-amber-500 hover:underline">XML Sitemap</a>
         <a href="/feed.xml" class="text-amber-500 hover:underline">RSS Feed</a>
         <a href="/llms.txt" class="text-amber-500 hover:underline">LLM Index</a>
-        <a href="/_edge/knowledge-graph.json" class="text-amber-500 hover:underline">Knowledge Graph</a>
       </div>
     </div>
   </footer>

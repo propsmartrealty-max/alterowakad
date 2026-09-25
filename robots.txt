@@ -34,6 +34,9 @@ Allow: /lifestyle/
 Allow: /vastu/
 Allow: /schools/
 Allow: /healthcare/
+Allow: /privacy-policy
+Allow: /terms-and-conditions
+Allow: /disclaimer
 Allow: /sitemaps/
 Allow: /manifest.webmanifest
 Allow: /sw.js
@@ -141,6 +144,9 @@ Allow: /vastu/
 Allow: /investment/
 Allow: /schools/
 Allow: /healthcare/
+Allow: /privacy-policy
+Allow: /terms-and-conditions
+Allow: /disclaimer
 Allow: /manifest.webmanifest
 Allow: /sw.js
 Allow: /index.md

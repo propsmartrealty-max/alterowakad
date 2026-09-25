@@ -91,6 +91,13 @@ const ARTICLE_SLUGS = {
   }
 };
 
+// Institutional Legal & Compliance Policy Slugs
+const POLICY_SLUGS = {
+  '/privacy-policy': 'privacy-policy.html',
+  '/terms-and-conditions': 'terms-and-conditions.html',
+  '/disclaimer': 'disclaimer.html'
+};
+
 // ─── CANONICAL & STAGING DOMAIN AUTHORITY ───────────────────────────────────
 // Primary Canonical Host: altero.newlaunches.in (Hardened Production Subdomain)
 // Staging Origin:         alterowakad.pages.dev (Hardened Staging Link)
@@ -460,6 +467,7 @@ export default {
       const selectedProgrammaticUrls = allSlugs.slice(0, batchLimit).map(slug => `https://${CANONICAL_HOST}${slug}`);
       const urlList = [
         `https://${CANONICAL_HOST}/`,
+        ...Object.keys(POLICY_SLUGS).map(slug => `https://${CANONICAL_HOST}${slug}`),
         ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${CANONICAL_HOST}${slug}`),
         ...selectedProgrammaticUrls
       ];
@@ -580,6 +588,12 @@ export default {
             `https://${hostname}/`,
             'https://altero.newlaunches.in/',
             'https://alterowakad.pages.dev/',
+            ...Object.keys(POLICY_SLUGS).flatMap(slug => [
+              `https://${hostname}${slug}`,
+              `https://${hostname}${slug}/`,
+              `https://altero.newlaunches.in${slug}`,
+              `https://altero.newlaunches.in${slug}/`
+            ]),
             ...Object.keys(ARTICLE_SLUGS).flatMap(slug => [
               `https://${hostname}${slug}`,
               `https://${hostname}${slug}/`,
@@ -954,8 +968,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
       progHeaders.set('X-Currency-Hint', currencyHint);
       progHeaders.set('X-Target-Audience', viewerCountry === 'IN' ? 'Domestic-India' : `Global-NRI-${viewerCountry}`);
 
-      // Military-Grade Content Security Policy & Privacy Directives
-      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+      // Military-Grade Content Security Policy & Privacy Directives (Google Maps, Analytics & Fonts Hardened)
+      progHeaders.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob: https://www.google-analytics.com https://*.google.com; connect-src 'self' https: data: blob:; frame-src 'self' https://challenges.cloudflare.com https://www.google.com https://maps.google.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
       progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self), browsing-topics=(), interest-cohort=(), screen-wake-lock=()');
 
       if (request.cf) {
@@ -995,12 +1009,15 @@ Please connect me with the sales director and share official MahaRERA P521000796
     let articleMeta = null;
     let assetRequest = request;
 
-    const cleanArticleSlug = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
-    if (ARTICLE_SLUGS[cleanArticleSlug]) {
+    const cleanSlug = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+    if (ARTICLE_SLUGS[cleanSlug]) {
       isArticleRoute = true;
-      articleMeta = ARTICLE_SLUGS[cleanArticleSlug];
+      articleMeta = ARTICLE_SLUGS[cleanSlug];
       // Fetch directory path with trailing slash directly from env.ASSETS (resolves immediately to articles/<slug>/index.html)
-      assetRequest = new Request(new URL(`${cleanArticleSlug}/`, request.url), request);
+      assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
+    } else if (POLICY_SLUGS[cleanSlug]) {
+      // Resolve institutional policy pages directly
+      assetRequest = new Request(new URL(`/${POLICY_SLUGS[cleanSlug]}`, request.url), request);
     } else if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap')) {
       // Return authoritative 404 Not Found for non-existent routes to prevent Soft 404 penalties
       return new Response(
@@ -1134,7 +1151,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('X-Canonical-Host', CANONICAL_HOST);
     headers.set('X-Staging-Host', STAGING_HOST);
     headers.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob: https://www.google-analytics.com https://*.google.com; connect-src 'self' https: data: blob:; frame-src 'self' https://challenges.cloudflare.com https://www.google.com https://maps.google.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://formsubmit.co; upgrade-insecure-requests;");
 
     if (request.cf) {
       headers.set('X-Edge-Colo', request.cf.colo || 'BOM');
