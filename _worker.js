@@ -80,16 +80,15 @@ const ARTICLE_SLUGS = {
   }
 };
 
-// ─── CANONICAL DOMAIN AUTHORITY ─────────────────────────────────────────────
-// Primary canonical domain: altero.newlaunches.in
-// Staging origin:           alterowakad.pages.dev
-// Any other hostname MUST 301 to canonical. Zero anomalies tolerated.
+// ─── CANONICAL & STAGING DOMAIN AUTHORITY ───────────────────────────────────
+// Primary Canonical Host: altero.newlaunches.in (Hardened Production Subdomain)
+// Staging Origin:         alterowakad.pages.dev (Hardened Staging Link)
+// Scrapped Subdomains:    lodhaaltero.newlaunches.in, www.lodhaaltero.newlaunches.in,
+//                         lodhaalterowakad.pages.dev, www.altero.newlaunches.in
+// Any scrapped or unrecognized host MUST permanently 301-redirect to canonical.
+// "Lodha Altero Wakad" brand identity is kept 100% across all website content, metadata & schema.
 const CANONICAL_HOST = 'altero.newlaunches.in';
-const ALLOWED_HOSTS = new Set([
-  'altero.newlaunches.in',
-  'www.altero.newlaunches.in',   // 301 → canonical below
-  'alterowakad.pages.dev',        // staging origin — allow pass-through
-]);
+const STAGING_HOST = 'alterowakad.pages.dev';
 
 export default {
   async fetch(request, env, ctx) {
@@ -102,25 +101,24 @@ export default {
     const isGetRequest = request.method === 'GET';
     const isNoCacheQuery = url.searchParams.has('nocache') || url.searchParams.has('purge');
 
-    // ── STEP 0: CANONICAL HOST ENFORCEMENT (Zero-Anomaly Guard) ──────────────
-    // Redirect www.altero → canonical. Block every unknown hostname.
-    if (hostname === 'www.altero.newlaunches.in') {
-      return Response.redirect(
-        `https://${CANONICAL_HOST}${pathname}${search}`,
-        301
-      );
-    }
-    if (!ALLOWED_HOSTS.has(hostname)) {
-      // Unknown/rogue hostname → hard 301 to canonical root
+    // ── STEP 0: SUBDOMAIN & STAGING LOCKDOWN GATE ────────────────────────────
+    // 1. Scrapped subdomains & staging links:
+    // Permanently 301 redirect any scrapped lodha subdomain, legacy staging link,
+    // www subdomain, or unknown host to canonical production: https://altero.newlaunches.in
+    if (hostname !== CANONICAL_HOST && hostname !== STAGING_HOST) {
       return Response.redirect(`https://${CANONICAL_HOST}${pathname}${search}`, 301);
     }
 
-    // ── STEP 0b: Force HTTPS ──────────────────────────────────────────────────
+    // 2. Staging Link Hardening (alterowakad.pages.dev):
+    // Search engine crawlers (Googlebot, Bingbot, etc.) attempting to crawl staging
+    // MUST immediately 301-redirect to canonical production to prevent index fragmentation.
+    if (hostname === STAGING_HOST && (isSearchCrawler || isAiCrawler || isSocialCrawler)) {
+      return Response.redirect(`https://${CANONICAL_HOST}${pathname}${search}`, 301);
+    }
+
+    // 3. Force HTTPS on all allowed hosts
     if (protocol === 'http:') {
-      return Response.redirect(
-        `https://${hostname}${pathname}${search}`,
-        301
-      );
+      return Response.redirect(`https://${hostname}${pathname}${search}`, 301);
     }
 
     // Geo & NRI Visitor Intelligence
@@ -160,30 +158,6 @@ export default {
     // =========================================================================
     // 1. Edge Canonical Normalization & 301 Redirect Rules
     // =========================================================================
-
-    // Force HTTPS
-    if (protocol === 'http:') {
-      url.protocol = 'https:';
-      return Response.redirect(url.toString(), 301);
-    }
-
-    // Redirect www.altero.newlaunches.in to naked apex altero.newlaunches.in
-    if (hostname === 'www.altero.newlaunches.in') {
-      url.hostname = 'altero.newlaunches.in';
-      return Response.redirect(url.toString(), 301);
-    }
-
-    // Redirect legacy domains lodhaaltero.newlaunches.in to altero.newlaunches.in
-    if (hostname === 'lodhaaltero.newlaunches.in' || hostname === 'www.lodhaaltero.newlaunches.in') {
-      url.hostname = 'altero.newlaunches.in';
-      return Response.redirect(url.toString(), 301);
-    }
-
-    // Redirect legacy staging subdomain to new staging link alterowakad.pages.dev
-    if (hostname === 'lodhaalterowakad.pages.dev') {
-      url.hostname = 'alterowakad.pages.dev';
-      return Response.redirect(url.toString(), 301);
-    }
 
     // Redirect /index.html to /
     if (pathname === '/index.html' || pathname.endsWith('/index.html')) {
@@ -280,9 +254,8 @@ export default {
         const robReq = new Request(new URL('/robots.txt', request.url), request);
         const robRes = env.ASSETS ? await env.ASSETS.fetch(robReq) : await fetch(robReq);
         robotsContent = await robRes.text();
-        robotsContent = robotsContent.replaceAll('altero.newlaunches.in', hostname);
       } catch (e) {
-        robotsContent = `User-agent: *\nAllow: /\nSitemap: https://${hostname}/sitemap.xml`;
+        robotsContent = `User-agent: *\nAllow: /\nSitemap: https://${CANONICAL_HOST}/sitemap.xml`;
       }
 
       return new Response(robotsContent, {
@@ -290,7 +263,7 @@ export default {
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
           'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': 'index, follow'
+          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
         }
       });
     }
@@ -299,14 +272,13 @@ export default {
       try {
         const sitemapReq = new Request(new URL(pathname, request.url), request);
         const sitemapRes = env.ASSETS ? await env.ASSETS.fetch(sitemapReq) : await fetch(sitemapReq);
-        let sitemapText = await sitemapRes.text();
-        sitemapText = sitemapText.replaceAll('altero.newlaunches.in', hostname);
+        const sitemapText = await sitemapRes.text();
         return new Response(sitemapText, {
           status: 200,
           headers: {
             'Content-Type': 'application/xml; charset=utf-8',
             'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-            'X-Robots-Tag': 'index, follow'
+            'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
           }
         });
       } catch (e) {
@@ -321,18 +293,18 @@ export default {
       const allSlugs = getAllProgrammaticSlugs();
       const limitParam = parseInt(url.searchParams.get('limit') || '1000', 10);
       const batchLimit = Math.min(Math.max(limitParam, 50), 10000);
-      const selectedProgrammaticUrls = allSlugs.slice(0, batchLimit).map(slug => `https://${hostname}${slug}`);
+      const selectedProgrammaticUrls = allSlugs.slice(0, batchLimit).map(slug => `https://${CANONICAL_HOST}${slug}`);
       const urlList = [
-        `https://${hostname}/`,
-        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${hostname}${slug}`),
+        `https://${CANONICAL_HOST}/`,
+        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${CANONICAL_HOST}${slug}`),
         ...selectedProgrammaticUrls
       ];
 
-      const sitemapUrl = `https://${hostname}/sitemap.xml`;
-      const sitemapProgrammaticUrl = `https://${hostname}/sitemap-programmatic.xml`;
+      const sitemapUrl = `https://${CANONICAL_HOST}/sitemap.xml`;
+      const sitemapProgrammaticUrl = `https://${CANONICAL_HOST}/sitemap-programmatic.xml`;
       const pingResults = {
         timestamp: new Date().toISOString(),
-        host: hostname,
+        host: CANONICAL_HOST,
         sitemapUrl,
         sitemapProgrammaticUrl,
         indexNowKey: INDEXNOW_KEY,
@@ -342,9 +314,9 @@ export default {
       };
 
       const indexNowPayload = {
-        host: hostname,
+        host: CANONICAL_HOST,
         key: INDEXNOW_KEY,
-        keyLocation: `https://${hostname}/${INDEXNOW_KEY}.txt`,
+        keyLocation: `https://${CANONICAL_HOST}/${INDEXNOW_KEY}.txt`,
         urlList
       };
 
@@ -462,7 +434,9 @@ export default {
           isCrawler: isSearchCrawler || isSocialCrawler
         },
         seo: {
-          canonicalHost: hostname,
+          canonicalHost: CANONICAL_HOST,
+          stagingHost: STAGING_HOST,
+          currentHost: hostname,
           googlebotOptimized: true,
           schemaGraphActive: true,
           articlesRouted: Object.keys(ARTICLE_SLUGS).length,
@@ -484,7 +458,7 @@ export default {
         "@type": "ApartmentComplex",
         "name": "Lodha Altero Wakad",
         "alternateName": "Lodha Wakad Pune",
-        "url": `https://${hostname}/`,
+        "url": `https://${CANONICAL_HOST}/`,
         "developer": {
           "@type": "RealEstateDeveloper",
           "name": "Lodha Group (Macrotech Developers Ltd)",
@@ -523,7 +497,7 @@ export default {
         "canonicalCorridorsCount": getAllProgrammaticSlugs().length,
         "programmaticCorridors": Object.keys(PROGRAMMATIC_PAGES).map(slug => ({
           "slug": slug,
-          "url": `https://${hostname}${slug}`,
+          "url": `https://${CANONICAL_HOST}${slug}`,
           "category": PROGRAMMATIC_PAGES[slug].category,
           "title": PROGRAMMATIC_PAGES[slug].title
         })),
@@ -704,13 +678,13 @@ Please connect me with the sales director and share official MahaRERA P521000796
     // 5. Dynamic Programmatic XML Sitemap Generation (10,000+ routes)
     // =========================================================================
     if (pathname === '/sitemap-programmatic.xml' || pathname === '/sitemaps/sitemap-programmatic.xml' || pathname === '/sitemap-programmatic-index.xml') {
-      const sitemapIndexXml = getProgrammaticSitemapIndex(hostname);
+      const sitemapIndexXml = getProgrammaticSitemapIndex(CANONICAL_HOST);
       return new Response(sitemapIndexXml, {
         status: 200,
         headers: {
           'Content-Type': 'application/xml; charset=utf-8',
           'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': 'index, follow'
+          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
         }
       });
     }
@@ -718,13 +692,13 @@ Please connect me with the sales director and share official MahaRERA P521000796
     const chunkMatch = pathname.match(/^\/sitemaps\/programmatic-([1-6])\.xml$/);
     if (chunkMatch) {
       const chunkIdx = parseInt(chunkMatch[1], 10);
-      const chunkXml = getProgrammaticSitemapChunk(chunkIdx, hostname);
+      const chunkXml = getProgrammaticSitemapChunk(chunkIdx, CANONICAL_HOST);
       return new Response(chunkXml, {
         status: 200,
         headers: {
           'Content-Type': 'application/xml; charset=utf-8',
           'Cache-Control': 'public, max-age=43200, s-maxage=43200',
-          'X-Robots-Tag': 'index, follow'
+          'X-Robots-Tag': hostname === CANONICAL_HOST ? 'index, follow' : 'noindex, nofollow'
         }
       });
     }
@@ -832,13 +806,24 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
     headers.set('Timing-Allow-Origin', '*');
-    headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.5');
+
+    // ── STAGING & PRODUCTION SUBDOMAIN HARDENING ──
+    if (hostname === STAGING_HOST) {
+      headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+      headers.set('X-Environment', 'staging');
+    } else {
+      headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+      headers.set('X-Environment', 'production');
+    }
+
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.6');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
     // ── CANONICAL AUTHORITY SIGNALS ── Force canonical host on every response
     headers.set('X-Canonical-Host', CANONICAL_HOST);
+    headers.set('X-Staging-Host', STAGING_HOST);
+    headers.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
     headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com;");
 
     if (request.cf) {
@@ -896,37 +881,30 @@ Please connect me with the sales director and share official MahaRERA P521000796
       let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', {
           element(el) {
-            const liveCanonical = isArticleRoute ? `https://${hostname}${pathname}` : `https://${hostname}/`;
+            const liveCanonical = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}` : `https://${CANONICAL_HOST}/`;
             el.setAttribute('href', liveCanonical);
           }
         })
         .on('meta[property="og:url"]', {
           element(el) {
-            const liveUrl = isArticleRoute ? `https://${hostname}${pathname}` : `https://${hostname}/`;
+            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}` : `https://${CANONICAL_HOST}/`;
             el.setAttribute('content', liveUrl);
           }
         })
         .on('meta[property="og:image"]', {
           element(el) {
-            el.setAttribute('content', `https://${hostname}/assets/hero_banner.jpg`);
+            el.setAttribute('content', `https://${CANONICAL_HOST}/assets/hero_banner.jpg`);
           }
         })
         .on('meta[name="twitter:image"]', {
           element(el) {
-            el.setAttribute('content', `https://${hostname}/assets/hero_banner.jpg`);
+            el.setAttribute('content', `https://${CANONICAL_HOST}/assets/hero_banner.jpg`);
           }
         })
         .on('meta[name="twitter:url"]', {
           element(el) {
-            const liveUrl = isArticleRoute ? `https://${hostname}${pathname}` : `https://${hostname}/`;
+            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}` : `https://${CANONICAL_HOST}/`;
             el.setAttribute('content', liveUrl);
-          }
-        })
-        .on('script[type="application/ld+json"]', {
-          text(textChunk) {
-            if (hostname !== 'altero.newlaunches.in' && textChunk.text.includes('altero.newlaunches.in')) {
-              textChunk.replace(textChunk.text.replaceAll('altero.newlaunches.in', hostname));
-            }
           }
         })
         .on('head', {
@@ -935,9 +913,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
             el.append('<meta name="edge-rendered" content="cloudflare-worker-pune-optimized">', { html: true });
             el.append(`<meta name="viewer-country" content="${viewerCountry}">`, { html: true });
             el.append(`<meta name="viewer-city" content="${viewerCity}">`, { html: true });
-            const markdownUrl = isArticleRoute ? `https://${hostname}${pathname}.md` : `https://${hostname}/index.md`;
+            const markdownUrl = isArticleRoute ? `https://${CANONICAL_HOST}${pathname}.md` : `https://${CANONICAL_HOST}/index.md`;
             el.append(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`, { html: true });
-            el.append(`<link rel="alternate" type="application/json" href="https://${hostname}/_edge/knowledge-graph.json" title="Semantic Knowledge Graph">`, { html: true });
+            el.append(`<link rel="alternate" type="application/json" href="https://${CANONICAL_HOST}/_edge/knowledge-graph.json" title="Semantic Knowledge Graph">`, { html: true });
             el.append(`<script type="speculationrules">
 {
   "prerender": [
@@ -965,7 +943,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
               el.append('<meta name="crawler-intent" content="verified-search-crawler">', { html: true });
             }
             if (isAiCrawler) {
-              el.append(`<meta name="ai-retrieval-source" content="https://${hostname}/llms-full.txt">`, { html: true });
+              el.append(`<meta name="ai-retrieval-source" content="https://${CANONICAL_HOST}/llms-full.txt">`, { html: true });
             }
             if (isArticleRoute && articleMeta) {
               el.append(`<meta name="article-title" content="${articleMeta.title}">`, { html: true });

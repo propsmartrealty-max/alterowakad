@@ -7,7 +7,8 @@ compatibility_flags = ["nodejs_compat"]
 bucket = "."
 
 routes = [
-  { pattern = "altero.newlaunches.in/*", zone_name = "newlaunches.in" }
+  { pattern = "altero.newlaunches.in/*", zone_name = "newlaunches.in" },
+  { pattern = "www.altero.newlaunches.in/*", zone_name = "newlaunches.in" }
 ]
 
 [placement]

@@ -9,12 +9,15 @@ This document outlines the ultra-hardened configuration for **Lodha Altero Wakad
 To get maximum edge caching, DDoS protection, sub-15ms Time to First Byte (TTFB), and full Cloudflare Worker execution:
 
 ### DNS Records Table (In Cloudflare Zone: `newlaunches.in`)
-| Type | Name | Content / Target | Proxy Status | TTL |
-| :--- | :--- | :--- | :--- | :--- |
-| **CNAME** | `lodhaaltero` | `<your-pages-project>.pages.dev` or Worker Route | **Proxied (Orange Cloud)** | Auto |
-| **TXT** | `lodhaaltero` | `google-site-verification=7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA` | DNS Only (Grey Cloud) | Auto |
+| Type | Name | Content / Target | Proxy Status | TTL | Purpose |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **CNAME** | `altero` | `alterowakad.pages.dev` | **Proxied (Orange Cloud)** | Auto | **Primary Canonical Production Host** |
+| **CNAME** | `www.altero` | `alterowakad.pages.dev` | **Proxied (Orange Cloud)** | Auto | Subdomain WWW alias (301 to altero) |
+| **TXT** | `altero` | `google-site-verification=7GXqitp4hGBCcyWfSC0SwGGKINHqogR716eQEiD0vWA` | DNS Only (Grey Cloud) | Auto | GSC Verification Token 1 |
+| **TXT** | `altero` | `google-site-verification=QFK7VqRHrq-mZJgA2maflTA7RLYKX1hvCK8B2djWkqI` | DNS Only (Grey Cloud) | Auto | GSC Verification Token 2 |
+| **TXT** | `_indexnow.altero` | `e9a3b8c7d6e54f3a2b1c0d9e8f7a6b5c` | DNS Only (Grey Cloud) | Auto | Real-Time IndexNow Verification Key |
 
-> **Subdomain Edge Architecture**: Requests to `https://lodhaaltero.newlaunches.in/` are intercepted by Cloudflare Edge POPs in Mumbai (`BOM`), terminating TLS 1.3 in <5ms, executing `_worker.js`, and serving cached responses to Googlebot.
+> **Subdomain Edge Architecture**: Requests to `https://altero.newlaunches.in/` are intercepted by Cloudflare Edge POPs in Mumbai/Pune (`BOM`/`MRS`), terminating TLS 1.3 in <5ms, executing `_worker.js`, and serving cached responses to Googlebot. Staging link `https://alterowakad.pages.dev/` is strictly hardened with `noindex, nofollow` and canonical tags pointing to `https://altero.newlaunches.in/`.
 
 ---
 
