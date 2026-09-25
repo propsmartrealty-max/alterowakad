@@ -304,6 +304,31 @@ export default {
     // 4. Search Engine Indexing & IndexNow Real-Time Notification Handler
     // =========================================================================
     if (pathname === '/_edge/ping-index' || pathname === '/_edge/indexnow-ping') {
+      // Cooldown guard: Prevent 429 Too Many Requests from Bing and IndexNow APIs
+      const now = Date.now();
+      const isForce = url.searchParams.has('force');
+      if (env && env.ALTERO_LEADS_KV && !isForce) {
+        try {
+          const lastPingRaw = await env.ALTERO_LEADS_KV.get('indexnow:last_ping_ts');
+          if (lastPingRaw) {
+            const elapsedSec = Math.floor((now - parseInt(lastPingRaw, 10)) / 1000);
+            if (elapsedSec < 900) { // 15-minute cooldown period
+              return new Response(JSON.stringify({
+                status: 'cooldown_active',
+                message: `IndexNow cooldown active to prevent HTTP 429 Too Many Requests. Next ping allowed in ${900 - elapsedSec}s. Use ?force=true to override.`,
+                elapsedSeconds: elapsedSec,
+                cooldownPeriodSeconds: 900
+              }, null, 2), {
+                headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+              });
+            }
+          }
+          await env.ALTERO_LEADS_KV.put('indexnow:last_ping_ts', now.toString(), { expirationTtl: 1800 });
+        } catch (kvErr) {
+          console.error('KV Cooldown Error:', kvErr);
+        }
+      }
+
       const allSlugs = getAllProgrammaticSlugs();
       const limitParam = parseInt(url.searchParams.get('limit') || '1000', 10);
       const batchLimit = Math.min(Math.max(limitParam, 50), 10000);
@@ -564,12 +589,27 @@ export default {
       if (request.method === 'POST') {
         try {
           const body = await request.json().catch(() => ({}));
-          const name = (body.name || 'Valued Patron').trim();
-          const phone = (body.phone || '').trim();
-          const email = (body.email || '').trim();
-          const typology = (body.typology || '3/4 BHK Luxury Residence').trim();
-          const intent = (body.intent || 'VIP Site Visit & Floor Plans').trim();
-          const source = (body.source || 'Website Showcase').trim();
+
+          // Silent Bot Honeypot: Automated spambots filling hidden honeypot fields get filtered silently
+          if (body.company_website || body.fax_number || body.url_source || body.website_url) {
+            return new Response(JSON.stringify({
+              success: true,
+              leadId: 'ALT-' + Date.now().toString(36).toUpperCase(),
+              message: 'Priority allocation registered under MahaRERA P52100079692.'
+            }), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' }
+            });
+          }
+
+          // Input sanitization against XSS and control character injection
+          const sanitize = (str, maxLen = 120) => String(str || '').replace(/<[^>]*>?/gm, '').replace(/[\r\n\t]/g, ' ').trim().slice(0, maxLen);
+          const name = sanitize(body.name || 'Valued Patron', 80);
+          const phone = sanitize(body.phone || body.mobile || '', 30).replace(/[^\d+ ]/g, '');
+          const email = sanitize(body.email || '', 100);
+          const typology = sanitize(body.typology || '3/4 BHK Luxury Residence', 60);
+          const intent = sanitize(body.intent || 'VIP Site Visit & Floor Plans', 80);
+          const source = sanitize(body.source || 'Website Showcase', 60);
 
           if (!phone || phone.length < 8) {
             return new Response(JSON.stringify({ success: false, error: 'Valid phone number required' }), {
@@ -921,6 +961,17 @@ Please connect me with the sales director and share official MahaRERA P521000796
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
+
+    // Global NRI Localization: Dynamic currency hint & audience context
+    const currencyMap = {
+      US: 'USD', AE: 'AED', GB: 'GBP', SG: 'SGD', AU: 'AUD', CA: 'CAD',
+      DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR',
+      QA: 'QAR', SA: 'SAR', KW: 'KWD', OM: 'OMR', BH: 'BHD', JP: 'JPY'
+    };
+    const currencyHint = currencyMap[viewerCountry] || 'INR';
+    headers.set('X-Currency-Hint', currencyHint);
+    headers.set('X-Target-Audience', viewerCountry === 'IN' ? 'Domestic-India' : `Global-NRI-${viewerCountry}`);
+
     // ── CANONICAL AUTHORITY SIGNALS ── Force canonical host on every response
     headers.set('X-Canonical-Host', CANONICAL_HOST);
     headers.set('X-Staging-Host', STAGING_HOST);
@@ -952,8 +1003,12 @@ Please connect me with the sales director and share official MahaRERA P521000796
       } else if (/\.(css|js)$/i.test(pathname)) {
         headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
         headers.set('CDN-Cache-Control', 'max-age=604800');
-      } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml') {
+      } else if (pathname === '/robots.txt' || pathname.startsWith('/sitemap') || pathname === '/feed.xml' || pathname === '/llms.txt' || pathname === '/llms-full.txt') {
         headers.set('Cache-Control', 'public, max-age=43200, s-maxage=43200');
+        if (pathname === '/llms.txt' || pathname === '/llms-full.txt') {
+          headers.set('Content-Type', 'text/plain; charset=utf-8');
+          headers.set('Access-Control-Allow-Origin', '*');
+        }
       }
       return new Response(response.body, {
         status: response.status,

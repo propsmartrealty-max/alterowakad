@@ -453,7 +453,7 @@ const floorPlanData = {
     balconyArea: '120 Sq.Ft. Double Height Deck',
     orientation: 'East-West Cross Ventilation / Vastu Compliant',
     possession: 'Phased from Dec 2028',
-    price: '₹2.09 Cr* Onwards',
+    price: '₹2.09 Cr* Onwards (~$250K USD / ~920K AED)',
     highlights: [
       'Authentic Sanctioned Layout from Lodha Altero Wakad',
       'Expansive living room with 10.5 ft floor-to-ceiling clear height',
@@ -500,7 +500,7 @@ const floorPlanData = {
     balconyArea: '140 Sq.Ft. Panoramic Sundeck',
     orientation: 'Three-Side Open Corner Unit',
     possession: 'Phased from Dec 2028',
-    price: '₹2.45 Cr* Onwards',
+    price: '₹2.45 Cr* Onwards (~$295K USD / ~1.08M AED)',
     highlights: [
       'Authentic Unit 5 Layout from Lodha Altero Wakad',
       'Dedicated executive Home Office / Study pod with acoustic insulation',
@@ -584,7 +584,7 @@ const floorPlanData = {
     balconyArea: '180 Sq.Ft. Double-Width Balcony',
     orientation: 'Four-Side Panoramic Cross Ventilation',
     possession: 'Phased from Dec 2028',
-    price: '₹3.12 Cr* Onwards',
+    price: '₹3.15 Cr* Onwards (~$378K USD / ~1.39M AED)',
     highlights: [
       'Authentic Tower 3 Unit 1 Layout scraped from lodhagroup.com Altero',
       'Private elevator vestibule with secured entrance foyer',
@@ -631,7 +631,7 @@ const floorPlanData = {
     balconyArea: '350 Sq.Ft. Private Rooftop Deck',
     orientation: '360-Degree Panoramic Penthouse Crown',
     possession: 'Phased from Dec 2028',
-    price: '₹7.60 Cr* Onwards',
+    price: '₹5.25 Cr* Onwards (~$630K USD / ~2.31M AED)',
     highlights: [
       'Limited-edition top floor penthouse with personal plunge pool & bar pavilion',
       'Private internal architectural staircase and private high-speed elevator',
@@ -1813,6 +1813,10 @@ function initFormHandlers() {
       // Generate local fallback reference ID
       const fallbackRefId = 'ALT-2026-' + Math.floor(10000 + Math.random() * 90000);
 
+      // Check for automated bot submission in honeypot fields
+      const honeypotInput = form.querySelector('input[name="website_security_token"], input[name="company_website"], input[name="fax_number"]');
+      const honeypotVal = honeypotInput ? honeypotInput.value.trim() : '';
+
       // Edge-native submission payload
       const leadPayload = {
         name: cleanName,
@@ -1820,6 +1824,7 @@ function initFormHandlers() {
         email: rawEmail,
         typology: preference,
         intent: intent,
+        company_website: honeypotVal,
         source: window.location.pathname || 'Direct Showcase'
       };
 
