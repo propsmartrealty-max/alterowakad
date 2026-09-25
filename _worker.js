@@ -737,8 +737,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
       const pageHtml = renderProgrammaticPage(url, progData);
       const progHeaders = new Headers();
       progHeaders.set('Content-Type', 'text/html; charset=utf-8');
-      progHeaders.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400, stale-if-error=604800');
-      progHeaders.set('CDN-Cache-Control', 'max-age=86400, stale-while-revalidate=86400, stale-if-error=604800');
+      progHeaders.set('Cache-Control', 'public, max-age=0, s-maxage=604800, stale-while-revalidate=86400, stale-if-error=604800');
+      progHeaders.set('CDN-Cache-Control', 'max-age=604800, stale-while-revalidate=86400, stale-if-error=604800');
+      progHeaders.set('Vary', 'Accept-Encoding, Accept, cf-ipcountry');
       progHeaders.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
       progHeaders.set('X-Content-Type-Options', 'nosniff');
       progHeaders.set('X-Frame-Options', 'SAMEORIGIN');
@@ -753,7 +754,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.6');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.7');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -770,10 +771,11 @@ Please connect me with the sales director and share official MahaRERA P521000796
         }
       }
 
-      // Preload critical assets
+      // Preload critical assets with responsive mobile and desktop viewports
       const isVerificationAgent = /google-site-verification|googlebot/i.test(userAgent);
       if (!isVerificationAgent) {
-        progHeaders.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; fetchpriority=high');
+        progHeaders.append('Link', '</assets/hero_mobile.jpg>; rel=preload; as=image; media="(max-width: 767px)"; fetchpriority=high');
+        progHeaders.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; media="(min-width: 768px)"; fetchpriority=high');
         progHeaders.append('Link', '</styles.css>; rel=preload; as=style');
         progHeaders.append('Link', '<https://fonts.googleapis.com>; rel=preconnect');
         progHeaders.append('Link', '<https://fonts.gstatic.com>; rel=preconnect; crossorigin');
