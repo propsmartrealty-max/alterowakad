@@ -816,6 +816,18 @@ Please connect me with the sales director and share official MahaRERA P521000796
       }
     }
 
+    // Unmatched _edge endpoints return authoritative 404 JSON response
+    if (pathname.startsWith('/_edge/')) {
+      return new Response(JSON.stringify({ error: 'Not Found', message: 'Unknown Edge API endpoint' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive',
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
+        }
+      });
+    }
+
     // =========================================================================
     // 5. Dynamic Programmatic XML Sitemap Generation (10,000+ routes)
     // =========================================================================
@@ -1074,7 +1086,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
         headers.set('Cache-Control', 'public, max-age=31536000, immutable');
         headers.set('CDN-Cache-Control', 'max-age=31536000');
       } else if (pathname === '/sw.js') {
-        headers.set('Cache-Control', 'public, max-age=0, no-cache');
+        headers.set('Cache-Control', 'public, max-age=0, must-revalidate, no-cache');
+        headers.set('CDN-Cache-Control', 'max-age=0, no-cache, no-store');
+        headers.set('Cloudflare-CDN-Cache-Control', 'max-age=0, no-cache, no-store');
         headers.set('Service-Worker-Allowed', '/');
         headers.set('Content-Type', 'application/javascript; charset=utf-8');
       } else if (pathname === '/manifest.webmanifest' || pathname === '/site.webmanifest') {
