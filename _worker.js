@@ -1016,8 +1016,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
       // Fetch directory path with trailing slash directly from env.ASSETS (resolves immediately to articles/<slug>/index.html)
       assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
     } else if (POLICY_SLUGS[cleanSlug]) {
-      // Resolve institutional policy pages directly
-      assetRequest = new Request(new URL(`/${POLICY_SLUGS[cleanSlug]}`, request.url), request);
+      // Resolve institutional policy pages directly from directory index
+      assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
     } else if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap')) {
       // Return authoritative 404 Not Found for non-existent routes to prevent Soft 404 penalties
       return new Response(
