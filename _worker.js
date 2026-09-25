@@ -24,8 +24,8 @@ import {
 const STATIC_EXTENSIONS = /\.(jpg|jpeg|webp|png|gif|svg|ico|css|js|woff|woff2|ttf|eot|pdf|json|xml|txt|webmanifest)$/i;
 
 // Verified Google, Bing & Search Engine Crawler User-Agents
-const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|duckduckbot|slurp|baiduspider|yandexbot|applebot/i;
-const AI_CRAWLER_REGEX = /gptbot|perplexitybot|claudebot|chatgpt-user|google-extended|anthropic-ai|cohere-ai|diffbot/i;
+const SEARCH_CRAWLER_REGEX = /googlebot|google-inspectiontool|googleother|storebot-google|google-read-aloud|google-safety|mediapartners-google|adsbot-google|feedfetcher-google|bingbot|msnbot|adidxbot|duckduckbot|slurp|baiduspider|yandexbot|applebot|yandex|seznam|naverbot/i;
+const AI_CRAWLER_REGEX = /gptbot|chatgpt-user|oai-searchbot|perplexitybot|claudebot|claude-web|anthropic-ai|google-extended|cohere-ai|meta-externalagent|bytespider|diffbot|ccbot/i;
 const SOCIAL_CRAWLER_REGEX = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|pinterest|slackbot/i;
 
 // IndexNow Verification Key for Instant Search Engine Crawl Notifications
