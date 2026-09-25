@@ -1008,21 +1008,21 @@ function initRooftopTabs() {
    ============================================================ */
 const locationCategoryData = {
   it: [
-    { name: 'Hinjewadi Rajiv Gandhi IT Park (Phase 1, 2 & 3)', dist: '4.5 Km', time: '10 Mins', desc: 'Home to Infosys, TCS, Wipro, Cognizant, and 300+ tech leaders' },
-    { name: 'Balewadi Tech & Financial District', dist: '3.8 Km', time: '8 Mins', desc: 'Emerging corporate hub along Mumbai-Bengaluru bypass' },
+    { name: 'Hinjewadi Rajiv Gandhi IT Park (Phase 1, 2 & 3)', dist: '4.5 Km', time: '10 Mins', desc: 'Home to Infosys, TCS, Wipro, Cognizant, and 300+ tech leaders', link: '/transit/hinjewadi-phase-1-to-lodha-altero-wakad' },
+    { name: 'Balewadi Tech & Financial District', dist: '3.8 Km', time: '8 Mins', desc: 'Emerging corporate hub along Mumbai-Bengaluru bypass', link: '/transit/balewadi-high-street-to-lodha-altero-wakad' },
     { name: 'Talawade IT Park', dist: '12.0 Km', time: '22 Mins', desc: 'Key industrial and enterprise tech cluster' },
-    { name: 'Panchshil Business Park (Baner)', dist: '6.2 Km', time: '12 Mins', desc: 'A-Grade multinational office headquarters' }
+    { name: 'Panchshil Business Park (Baner)', dist: '6.2 Km', time: '12 Mins', desc: 'A-Grade multinational office headquarters', link: '/transit/baner-pashan-link-road-to-lodha-altero-wakad' }
   ],
   transit: [
-    { name: 'Mumbai-Pune Expressway (Wakad Toll Plaza)', dist: '1.5 Km', time: '4 Mins', desc: 'Direct seamless gateway to Navi Mumbai & South Mumbai' },
-    { name: 'Mumbai-Bangalore Highway (NH-48)', dist: '800 Mtrs', time: '2 Mins', desc: 'Immediate arterial connectivity across western corridor' },
-    { name: 'Wakad Metro Station (Proposed Line 3)', dist: '1.2 Km', time: '3 Mins', desc: 'Direct rapid transit connection to Shivajinagar & Civil Court' },
-    { name: 'Pune International Airport (Lohegaon)', dist: '22.0 Km', time: '40 Mins', desc: 'Swift access via Hinjewadi-Aundh link road' }
+    { name: 'Mumbai-Pune Expressway (Wakad Toll Plaza)', dist: '1.5 Km', time: '4 Mins', desc: 'Direct seamless gateway to Navi Mumbai & South Mumbai', link: '/transit/mumbai-pune-expressway-to-lodha-altero-wakad' },
+    { name: 'Mumbai-Bangalore Highway (NH-48)', dist: '800 Mtrs', time: '2 Mins', desc: 'Immediate arterial connectivity across western corridor', link: '/transit/hinjewadi-phase-1-to-lodha-altero-wakad' },
+    { name: 'Wakad Metro Station (Proposed Line 3)', dist: '1.2 Km', time: '3 Mins', desc: 'Direct rapid transit connection to Shivajinagar & Civil Court', link: '/transit/hinjewadi-phase-2-to-lodha-altero-wakad' },
+    { name: 'Pune International Airport (Lohegaon)', dist: '22.0 Km', time: '40 Mins', desc: 'Swift access via Hinjewadi-Aundh link road', link: '/transit/pune-airport-lohegaon-to-lodha-altero-wakad' }
   ],
   retail: [
     { name: 'Croma Electronics Wakad', dist: '50 Mtrs', time: '1 Min Walk', desc: 'Directly adjacent to the property for unmatched convenience' },
-    { name: 'Phoenix Mall of the Millennium (Wakad)', dist: '2.4 Km', time: '6 Mins', desc: 'Pune’s premier luxury mall with Zara, H&M, PVR INOX & fine dining' },
-    { name: 'Balewadi High Street', dist: '4.5 Km', time: '10 Mins', desc: 'High-end nightlife, breweries, and gourmet restaurants' },
+    { name: 'Phoenix Mall of the Millennium (Wakad)', dist: '2.4 Km', time: '6 Mins', desc: 'Pune’s premier luxury mall with Zara, H&M, PVR INOX & fine dining', link: '/transit/phoenix-mall-millennium-to-lodha-altero-wakad' },
+    { name: 'Balewadi High Street', dist: '4.5 Km', time: '10 Mins', desc: 'High-end nightlife, breweries, and gourmet restaurants', link: '/transit/balewadi-high-street-to-lodha-altero-wakad' },
     { name: 'Westend Mall (Aundh)', dist: '7.5 Km', time: '15 Mins', desc: 'Cinepolis IMAX, fashion boutiques and dining hub' }
   ],
   education: [
@@ -1056,22 +1056,32 @@ function initLocationTabs() {
     });
 
     container.innerHTML = list.map(item => `
-      <div class="glass-panel-light glass-interactive boxing-card boxing-beam boxing-corners p-6 shadow-lg shadow-amber-950/5 transition-all duration-300 group tilt-card">
-        <div class="flex items-center justify-between mb-3">
-          <span class="inline-block bg-amber-500/15 text-amber-800 border border-amber-600/30 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded">
-            ${item.dist}
-          </span>
-          <span class="text-stone-500 text-xs font-medium flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ${item.time}
-          </span>
+      <div class="glass-panel-light glass-interactive boxing-card boxing-beam boxing-corners p-6 shadow-lg shadow-amber-950/5 transition-all duration-300 group tilt-card flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="inline-block bg-amber-500/15 text-amber-800 border border-amber-600/30 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded">
+              ${item.dist}
+            </span>
+            <span class="text-stone-500 text-xs font-medium flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ${item.time}
+            </span>
+          </div>
+          <h4 class="font-serif text-lg font-semibold text-stone-900 mb-2 group-hover:text-amber-800 transition-colors">
+            ${item.name}
+          </h4>
+          <p class="text-stone-600 text-xs leading-relaxed font-light mb-3">
+            ${item.desc}
+          </p>
         </div>
-        <h4 class="font-serif text-lg font-semibold text-stone-900 mb-2 group-hover:text-amber-800 transition-colors">
-          ${item.name}
-        </h4>
-        <p class="text-stone-600 text-xs leading-relaxed font-light">
-          ${item.desc}
-        </p>
+        ${item.link ? `
+        <div class="pt-2 border-t border-stone-200/60 mt-1">
+          <a href="${item.link}" class="inline-flex items-center gap-1 text-[11px] text-amber-900 font-bold hover:text-amber-700 transition-colors">
+            <span>Transit Intelligence Guide</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+        ` : ''}
       </div>
     `).join('');
   }

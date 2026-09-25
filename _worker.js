@@ -85,7 +85,13 @@ export default {
 
     // Cloudflare Edge Cache API (caches.default) for 0ms edge memory hits
     const cache = (typeof caches !== 'undefined' && caches.default) ? caches.default : null;
-    const cacheKey = new Request(url.toString(), request);
+    
+    // Normalize cache key by removing non-functional tracking query parameters (utm_*, fbclid, gclid, etc.)
+    const cleanCacheUrl = new URL(url.toString());
+    const trackingParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', '_ga', 'mc_cid', 'mc_eid', 'ref'];
+    trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
+    cleanCacheUrl.searchParams.sort();
+    const cacheKey = new Request(cleanCacheUrl.toString(), request);
 
     if (cache && isGetRequest && !isNoCacheQuery && !pathname.startsWith('/_edge/')) {
       const cached = await cache.match(cacheKey);
@@ -292,17 +298,17 @@ ${urlsXml}
       const pageHtml = renderProgrammaticPage(url, PROGRAMMATIC_PAGES[pathname]);
       const progHeaders = new Headers();
       progHeaders.set('Content-Type', 'text/html; charset=utf-8');
-      progHeaders.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800');
-      progHeaders.set('CDN-Cache-Control', 'max-age=86400');
+      progHeaders.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400, stale-if-error=604800');
+      progHeaders.set('CDN-Cache-Control', 'max-age=86400, stale-while-revalidate=86400, stale-if-error=604800');
       progHeaders.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
       progHeaders.set('X-Content-Type-Options', 'nosniff');
       progHeaders.set('X-Frame-Options', 'SAMEORIGIN');
       progHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
       progHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
       progHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-      progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
+      progHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
       progHeaders.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Programmatic-SEO-Worker-v2.2');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.3');
       progHeaders.set('X-Edge-Cache', 'MISS');
 
       if (request.cf) {
@@ -382,10 +388,10 @@ ${urlsXml}
     headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
     headers.set('Cross-Origin-Resource-Policy', 'same-origin');
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-    headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
+    headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(), autoplay=(), fullscreen=(self)');
     headers.set('Timing-Allow-Origin', '*');
     headers.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    headers.set('X-Edge-Engine', 'Cloudflare-Advanced-HTML-Worker-v2.1');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.3');
     headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https://challenges.cloudflare.com;");
 
     if (request.cf) {
@@ -420,8 +426,8 @@ ${urlsXml}
     // 9. HTML Stream Transformation via Cloudflare HTMLRewriter
     // =========================================================================
     if (contentType.includes('text/html')) {
-      headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
-      headers.set('CDN-Cache-Control', 'max-age=3600');
+      headers.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400, stale-if-error=604800');
+      headers.set('CDN-Cache-Control', 'max-age=86400, stale-while-revalidate=86400, stale-if-error=604800');
 
       const isVerificationAgent = /google-site-verification|googlebot/i.test(userAgent);
 
