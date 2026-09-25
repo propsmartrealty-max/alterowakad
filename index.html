@@ -43,7 +43,8 @@
   <meta name="twitter:image" content="https://altero.newlaunches.in/assets/hero_banner.jpg">
 
   <!-- Preload Critical LCP Image & Fonts for 100/100 Core Web Vitals Ranking Factor -->
-  <link rel="preload" as="image" href="assets/hero_banner.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="/assets/hero_mobile.jpg" media="(max-width: 767px)" fetchpriority="high">
+  <link rel="preload" as="image" href="/assets/hero_banner.jpg" media="(min-width: 768px)" fetchpriority="high">
 
   <!-- Schema.org Multi-Entity JSON-LD Structured Data for Google Rich Snippets & Knowledge Graph -->
   <script type="application/ld+json">
@@ -341,6 +342,18 @@
           "https://www.wikidata.org/wiki/Q1538",
           "https://maharera.maharashtra.gov.in"
         ],
+        "areaServed": [
+          { "@type": "Country", "name": "India" },
+          { "@type": "Country", "name": "United States" },
+          { "@type": "Country", "name": "United Arab Emirates" },
+          { "@type": "Country", "name": "United Kingdom" },
+          { "@type": "Country", "name": "Singapore" },
+          { "@type": "Country", "name": "Australia" },
+          { "@type": "Country", "name": "Canada" },
+          { "@type": "Country", "name": "Germany" }
+        ],
+        "currenciesAccepted": "INR, USD, AED, GBP, SGD, CAD, EUR",
+        "paymentAccepted": "Bank Wire, NRE/NRO Direct Transfer, Construction-Linked Milestone Escrow, Cheque",
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
@@ -887,8 +900,15 @@
   ]
   </script>
 
-  <!-- Hreflang: English-India canonical signal for Google global crawl -->
+  <!-- Hreflang: Global NRI & International Search Signal for Google Worldwide -->
   <link rel="alternate" hreflang="en-in" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-us" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-ae" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-gb" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-sg" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-au" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-ca" href="https://altero.newlaunches.in/">
+  <link rel="alternate" hreflang="en-de" href="https://altero.newlaunches.in/">
   <link rel="alternate" hreflang="en" href="https://altero.newlaunches.in/">
   <link rel="alternate" hreflang="x-default" href="https://altero.newlaunches.in/">
 

@@ -128,6 +128,9 @@ export default {
     const isMarkdownPath = pathname.endsWith('.md');
     const cleanMdPath = pathname.replace(/\.md$/, '');
 
+    // Audience segmentation for edge cache isolation (prevents crawler vs domestic vs NRI banner cross-contamination)
+    const audienceSegment = (isSearchCrawler || isAiCrawler) ? 'crawler' : (viewerCountry === 'IN' ? 'in' : `nri-${viewerCountry.toLowerCase()}`);
+
     // Cloudflare Edge Cache API (caches.default) for 0ms edge memory hits
     const cache = (typeof caches !== 'undefined' && caches.default) ? caches.default : null;
     
@@ -139,6 +142,7 @@ export default {
       '_ga', '_gl', 'mc_cid', 'mc_eid', 'ref', 'source', 'trk', 's_kwcid', 'dclid'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
+    cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
 
@@ -399,21 +403,31 @@ export default {
     if (pathname === '/_edge/purge-cache') {
       if (cache) {
         try {
-          const root1 = new Request(`https://${hostname}/`);
-          const root2 = new Request('https://altero.newlaunches.in/');
-          const root3 = new Request('https://alterowakad.pages.dev/');
-          const articlePurgeList = Object.keys(ARTICLE_SLUGS).flatMap(slug => [
-            new Request(`https://${hostname}${slug}`),
-            new Request(`https://${hostname}${slug}/`),
-            new Request(`https://altero.newlaunches.in${slug}`),
-            new Request(`https://altero.newlaunches.in${slug}/`)
-          ]);
-          await Promise.allSettled([
-            cache.delete(root1),
-            cache.delete(root2),
-            cache.delete(root3),
-            ...articlePurgeList.map(r => cache.delete(r))
-          ]);
+          const audienceList = ['in', 'crawler', 'nri-us', 'nri-ae', 'nri-gb', 'nri-sg', 'nri-au', 'nri-ca', 'nri-de', 'nri-qa', 'nri-sa', 'nri-kw', 'nri-om'];
+          const buildAudienceKeys = (baseUri) => {
+            const list = [new Request(baseUri)];
+            for (const aud of audienceList) {
+              const u = new URL(baseUri);
+              u.searchParams.set('__cf_aud', aud);
+              list.push(new Request(u.toString()));
+            }
+            return list;
+          };
+
+          const targetUrls = [
+            `https://${hostname}/`,
+            'https://altero.newlaunches.in/',
+            'https://alterowakad.pages.dev/',
+            ...Object.keys(ARTICLE_SLUGS).flatMap(slug => [
+              `https://${hostname}${slug}`,
+              `https://${hostname}${slug}/`,
+              `https://altero.newlaunches.in${slug}`,
+              `https://altero.newlaunches.in${slug}/`
+            ])
+          ];
+
+          const allPurgeRequests = targetUrls.flatMap(u => buildAudienceKeys(u));
+          await Promise.allSettled(allPurgeRequests.map(r => cache.delete(r)));
         } catch (e) {}
       }
       return new Response(JSON.stringify({ status: 'purged', timestamp: new Date().toISOString() }, null, 2), {
@@ -935,14 +949,16 @@ Please connect me with the sales director and share official MahaRERA P521000796
     // 9. HTML Stream Transformation via Cloudflare HTMLRewriter
     // =========================================================================
     if (contentType.includes('text/html')) {
-      headers.set('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400, stale-if-error=604800');
-      headers.set('CDN-Cache-Control', 'max-age=86400, stale-while-revalidate=86400, stale-if-error=604800');
+      headers.set('Cache-Control', 'public, max-age=0, s-maxage=604800, stale-while-revalidate=86400, stale-if-error=604800');
+      headers.set('CDN-Cache-Control', 'max-age=604800, stale-while-revalidate=86400, stale-if-error=604800');
+      headers.set('Vary', 'Accept-Encoding, Accept, cf-ipcountry');
 
       const isVerificationAgent = /google-site-verification|googlebot/i.test(userAgent);
 
       // Only emit Link preloads for non-verification requests (prevents 103 Early Hints from breaking legacy GSC verification parsers)
       if (!isVerificationAgent) {
-        headers.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; fetchpriority=high');
+        headers.append('Link', '</assets/hero_mobile.jpg>; rel=preload; as=image; media="(max-width: 767px)"; fetchpriority=high');
+        headers.append('Link', '</assets/hero_banner.jpg>; rel=preload; as=image; media="(min-width: 768px)"; fetchpriority=high');
         headers.append('Link', '</styles.css>; rel=preload; as=style');
         headers.append('Link', '<https://fonts.googleapis.com>; rel=preconnect');
         headers.append('Link', '<https://fonts.gstatic.com>; rel=preconnect; crossorigin');
@@ -991,7 +1007,20 @@ Please connect me with the sales director and share official MahaRERA P521000796
   "prerender": [
     {
       "source": "list",
-      "urls": ["/residences/3-bhk-luxury-wakad", "/pricing/lodha-wakad-cost-sheet", "/transit/hinjewadi-it-park-commute", "/compare/lodha-altero-vs-godrej-wakad"],
+      "urls": [
+        "/articles/lodha-altero-wakad-price-list-cost-sheet-2026",
+        "/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall",
+        "/articles/lodha-altero-floor-plans-sky-duplex-penthouses",
+        "/articles/maharera-p52100079692-statutory-compliance",
+        "/articles/25000-sqft-rooftop-sky-club-infinity-pool",
+        "/articles/wakad-real-estate-investment-thesis-2026",
+        "/articles/wakad-vs-baner-vs-mahalunge-hinjewadi",
+        "/articles/pune-real-estate-macro-trends-east-vs-west",
+        "/articles/lodha-pune-residential-ecosystem",
+        "/residences/3-bhk-luxury-wakad",
+        "/pricing/lodha-wakad-cost-sheet",
+        "/transit/hinjewadi-it-park-commute"
+      ],
       "eagerness": "moderate"
     }
   ],
@@ -1022,16 +1051,30 @@ Please connect me with the sales director and share official MahaRERA P521000796
         });
 
       if (viewerCountry !== 'IN' && !isSearchCrawler && !isAiCrawler) {
+        const COUNTRY_NAMES = {
+          'US': 'United States • $ USD',
+          'AE': 'UAE & Dubai • AED د.إ',
+          'GB': 'United Kingdom • £ GBP',
+          'SG': 'Singapore • S$ SGD',
+          'AU': 'Australia • A$ AUD',
+          'CA': 'Canada • C$ CAD',
+          'DE': 'Germany & EU • € EUR',
+          'QA': 'Qatar • QAR ر.ق',
+          'SA': 'Saudi Arabia • SAR ر.س',
+          'KW': 'Kuwait • KWD د.ك',
+          'OM': 'Oman • OMR ر.ع'
+        };
+        const countryLabel = COUNTRY_NAMES[viewerCountry] || `${viewerCountry} • Global NRI Desk`;
         rewriter = rewriter.on('body', {
           element(el) {
             const nriStrip = `
-<div id="nri-concierge-strip" style="background: linear-gradient(90deg, #141210 0%, #1f1b16 100%); border-bottom: 1px solid rgba(212,175,55,0.35); color: #FAF7F2; padding: 9px 18px; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 99999;">
-  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+<div id="nri-concierge-strip" style="background: linear-gradient(90deg, #141210 0%, #1f1b16 100%); border-bottom: 1px solid rgba(212,175,55,0.35); color: #FAF7F2; padding: 10px 20px; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 99999;">
+  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
     <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e;"></span>
-    <span><strong>NRI Priority Desk (${viewerCountry}):</strong> Lodha Altero Wakad Direct Builder Allocation, Virtual 3D Site Walkthroughs &amp; Repatriation Support.</span>
+    <span><strong>Global NRI Priority Desk (${countryLabel}):</strong> Direct Builder Inventory for Lodha Altero Wakad, Zero Stamp Surcharge, Virtual 3D Walkthroughs &amp; Complete FEMA Repatriation Compliance.</span>
   </div>
   <div style="display: flex; align-items: center; gap: 12px; margin-left: 12px; flex-shrink: 0;">
-    <a href="https://wa.me/917744009295?text=Hello%20Lodha%20Altero%20Team%2C%20I%20am%20an%20NRI%20investor%20from%20${viewerCountry}.%20Please%20share%20floor%20plans%20and%20NRI%20payment%20schedules." target="_blank" rel="noopener noreferrer" style="color: #D4AF37; text-decoration: none; font-weight: 600; font-size: 12px; border: 1px solid rgba(212,175,55,0.4); padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">Chat on WhatsApp &rarr;</a>
+    <a href="https://wa.me/917744009295?text=Hello%20Lodha%20Altero%20Concierge%2C%20I%20am%20an%20NRI%20investor%20from%20${viewerCountry}.%20Please%20share%20floor%20plans%2C%20inventory%20and%20NRI%20payment%20schedules." target="_blank" rel="noopener noreferrer" style="color: #D4AF37; text-decoration: none; font-weight: 600; font-size: 12px; border: 1px solid rgba(212,175,55,0.4); padding: 5px 12px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; background: rgba(212,175,55,0.08);">Connect with NRI Director &rarr;</a>
     <button onclick="document.getElementById('nri-concierge-strip').style.display='none'" style="background: none; border: none; color: #a8a29e; font-size: 16px; cursor: pointer; line-height: 1; padding: 0 4px;" aria-label="Dismiss">&times;</button>
   </div>
 </div>`;
