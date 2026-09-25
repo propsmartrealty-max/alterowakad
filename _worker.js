@@ -286,6 +286,7 @@ export default {
         ...topProgrammaticUrls
       ];
 
+      const sitemapUrl = `https://${hostname}/sitemap.xml`;
       const pingResults = {
         timestamp: new Date().toISOString(),
         host: hostname,
