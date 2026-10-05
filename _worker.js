@@ -159,9 +159,11 @@ export default {
     const trackingParams = [
       'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id', 'utm_source_platform',
       'fbclid', 'gclid', 'gbraid', 'wbraid', 'msclkid', 'twclid', 'li_fat_id', 'ttclid', 'yclid',
-      '_ga', '_gl', 'mc_cid', 'mc_eid', 'ref', 'source', 'trk', 's_kwcid', 'dclid'
+      '_ga', '_gl', 'mc_cid', 'mc_eid', 'ref', 'source', 'trk', 's_kwcid', 'dclid',
+      'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.0');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -580,6 +582,7 @@ export default {
             const list = [new Request(baseUri)];
             for (const aud of audienceList) {
               const u = new URL(baseUri);
+              u.searchParams.set('__cf_ver', 'v3.0');
               u.searchParams.set('__cf_aud', aud);
               list.push(new Request(u.toString()));
             }
