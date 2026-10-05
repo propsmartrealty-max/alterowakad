@@ -1029,21 +1029,21 @@ function initRooftopTabs() {
    ============================================================ */
 const locationCategoryData = {
   it: [
-    { name: 'Hinjewadi Rajiv Gandhi IT Park (Phase 1, 2 & 3)', dist: '4.5 Km', time: '10 Mins', desc: 'Home to Infosys, TCS, Wipro, Cognizant, and 300+ tech leaders', link: '/transit/hinjewadi-phase-1-to-lodha-altero-wakad' },
-    { name: 'Balewadi Tech & Financial District', dist: '3.8 Km', time: '8 Mins', desc: 'Emerging corporate hub along Mumbai-Bengaluru bypass', link: '/transit/balewadi-high-street-to-lodha-altero-wakad' },
+    { name: 'Hinjewadi Rajiv Gandhi IT Park (Phase 1, 2 & 3)', dist: '4.5 Km', time: '10 Mins', desc: 'Home to Infosys, TCS, Wipro, Cognizant, and 300+ tech leaders', link: '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall' },
+    { name: 'Balewadi Tech & Financial District', dist: '3.8 Km', time: '8 Mins', desc: 'Emerging corporate hub along Mumbai-Bengaluru bypass', link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi' },
     { name: 'Talawade IT Park', dist: '12.0 Km', time: '22 Mins', desc: 'Key industrial and enterprise tech cluster' },
-    { name: 'Panchshil Business Park (Baner)', dist: '6.2 Km', time: '12 Mins', desc: 'A-Grade multinational office headquarters', link: '/transit/baner-pashan-link-road-to-lodha-altero-wakad' }
+    { name: 'Panchshil Business Park (Baner)', dist: '6.2 Km', time: '12 Mins', desc: 'A-Grade multinational office headquarters', link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi' }
   ],
   transit: [
-    { name: 'Mumbai-Pune Expressway (Wakad Toll Plaza)', dist: '1.5 Km', time: '4 Mins', desc: 'Direct seamless gateway to Navi Mumbai & South Mumbai', link: '/transit/mumbai-pune-expressway-to-lodha-altero-wakad' },
-    { name: 'Mumbai-Bangalore Highway (NH-48)', dist: '800 Mtrs', time: '2 Mins', desc: 'Immediate arterial connectivity across western corridor', link: '/transit/hinjewadi-phase-1-to-lodha-altero-wakad' },
-    { name: 'Wakad Metro Station (Proposed Line 3)', dist: '1.2 Km', time: '3 Mins', desc: 'Direct rapid transit connection to Shivajinagar & Civil Court', link: '/transit/hinjewadi-phase-2-to-lodha-altero-wakad' },
-    { name: 'Pune International Airport (Lohegaon)', dist: '22.0 Km', time: '40 Mins', desc: 'Swift access via Hinjewadi-Aundh link road', link: '/transit/pune-airport-lohegaon-to-lodha-altero-wakad' }
+    { name: 'Mumbai-Pune Expressway (Wakad Toll Plaza)', dist: '1.5 Km', time: '4 Mins', desc: 'Direct seamless gateway to Navi Mumbai & South Mumbai', link: '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall' },
+    { name: 'Mumbai-Bangalore Highway (NH-48)', dist: '800 Mtrs', time: '2 Mins', desc: 'Immediate arterial connectivity across western corridor', link: '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall' },
+    { name: 'Wakad Metro Station (Proposed Line 3)', dist: '1.2 Km', time: '3 Mins', desc: 'Direct rapid transit connection to Shivajinagar & Civil Court', link: '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall' },
+    { name: 'Pune International Airport (Lohegaon)', dist: '22.0 Km', time: '40 Mins', desc: 'Swift access via Hinjewadi-Aundh link road', link: '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall' }
   ],
   retail: [
     { name: 'Croma Electronics Wakad', dist: '50 Mtrs', time: '1 Min Walk', desc: 'Directly adjacent to the property for unmatched convenience' },
-    { name: 'Phoenix Mall of the Millennium (Wakad)', dist: '2.4 Km', time: '6 Mins', desc: 'Pune’s premier luxury mall with Zara, H&M, PVR INOX & fine dining', link: '/transit/phoenix-mall-millennium-to-lodha-altero-wakad' },
-    { name: 'Balewadi High Street', dist: '4.5 Km', time: '10 Mins', desc: 'High-end nightlife, breweries, and gourmet restaurants', link: '/transit/balewadi-high-street-to-lodha-altero-wakad' },
+    { name: 'Phoenix Mall of the Millennium (Wakad)', dist: '2.4 Km', time: '6 Mins', desc: 'Pune’s premier luxury mall with Zara, H&M, PVR INOX & fine dining', link: '/articles/lodha-altero-connectivity-hinjewadi-phoenix-mall' },
+    { name: 'Balewadi High Street', dist: '4.5 Km', time: '10 Mins', desc: 'High-end nightlife, breweries, and gourmet restaurants', link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi' },
     { name: 'Westend Mall (Aundh)', dist: '7.5 Km', time: '15 Mins', desc: 'Cinepolis IMAX, fashion boutiques and dining hub' }
   ],
   education: [
@@ -2063,7 +2063,7 @@ function initCompetitorBattlecard() {
   const COMPETITORS = {
     'kolte-patil': {
       name: 'Kolte Patil 24K Glamore (Wakad)',
-      link: '/compare/lodha-altero-vs-kolte-patil-24k-wakad',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+28 (~90m Height)', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.5 Ft Standard Clear', win: true },
@@ -2076,7 +2076,7 @@ function initCompetitorBattlecard() {
     },
     'godrej-woodsville': {
       name: 'Godrej Woodsville (Hinjewadi Ph 1)',
-      link: '/compare/lodha-altero-vs-godrej-woodsville-hinjewadi',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+32 (~102m Height)', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.6 Ft Conventional Clear', win: true },
@@ -2089,7 +2089,7 @@ function initCompetitorBattlecard() {
     },
     'vtp-bellissimo': {
       name: 'VTP Bellissimo (Hinjewadi Ph 1)',
-      link: '/compare/lodha-altero-vs-vtp-bellissimo-hinjewadi',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+33 High Rise', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.5 Ft Standard Clear', win: true },
@@ -2102,7 +2102,7 @@ function initCompetitorBattlecard() {
     },
     'kohinoor-courtyard': {
       name: 'Kohinoor Courtyard One (Wakad)',
-      link: '/compare/lodha-altero-vs-kohinoor-courtyard-wakad',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+22 Mid-Rise Elevation', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.4 Ft Standard Clear', win: true },
@@ -2115,7 +2115,7 @@ function initCompetitorBattlecard() {
     },
     'pride-world-city': {
       name: 'Pride World City (Charholi Pune)',
-      link: '/compare/lodha-altero-wakad-vs-pride-world-city-charholi',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+14 to G+24 Mid-Rise Clusters', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.5 Ft Standard Clear', win: true },
@@ -2128,7 +2128,7 @@ function initCompetitorBattlecard() {
     },
     'kalpataru-jade': {
       name: 'Kalpataru Jade Residences (Baner)',
-      link: '/compare/lodha-altero-vs-kalpataru-jade-baner',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+21 to G+25 Towers', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '10.0 Ft Premium Clear', win: true },
@@ -2141,7 +2141,7 @@ function initCompetitorBattlecard() {
     },
     'anp-universe': {
       name: 'ANP Universe (Balewadi)',
-      link: '/compare/lodha-altero-vs-anp-universe-balewadi',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+30 Towers', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.8 Ft Clear', win: true },
@@ -2154,7 +2154,7 @@ function initCompetitorBattlecard() {
     },
     'rohan-tarang': {
       name: 'Rohan Tarang (Wakad)',
-      link: '/compare/lodha-altero-vs-rohan-tarang-wakad',
+      link: '/articles/wakad-vs-baner-vs-mahalunge-hinjewadi',
       metrics: [
         { label: 'Tower Elevation & Floors', altero: 'G+37 Sky Tower (~120m Height)', comp: 'G+14 Mid-Rise Elevation', win: true },
         { label: 'Floor-to-Ceiling Clear Height', altero: '10.5 Ft Grand Clear Height', comp: '9.2 Ft Standard Clear', win: true },

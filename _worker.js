@@ -163,7 +163,7 @@ export default {
       'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
-    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.0');
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.1');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -582,7 +582,7 @@ export default {
             const list = [new Request(baseUri)];
             for (const aud of audienceList) {
               const u = new URL(baseUri);
-              u.searchParams.set('__cf_ver', 'v3.0');
+              u.searchParams.set('__cf_ver', 'v3.1');
               u.searchParams.set('__cf_aud', aud);
               list.push(new Request(u.toString()));
             }
@@ -696,12 +696,16 @@ export default {
           "400m Cushioned Sky Jogging Loop suspended above skyline",
           "Mivan Monolithic RCC Aluminum Formwork with 38 dB Acoustic Fenestrations"
         ],
-        "canonicalCorridorsCount": getAllProgrammaticSlugs().length,
-        "programmaticCorridors": Object.keys(PROGRAMMATIC_PAGES).map(slug => ({
+        "pillarArticlesCount": Object.keys(ARTICLE_SLUGS).length,
+        "pillarArticles": Object.keys(ARTICLE_SLUGS).map(slug => ({
           "slug": slug,
           "url": `https://${CANONICAL_HOST}${slug}`,
-          "category": PROGRAMMATIC_PAGES[slug].category,
-          "title": PROGRAMMATIC_PAGES[slug].title
+          "category": ARTICLE_SLUGS[slug].category,
+          "title": ARTICLE_SLUGS[slug].title
+        })),
+        "statutoryPolicies": Object.keys(POLICY_SLUGS).map(slug => ({
+          "slug": slug,
+          "url": `https://${CANONICAL_HOST}${slug}`
         })),
         "lastUpdated": new Date().toISOString()
       };
