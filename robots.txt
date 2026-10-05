@@ -50,7 +50,6 @@ Allow: /sitemap-index.xml
 Allow: /sitemap.xml
 Allow: /sitemap-core.xml
 Allow: /sitemap-articles.xml
-Allow: /sitemap-programmatic.xml
 Allow: /sitemap-images.xml
 Allow: /*.xml
 Allow: /*.xml.gz
@@ -166,12 +165,5 @@ Sitemap: https://altero.newlaunches.in/sitemap_index.xml
 Sitemap: https://altero.newlaunches.in/sitemap.xml
 Sitemap: https://altero.newlaunches.in/sitemap-core.xml
 Sitemap: https://altero.newlaunches.in/sitemap-articles.xml
-Sitemap: https://altero.newlaunches.in/sitemap-programmatic.xml
-Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-1.xml
-Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-2.xml
-Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-3.xml
-Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-4.xml
-Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-5.xml
-Sitemap: https://altero.newlaunches.in/sitemaps/programmatic-6.xml
 Sitemap: https://altero.newlaunches.in/sitemap-images.xml
 Sitemap: https://altero.newlaunches.in/feed.xml

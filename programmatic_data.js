@@ -2218,15 +2218,7 @@ ${sitemapsXml}
 }
 
 export function getMasterSitemapIndex(hostname) {
-  const allSlugs = getAllProgrammaticSlugs();
-  const chunkSize = 2200;
-  const totalChunks = Math.ceil(allSlugs.length / chunkSize);
   const today = new Date().toISOString().split('T')[0];
-
-  const programmaticSitemapsXml = Array.from({ length: totalChunks }, (_, i) => `  <sitemap>
-    <loc>https://${hostname}/sitemaps/programmatic-${i + 1}.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>`).join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -2242,7 +2234,6 @@ export function getMasterSitemapIndex(hostname) {
     <loc>https://${hostname}/sitemap-images.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
-${programmaticSitemapsXml}
 </sitemapindex>`;
 }
 
@@ -2569,7 +2560,7 @@ export function renderProgrammaticPage(url, pageData) {
   <meta name="description" content="${metaDesc}">
   <meta name="keywords" content="${keywords}">
   <meta name="author" content="Lodha Altero Wakad">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="${canonicalUrl}">
 
   <!-- Geotargeting -->

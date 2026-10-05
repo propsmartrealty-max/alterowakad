@@ -64,16 +64,10 @@
   X-Robots-Tag: index, follow
   Access-Control-Allow-Origin: *
 
-/sitemap-programmatic.xml
-  Cache-Control: public, max-age=43200, s-maxage=43200
-  Content-Type: application/xml; charset=utf-8
-  X-Robots-Tag: index, follow
-  Access-Control-Allow-Origin: *
-
 /sitemaps/*
   Cache-Control: public, max-age=43200, s-maxage=43200
   Content-Type: application/xml; charset=utf-8
-  X-Robots-Tag: index, follow
+  X-Robots-Tag: noindex, follow
   Access-Control-Allow-Origin: *
 
 /*.xml.gz

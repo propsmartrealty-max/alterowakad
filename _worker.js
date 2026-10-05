@@ -461,29 +461,27 @@ export default {
         }
       }
 
-      const allSlugs = getAllProgrammaticSlugs();
-      const limitParam = parseInt(url.searchParams.get('limit') || '1000', 10);
-      const batchLimit = Math.min(Math.max(limitParam, 50), 10000);
-      const selectedProgrammaticUrls = allSlugs.slice(0, batchLimit).map(slug => `https://${CANONICAL_HOST}${slug}`);
+      // High-Authority Core Indexation Set for real-time IndexNow / Search Engine ping
       const urlList = [
         `https://${CANONICAL_HOST}/`,
         ...Object.keys(POLICY_SLUGS).map(slug => `https://${CANONICAL_HOST}${slug}`),
-        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${CANONICAL_HOST}${slug}`),
-        ...selectedProgrammaticUrls
+        ...Object.keys(ARTICLE_SLUGS).map(slug => `https://${CANONICAL_HOST}${slug}`)
       ];
 
       const sitemapIndexUrl = `https://${CANONICAL_HOST}/sitemap_index.xml`;
       const sitemapCoreUrl = `https://${CANONICAL_HOST}/sitemap-core.xml`;
-      const sitemapProgrammaticUrl = `https://${CANONICAL_HOST}/sitemap-programmatic.xml`;
+      const sitemapArticlesUrl = `https://${CANONICAL_HOST}/sitemap-articles.xml`;
+      const sitemapImagesUrl = `https://${CANONICAL_HOST}/sitemap-images.xml`;
       const pingResults = {
         timestamp: new Date().toISOString(),
         host: CANONICAL_HOST,
         sitemapIndexUrl,
         sitemapCoreUrl,
-        sitemapProgrammaticUrl,
+        sitemapArticlesUrl,
+        sitemapImagesUrl,
         indexNowKey: INDEXNOW_KEY,
         urlsSubmittedCount: urlList.length,
-        submittedUrlsSample: urlList.slice(0, 10),
+        submittedUrlsSample: urlList,
         engineResponses: []
       };
 
@@ -542,22 +540,26 @@ export default {
         pingResults.engineResponses.push({ target: 'Yandex IndexNow Direct', status: 'error', message: e.message });
       }
 
-      // 4. Ping Google Sitemap Crawler (Master Index + Core Sitemaps)
+      // 4. Ping Google Sitemap Crawler (Master Index + Core Sitemaps + Articles)
       try {
         const googlePing1 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapIndexUrl)}`);
         const googlePing2 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapCoreUrl)}`);
+        const googlePing3 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapArticlesUrl)}`);
         pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Master Index)', status: googlePing1.status });
         pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Core)', status: googlePing2.status });
+        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Articles)', status: googlePing3.status });
       } catch (e) {
         pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: 'error', message: e.message });
       }
 
-      // 5. Ping Bing Sitemap Crawler (Master Index + Core Sitemaps)
+      // 5. Ping Bing Sitemap Crawler (Master Index + Core Sitemaps + Articles)
       try {
         const bingPing1 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapIndexUrl)}`);
         const bingPing2 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapCoreUrl)}`);
+        const bingPing3 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapArticlesUrl)}`);
         pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Master Index)', status: bingPing1.status });
         pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Core)', status: bingPing2.status });
+        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Articles)', status: bingPing3.status });
       } catch (e) {
         pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: 'error', message: e.message });
       }
@@ -945,7 +947,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
         progHeaders.set('X-Environment', 'staging');
       } else {
-        progHeaders.set('X-Robots-Tag', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+        progHeaders.set('X-Robots-Tag', 'noindex, follow');
         progHeaders.set('X-Environment', 'production');
       }
 
@@ -1232,13 +1234,17 @@ Please connect me with the sales director and share official MahaRERA P521000796
       let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', {
           element(el) {
-            const liveCanonical = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}` : `https://${CANONICAL_HOST}/`;
+            const liveCanonical = isArticleRoute 
+              ? `https://${CANONICAL_HOST}${cleanSlug}` 
+              : (POLICY_SLUGS[cleanSlug] ? `https://${CANONICAL_HOST}${cleanSlug}` : `https://${CANONICAL_HOST}/`);
             el.setAttribute('href', liveCanonical);
           }
         })
         .on('meta[property="og:url"]', {
           element(el) {
-            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}` : `https://${CANONICAL_HOST}/`;
+            const liveUrl = isArticleRoute 
+              ? `https://${CANONICAL_HOST}${cleanSlug}` 
+              : (POLICY_SLUGS[cleanSlug] ? `https://${CANONICAL_HOST}${cleanSlug}` : `https://${CANONICAL_HOST}/`);
             el.setAttribute('content', liveUrl);
           }
         })
@@ -1254,7 +1260,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
         })
         .on('meta[name="twitter:url"]', {
           element(el) {
-            const liveUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}` : `https://${CANONICAL_HOST}/`;
+            const liveUrl = isArticleRoute 
+              ? `https://${CANONICAL_HOST}${cleanSlug}` 
+              : (POLICY_SLUGS[cleanSlug] ? `https://${CANONICAL_HOST}${cleanSlug}` : `https://${CANONICAL_HOST}/`);
             el.setAttribute('content', liveUrl);
           }
         })
@@ -1264,7 +1272,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
             el.append('<meta name="edge-rendered" content="cloudflare-worker-pune-optimized">', { html: true });
             el.append(`<meta name="viewer-country" content="${viewerCountry}">`, { html: true });
             el.append(`<meta name="viewer-city" content="${viewerCity}">`, { html: true });
-            const markdownUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanArticleSlug}.md` : `https://${CANONICAL_HOST}/index.md`;
+            const markdownUrl = isArticleRoute ? `https://${CANONICAL_HOST}${cleanSlug}.md` : `https://${CANONICAL_HOST}/index.md`;
             el.append(`<link rel="alternate" type="text/markdown" href="${markdownUrl}">`, { html: true });
             el.append(`<link rel="alternate" type="application/json" href="https://${CANONICAL_HOST}/_edge/knowledge-graph.json" title="Semantic Knowledge Graph">`, { html: true });
             el.append(`<script type="speculationrules">
