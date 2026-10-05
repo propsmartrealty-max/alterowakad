@@ -163,7 +163,7 @@ export default {
       'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
-    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.1');
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.2');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -582,7 +582,7 @@ export default {
             const list = [new Request(baseUri)];
             for (const aud of audienceList) {
               const u = new URL(baseUri);
-              u.searchParams.set('__cf_ver', 'v3.1');
+              u.searchParams.set('__cf_ver', 'v3.2');
               u.searchParams.set('__cf_aud', aud);
               list.push(new Request(u.toString()));
             }
@@ -666,9 +666,17 @@ export default {
           "name": "Lodha Group (Macrotech Developers Ltd)",
           "url": "https://www.lodhagroup.com"
         },
+        "authorizedChannelPartner": {
+          "@type": "RealEstateAgent",
+          "name": "PropSmart Realty",
+          "identifier": "A031262401295",
+          "license": "MahaRERA Registration No. A031262401295",
+          "verificationUrl": "https://maharera.maharashtra.gov.in"
+        },
         "statutoryCompliance": {
           "authority": "Maharashtra Real Estate Regulatory Authority (MahaRERA)",
-          "registrationNumber": "P52100079692",
+          "projectRegistrationNumber": "P52100079692",
+          "agentRegistrationNumber": "A031262401295",
           "verificationUrl": "https://maharera.maharashtra.gov.in",
           "escrowPercentage": "70% Ring-Fenced Section 4(2)(l)(D)"
         },
