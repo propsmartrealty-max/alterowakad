@@ -1035,6 +1035,8 @@ Please connect me with the sales director and share official MahaRERA P521000796
     } else if (POLICY_SLUGS[cleanSlug]) {
       // Resolve institutional policy pages directly from directory index
       assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
+    }
+
     const build404Response = () => new Response(
       `<!DOCTYPE html>
 <html lang="en">
