@@ -1035,16 +1035,14 @@ Please connect me with the sales director and share official MahaRERA P521000796
     } else if (POLICY_SLUGS[cleanSlug]) {
       // Resolve institutional policy pages directly from directory index
       assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
-    } else if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap')) {
-      // Return authoritative 404 Not Found for non-existent routes to prevent Soft 404 penalties
-      return new Response(
-        `<!DOCTYPE html>
+    const build404Response = () => new Response(
+      `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404: Page Not Found | Lodha Altero Wakad</title>
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex, nofollow, noarchive">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
@@ -1075,20 +1073,24 @@ Please connect me with the sales director and share official MahaRERA P521000796
   </div>
 </body>
 </html>`,
-        {
-          status: 404,
-          statusText: 'Not Found',
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'X-Robots-Tag': 'noindex, nofollow, noarchive',
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
-            'X-Canonical-Host': CANONICAL_HOST,
-            'X-Staging-Host': STAGING_HOST,
-            'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.8'
-          }
+      {
+        status: 404,
+        statusText: 'Not Found',
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+          'X-Canonical-Host': CANONICAL_HOST,
+          'X-Staging-Host': STAGING_HOST,
+          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.2'
         }
-      );
+      }
+    );
+
+    if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap')) {
+      // Return authoritative 404 Not Found for non-existent routes to prevent Soft 404 penalties
+      return build404Response();
     }
 
     // =========================================================================
@@ -1105,22 +1107,9 @@ Please connect me with the sales director and share official MahaRERA P521000796
       return new Response('Edge Gateway Temporary Error', { status: 502 });
     }
 
-    // Prevent Soft 404: If 404 on unknown clean URL, serve root index.html with genuine 404 status and noindex
+    // Prevent Soft 404: If 404 on unknown clean URL, serve authoritative 404 HTML with genuine 404 status and noindex
     if (response.status === 404 && !STATIC_EXTENSIONS.test(pathname)) {
-      const fallbackReq = new Request(new URL('/', request.url), request);
-      if (env.ASSETS) {
-        const notFoundRes = await env.ASSETS.fetch(fallbackReq);
-        const notFoundHeaders = new Headers(notFoundRes.headers);
-        notFoundHeaders.set('X-Robots-Tag', 'noindex, nofollow');
-        notFoundHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-        notFoundHeaders.set('X-Canonical-Host', CANONICAL_HOST);
-        notFoundHeaders.set('X-Staging-Host', STAGING_HOST);
-        return new Response(notFoundRes.body, {
-          status: 404,
-          statusText: 'Not Found',
-          headers: notFoundHeaders
-        });
-      }
+      return build404Response();
     }
 
     const headers = new Headers(response.headers);
