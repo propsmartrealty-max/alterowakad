@@ -966,7 +966,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.8');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.2');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -1026,17 +1026,6 @@ Please connect me with the sales director and share official MahaRERA P521000796
     let articleMeta = null;
     let assetRequest = request;
 
-    const cleanSlug = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
-    if (ARTICLE_SLUGS[cleanSlug]) {
-      isArticleRoute = true;
-      articleMeta = ARTICLE_SLUGS[cleanSlug];
-      // Fetch directory path with trailing slash directly from env.ASSETS (resolves immediately to articles/<slug>/index.html)
-      assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
-    } else if (POLICY_SLUGS[cleanSlug]) {
-      // Resolve institutional policy pages directly from directory index
-      assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
-    }
-
     const build404Response = () => new Response(
       `<!DOCTYPE html>
 <html lang="en">
@@ -1090,7 +1079,16 @@ Please connect me with the sales director and share official MahaRERA P521000796
       }
     );
 
-    if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap')) {
+    const cleanSlug = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+    if (ARTICLE_SLUGS[cleanSlug]) {
+      isArticleRoute = true;
+      articleMeta = ARTICLE_SLUGS[cleanSlug];
+      // Fetch directory path with trailing slash directly from env.ASSETS (resolves immediately to articles/<slug>/index.html)
+      assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
+    } else if (POLICY_SLUGS[cleanSlug]) {
+      // Resolve institutional policy pages directly from directory index
+      assetRequest = new Request(new URL(`${cleanSlug}/`, request.url), request);
+    } else if (pathname !== '/' && !STATIC_EXTENSIONS.test(pathname) && !pathname.startsWith('/_edge/') && !pathname.startsWith('/sitemap') && pathname !== '/feed.xml' && pathname !== '/robots.txt' && pathname !== '/manifest.webmanifest' && !pathname.startsWith('/llms')) {
       // Return authoritative 404 Not Found for non-existent routes to prevent Soft 404 penalties
       return build404Response();
     }
@@ -1140,7 +1138,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v2.8');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.2');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
