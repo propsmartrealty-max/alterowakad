@@ -3,7 +3,7 @@
  * Provides offline resilience, instant floor plan caching, and 100/100 Core Web Vitals caching.
  */
 
-const CACHE_NAME = 'lodha-altero-v3.2';
+const CACHE_NAME = 'lodha-altero-v3.3';
 const OFFLINE_URL = '/';
 
 const PRECACHE_ASSETS = [
