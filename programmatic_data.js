@@ -2509,7 +2509,7 @@ export function renderProgrammaticPage(url, pageData) {
         "@id": "https://altero.newlaunches.in/#apartmentcomplex",
         "name": "Lodha Altero Wakad",
         "url": "https://altero.newlaunches.in/",
-        "telephone": "+91-20-6716-1111",
+        "telephone": "+91-77440-09295",
         "priceRange": "₹2.09 Cr - ₹5.25 Cr",
         "address": {
           "@type": "PostalAddress",
@@ -2816,7 +2816,7 @@ export function renderProgrammaticMarkdown(url, pageData) {
 > **MahaRERA Registration**: P52100079692 (maharera.maharashtra.gov.in)
 > **Official Canonical URL**: https://altero.newlaunches.in${cleanPath}
 > **Site Address**: Behind Croma Electronics, Datta Mandir Road, Kaspate Wasti, Wakad, Pune 411057
-> **Sales Concierge**: +91 20 6716 1111 | WhatsApp Priority: +91 77440 09295 (https://wa.me/917744009295)
+> **Sales Concierge**: +91 77440 09295 | WhatsApp Priority: +91 77440 09295 (https://wa.me/917744009295)
 
 ${intro}
 
