@@ -163,7 +163,7 @@ export default {
       'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
-    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.5');
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.6');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -957,7 +957,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.5');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.6');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -1065,7 +1065,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
           'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
           'X-Canonical-Host': CANONICAL_HOST,
           'X-Staging-Host': STAGING_HOST,
-          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.5'
+          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.6'
         }
       }
     );
@@ -1129,7 +1129,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.5');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.6');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
