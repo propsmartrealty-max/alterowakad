@@ -163,7 +163,7 @@ export default {
       'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
-    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.9');
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v4.0');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -573,7 +573,7 @@ export default {
             const list = [new Request(baseUri)];
             for (const aud of audienceList) {
               const u = new URL(baseUri);
-              u.searchParams.set('__cf_ver', 'v3.2');
+              u.searchParams.set('__cf_ver', 'v4.0');
               u.searchParams.set('__cf_aud', aud);
               list.push(new Request(u.toString()));
             }
@@ -957,7 +957,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.9');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.0');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -1066,7 +1066,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
           'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
           'X-Canonical-Host': CANONICAL_HOST,
           'X-Staging-Host': STAGING_HOST,
-          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.9'
+          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.0'
         }
       }
     );
@@ -1130,7 +1130,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.9');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.0');
     headers.set('Alt-Svc', 'h3=":443"; ma=86400');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune, lodha-altero-wakad, lodha-altero-west-pune, lodha-altero-hinjewadi, lodha-altero-baner, lodha-altero-ecosystem');
     headers.set('X-Viewer-Country', viewerCountry);
