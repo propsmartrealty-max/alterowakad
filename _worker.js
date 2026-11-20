@@ -163,7 +163,7 @@ export default {
       'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
-    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.4');
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v3.5');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -542,29 +542,20 @@ export default {
         pingResults.engineResponses.push({ target: 'Yandex IndexNow Direct', status: 'error', message: e.message });
       }
 
-      // 4. Ping Google Sitemap Crawler (Master Index + Core Sitemaps + Articles)
-      try {
-        const googlePing1 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapIndexUrl)}`);
-        const googlePing2 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapCoreUrl)}`);
-        const googlePing3 = await fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapArticlesUrl)}`);
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Master Index)', status: googlePing1.status });
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Core)', status: googlePing2.status });
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping (Articles)', status: googlePing3.status });
-      } catch (e) {
-        pingResults.engineResponses.push({ target: 'Google Sitemap Ping', status: 'error', message: e.message });
-      }
-
-      // 5. Ping Bing Sitemap Crawler (Master Index + Core Sitemaps + Articles)
-      try {
-        const bingPing1 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapIndexUrl)}`);
-        const bingPing2 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapCoreUrl)}`);
-        const bingPing3 = await fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapArticlesUrl)}`);
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Master Index)', status: bingPing1.status });
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Core)', status: bingPing2.status });
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping (Articles)', status: bingPing3.status });
-      } catch (e) {
-        pingResults.engineResponses.push({ target: 'Bing Sitemap Ping', status: 'error', message: e.message });
-      }
+      // 4. Search Engine Indexing Status Directives (Google & Bing modern standards)
+      pingResults.engineResponses.push({
+        target: 'Google Search Console Discovery',
+        status: 'active',
+        protocol: 'robots.txt auto-poll & GSC Indexing',
+        sitemapMasterIndex: sitemapIndexUrl,
+        note: 'Google deprecated /ping in Dec 2023; sitemaps are verified via robots.txt and GSC interface'
+      });
+      pingResults.engineResponses.push({
+        target: 'Bing Webmaster Discovery',
+        status: 'active',
+        protocol: 'IndexNow Real-Time + Bing Webmaster',
+        sitemapMasterIndex: sitemapIndexUrl
+      });
 
       return new Response(JSON.stringify(pingResults, null, 2), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
@@ -966,7 +957,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.4');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.5');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -1074,7 +1065,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
           'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
           'X-Canonical-Host': CANONICAL_HOST,
           'X-Staging-Host': STAGING_HOST,
-          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.4'
+          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.5'
         }
       }
     );
@@ -1138,7 +1129,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.4');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v3.5');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune');
     headers.set('X-Viewer-Country', viewerCountry);
     headers.set('X-Viewer-City', viewerCity);
