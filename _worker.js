@@ -192,6 +192,12 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    // Strip .html extension and 301 redirect to canonical clean slug (except google site verification files)
+    if (pathname.endsWith('.html') && !/^\/google[a-zA-Z0-9_\-]+\.html$/i.test(pathname)) {
+      url.pathname = pathname.replace(/\.html$/, '');
+      return Response.redirect(url.toString(), 301);
+    }
+
     // Category & Directory Root Normalization to Master Showcase Anchors
     const DIRECTORY_REDIRECTS = {
       '/articles': '/#pune-real-estate-hub',
