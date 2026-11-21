@@ -163,7 +163,7 @@ export default {
       'purge', 'nocache', 'force'
     ];
     trackingParams.forEach(p => cleanCacheUrl.searchParams.delete(p));
-    cleanCacheUrl.searchParams.set('__cf_ver', 'v4.0');
+    cleanCacheUrl.searchParams.set('__cf_ver', 'v4.1');
     cleanCacheUrl.searchParams.set('__cf_aud', audienceSegment);
     cleanCacheUrl.searchParams.sort();
     const cacheKey = new Request(cleanCacheUrl.toString(), request);
@@ -184,6 +184,19 @@ export default {
     // =========================================================================
     // 1. Edge Canonical Normalization & 301 Redirect Rules
     // =========================================================================
+
+    // 0. Normalize consecutive slashes (e.g. //articles -> /articles)
+    if (pathname.includes('//')) {
+      url.pathname = pathname.replace(/\/+/g, '/');
+      return Response.redirect(url.toString(), 301);
+    }
+
+    // 0.1 Lowercase normalization for non-static-asset paths (prevents 404s and duplicate content)
+    const isStaticAsset = /\.(jpe?g|png|webp|avif|gif|svg|ico|css|js|map|xml|txt|json|webmanifest|woff2?|ttf|eot|pdf)$/i.test(pathname);
+    if (!isStaticAsset && /[A-Z]/.test(pathname) && !/^\/google[a-zA-Z0-9_\-]+\.html$/i.test(pathname)) {
+      url.pathname = pathname.toLowerCase();
+      return Response.redirect(url.toString(), 301);
+    }
 
     // Redirect /index.html to /
     if (pathname === '/index.html' || pathname.endsWith('/index.html')) {
@@ -579,7 +592,7 @@ export default {
             const list = [new Request(baseUri)];
             for (const aud of audienceList) {
               const u = new URL(baseUri);
-              u.searchParams.set('__cf_ver', 'v4.0');
+              u.searchParams.set('__cf_ver', 'v4.1');
               u.searchParams.set('__cf_aud', aud);
               list.push(new Request(u.toString()));
             }
@@ -963,7 +976,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
         progHeaders.set('X-Environment', 'production');
       }
 
-      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.0');
+      progHeaders.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.1');
       progHeaders.set('X-Canonical-Host', CANONICAL_HOST);
       progHeaders.set('X-Staging-Host', STAGING_HOST);
       progHeaders.set('X-Subdomain-Hardening', 'Enforced-altero.newlaunches.in-and-alterowakad.pages.dev');
@@ -1054,10 +1067,19 @@ Please connect me with the sales director and share official MahaRERA P521000796
     <p class="text-stone-400 text-sm leading-relaxed">
       The requested floor plan, corridor guide, or document does not exist. Please visit our official showcase.
     </p>
-    <div class="pt-4">
+    <div class="pt-4 space-y-3">
       <a href="/" class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-bold px-6 py-3 rounded-lg hover:brightness-110 transition-all text-xs tracking-wider uppercase">
         Return to Official Showcase
       </a>
+      <div class="flex flex-wrap justify-center gap-3 pt-2 text-[11px] text-stone-400">
+        <a href="/articles/lodha-altero-floor-plans-sky-duplex-penthouses" class="hover:text-amber-400 underline">Floor Plans</a>
+        <span>•</span>
+        <a href="/articles/lodha-altero-wakad-price-list-cost-sheet-2026" class="hover:text-amber-400 underline">Price List 2026</a>
+        <span>•</span>
+        <a href="/articles/maharera-p52100079692-statutory-compliance" class="hover:text-amber-400 underline">MahaRERA Status</a>
+        <span>•</span>
+        <a href="/articles/25000-sqft-rooftop-sky-club-infinity-pool" class="hover:text-amber-400 underline">Rooftop Sky Club</a>
+      </div>
     </div>
   </div>
 </body>
@@ -1072,7 +1094,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
           'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
           'X-Canonical-Host': CANONICAL_HOST,
           'X-Staging-Host': STAGING_HOST,
-          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.0'
+          'X-Edge-Engine': 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.1'
         }
       }
     );
@@ -1136,7 +1158,7 @@ Please connect me with the sales director and share official MahaRERA P521000796
       headers.set('X-Environment', 'production');
     }
 
-    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.0');
+    headers.set('X-Edge-Engine', 'Cloudflare-Ultra-Hardened-Edge-Worker-v4.1');
     headers.set('Alt-Svc', 'h3=":443"; ma=86400');
     headers.set('Cache-Tag', 'lodha-altero-main, lodha-altero-root, lodha-altero-pune, lodha-altero-wakad, lodha-altero-west-pune, lodha-altero-hinjewadi, lodha-altero-baner, lodha-altero-ecosystem');
     headers.set('X-Viewer-Country', viewerCountry);
@@ -1220,6 +1242,10 @@ Please connect me with the sales director and share official MahaRERA P521000796
     // =========================================================================
     if (contentType.includes('text/html')) {
       headers.set('Cache-Control', 'public, max-age=0, s-maxage=604800, stale-while-revalidate=86400, stale-if-error=604800');
+      const liveCanonical = isArticleRoute
+        ? `https://${CANONICAL_HOST}${cleanSlug}`
+        : (POLICY_SLUGS[cleanSlug] ? `https://${CANONICAL_HOST}${cleanSlug}` : `https://${CANONICAL_HOST}/`);
+      headers.append('Link', `<${liveCanonical}>; rel="canonical"`);
       headers.set('CDN-Cache-Control', 'max-age=604800, stale-while-revalidate=86400, stale-if-error=604800');
       headers.set('Vary', 'Accept-Encoding, Accept, cf-ipcountry');
 

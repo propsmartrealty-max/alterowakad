@@ -57,6 +57,12 @@
   <link rel="preload" as="image" href="/assets/hero_mobile.jpg" media="(max-width: 767px)" fetchpriority="high">
   <link rel="preload" as="image" href="/assets/hero_banner.jpg" media="(min-width: 768px)" fetchpriority="high">
 
+  <!-- Critical Rendering Path: Stylesheet & Typography Prioritization (Core Web Vitals) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
   <!-- Schema.org Multi-Entity JSON-LD Structured Data for Google Rich Snippets & Knowledge Graph -->
   <script type="application/ld+json">
   {
@@ -982,11 +988,6 @@
   <meta name="apple-mobile-web-app-title" content="Lodha Altero">
   <meta name="application-name" content="Lodha Altero">
 
-  <!-- Google Fonts: Cormorant Garamond & Jost (Official Lodha Typography) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -1021,9 +1022,6 @@
       }
     }
   </script>
-
-  <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-[#FAF7F2] text-[#1C1917] font-sans antialiased selection:bg-amber-500/30 selection:text-amber-900 pb-16 md:pb-0">
 
